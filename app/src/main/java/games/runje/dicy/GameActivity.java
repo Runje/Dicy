@@ -5,12 +5,13 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
 
+import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicy.controller.Gamemaster;
 import games.runje.dicy.util.SystemUiHider;
-import games.runje.dicymodel.data.Board;
 
 
 /**
@@ -153,6 +154,7 @@ public class GameActivity extends Activity
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        this.getActionBar().hide();
     }
 
     @Override
@@ -164,8 +166,14 @@ public class GameActivity extends Activity
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
-        Board b = new Board(1);
-        Log.d("Test", b.toString());
+        RelativeLayout l = new RelativeLayout(this);
+        Gamemaster.createAnimatedGame(this);
+        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        l.addView(board.getRelativeLayout());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        params.addRule(RelativeLayout.CENTER_VERTICAL);
+        setContentView(l, params);
     }
 
     /**

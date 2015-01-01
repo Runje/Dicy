@@ -1,29 +1,45 @@
 package games.runje.dicymodel.data;
 
+import java.util.Random;
+
 /**
  * Created by Thomas on 05.10.2014.
  */
-public class Dice implements BoardElement
+public class Dice extends BoardElement
 {
-    /**
-     * Value of the dice.
-     */
-    private int value;
 
-    public Dice(int value)
+    public Dice()
     {
-        this.value = value;
+        super();
+        this.roll();
+    }
+
+    public Dice(int v)
+    {
+        super(v);
+    }
+
+    public Dice(Coords coords)
+    {
+        super(coords);
+        this.roll();
+    }
+
+    public Dice(int v, Coords c)
+    {
+        super(v, c);
+    }
+
+    private void roll()
+    {
+        Random random = new Random();
+        this.value = random.nextInt(6) + 1;
     }
 
     @Override
     public String toString()
     {
-        return Integer.toString(value);
-    }
-
-    public int getValue()
-    {
-        return value;
+        return "Pos = " + this.position + ", value = " + Integer.toString(value);
     }
 
     public void setValue(int value)

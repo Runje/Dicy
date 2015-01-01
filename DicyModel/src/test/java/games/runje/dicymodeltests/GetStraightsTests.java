@@ -35,7 +35,7 @@ public class GetStraightsTests
 
     private void noneHelper(int[] board)
     {
-        Board b = Board.createDiceBoard(board);
+        Board b = Board.createElementsBoard(board);
         Rules rules = new Rules();
         rules.setMinStraight(3);
         ArrayList<PointElement> elements = BoardChecker.getStraights(b, rules);
@@ -136,7 +136,7 @@ public class GetStraightsTests
 
     private void pointsHelper(int[] board, ArrayList<PointElement> expectedElements, Rules rules)
     {
-        Board b = Board.createDiceBoard(board);
+        Board b = Board.createElementsBoard(board);
         ArrayList<PointElement> elements = BoardChecker.getStraights(b, rules);
         assertEquals(expectedElements, elements);
     }

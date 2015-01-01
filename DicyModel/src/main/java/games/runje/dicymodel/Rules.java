@@ -65,10 +65,10 @@ public class Rules
         this.numberOfDices = 6;
         this.minStraight = this.numberOfDices + 1;
         this.minXOfAKind = 3;
-        this.maxXOfAKind = 5;
+        this.maxXOfAKind = 10;
         this.initStraightPoints(0);
         this.initFullHousePoints(0);
-        this.initXOfAKindPoints(3, 5, 100, 2);
+        this.initXOfAKindPoints(this.minXOfAKind, this.maxXOfAKind, 100, 2);
     }
 
     /**

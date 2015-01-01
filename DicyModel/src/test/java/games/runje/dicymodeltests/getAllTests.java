@@ -39,7 +39,7 @@ public class getAllTests
 
     private void pointsHelper(int[] board, ArrayList<PointElement> expectedElements, Rules rules)
     {
-        Board b = Board.createDiceBoard(board);
+        Board b = Board.createElementsBoard(board);
         ArrayList<PointElement> elements = BoardChecker.getAll(b, rules);
         assertEquals(expectedElements, elements);
     }

@@ -33,6 +33,11 @@ public class PointElement
         this.points = points;
     }
 
+    public Coords[] getCoords()
+    {
+        return coords;
+    }
+
     @Override
     public String toString()
     {

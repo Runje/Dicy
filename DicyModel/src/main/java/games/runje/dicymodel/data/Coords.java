@@ -1,5 +1,7 @@
 package games.runje.dicymodel.data;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas on 01.10.2014.
  */
@@ -13,6 +15,26 @@ public class Coords
     {
         this.row = x;
         this.column = y;
+    }
+
+    public static ArrayList<Coords> pointElementsToCoords(ArrayList<PointElement> elements)
+    {
+        ArrayList<Coords> highlightCoords = new ArrayList<>();
+
+        for (PointElement element : elements)
+        {
+            Coords[] pos = element.getCoords();
+
+            for (Coords c : pos)
+            {
+                if (!highlightCoords.contains(c))
+                {
+                    highlightCoords.add(c);
+                }
+            }
+        }
+
+        return highlightCoords;
     }
 
     @Override
