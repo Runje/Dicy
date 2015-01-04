@@ -58,7 +58,7 @@ public class Rules
      * No Diagonal.
      * No Full House.
      * No Straight.
-     * 3-5 XofAKind.  (100 Points)
+     * 3-10 XofAKind.  (1 Points)
      */
     public Rules()
     {
@@ -68,7 +68,7 @@ public class Rules
         this.maxXOfAKind = 10;
         this.initStraightPoints(0);
         this.initFullHousePoints(0);
-        this.initXOfAKindPoints(this.minXOfAKind, this.maxXOfAKind, 100, 2);
+        this.initXOfAKindPoints(this.minXOfAKind, this.maxXOfAKind, 1, 2);
     }
 
     /**

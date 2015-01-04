@@ -104,4 +104,9 @@ public class PointElement
         result = 31 * result + Arrays.hashCode(coords);
         return result;
     }
+
+    public int getPoints()
+    {
+        return points;
+    }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="board" type="id"/>
+    <item name="diagonalText" type="id"/>
+    <item name="straightText" type="id"/>
+    <item name="diagonal" type="id"/>
+    <item name="straightEdit" type="id"/>
+    <item name="diagonalCB" type="id"/>
+    <item name="pointsText" type="id"/>
+    <item name="straight" type="id"/>
+    <item name="xOfAKindText" type="id"/>
+    <item name="xOfAKindEdit" type="id"/>
+    <item name="xOfAKind" type="id"/>
+</resources>
