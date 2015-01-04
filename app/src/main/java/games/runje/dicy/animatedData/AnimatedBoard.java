@@ -130,11 +130,6 @@ public class AnimatedBoard extends Board
         this.animatedBoard.get(coords.row).set(coords.column, element);
     }
 
-    private int getImageResource(Coords pos)
-    {
-        return AnimatedBoardElement.ElementToImageResource(this.getElement(pos));
-    }
-
     @Override
     public String toString()
     {
@@ -166,7 +161,6 @@ public class AnimatedBoard extends Board
     public void highlightElements(ArrayList<PointElement> elements)
     {
         ArrayList<Coords> highlightCoords = Coords.pointElementsToCoords(elements);
-
         for (ArrayList<AnimatedBoardElement> row : this.animatedBoard)
         {
             for (AnimatedBoardElement element : row)
@@ -235,12 +229,7 @@ public class AnimatedBoard extends Board
     public void deleteElements(ArrayList<PointElement> elements)
     {
         super.deleteElements(elements);
-        ArrayList<Coords> coords = Coords.pointElementsToCoords(elements);
-        for (Coords c : coords)
-        {
-            this.getAnimatedElement(c).remove();
-            this.getAnimatedElement(c).setValue(0);
-        }
+        new PointsAnimation(elements).start();
     }
 
     /**

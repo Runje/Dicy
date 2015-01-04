@@ -104,25 +104,16 @@ public class Gamemaster
         ((AnimatedBoard) board).consistencyCheck();
 
         this.animationEnded = 0;
+        this.animationsWillStart = 0;
 
         ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
         for (PointElement e : elements)
         {
             points += e.getPoints();
         }
+
         updatePoints();
         board.deleteElements(elements);
-        ArrayList<BoardElement> fallingElements = board.moveElementsFromGravity();
-        this.animationsWillStart = fallingElements.size();
-        if (fallingElements.size() == 0)
-        {
-            ArrayList<BoardElement> rElements = board.recreateElements();
-            this.animationsWillStart = rElements.size();
-            if (rElements.size() == 0)
-            {
-                controls.enable();
-            }
-        }
     }
 
     private void updatePoints()
@@ -186,5 +177,21 @@ public class Gamemaster
         l.addView(controls, params);
         a.setContentView(l);
         this.controls.updatePoints();
+    }
+
+    public void updaterAfterPoints()
+    {
+        this.animationEnded = 0;
+        ArrayList<BoardElement> fallingElements = board.moveElementsFromGravity();
+        this.animationsWillStart = fallingElements.size();
+        if (fallingElements.size() == 0)
+        {
+            ArrayList<BoardElement> rElements = board.recreateElements();
+            this.animationsWillStart = rElements.size();
+            if (rElements.size() == 0)
+            {
+                controls.enable();
+            }
+        }
     }
 }
