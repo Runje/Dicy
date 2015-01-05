@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.Utilities;
+import games.runje.dicymodel.boardChecker.BoardChecker;
 
 public class Board
 {
@@ -194,7 +196,7 @@ public class Board
         return getElement(coord.row, coord.column);
     }
 
-    public void switchElements(Coords first, Coords second)
+    public boolean switchElements(Coords first, Coords second, boolean switchBackPossible, Rules rules)
     {
         // switch
         BoardElement temp = this.getElement(first);
@@ -204,6 +206,24 @@ public class Board
         // update position
         this.updatePosition(first);
         this.updatePosition(second);
+
+        if (switchBackPossible)
+        {
+            boolean switchBack = BoardChecker.getAll(this, rules).size() == 0;
+            if (switchBack)
+            {
+                switchElements(second, first);
+            }
+
+            return switchBack;
+        }
+
+        return false;
+    }
+
+    public boolean switchElements(Coords first, Coords second)
+    {
+        return switchElements(first, second, false, null);
     }
 
     private void updatePosition(Coords pos)

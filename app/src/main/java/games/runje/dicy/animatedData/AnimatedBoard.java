@@ -7,6 +7,7 @@ import android.widget.TableRow;
 import java.util.ArrayList;
 import java.util.List;
 
+import games.runje.dicy.controller.Gamemaster;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
@@ -112,17 +113,24 @@ public class AnimatedBoard extends Board
         return this.relativeLayout;
     }
 
-    public void switchElements(Coords first, Coords second)
+    public boolean switchElements(Coords first, Coords second, boolean switchBackPossible)
     {
         Logger.logDebug(LogKey, "Animated Switch, first: " + first + ", second: " + second + ", Board: " + this.board + "\n" + this.animatedBoard);
 
-        super.switchElements(first, second);
+        boolean switchback = super.switchElements(first, second, switchBackPossible, Gamemaster.getInstance().getRules());
+
+        if (!switchBackPossible)
+        {
+            switchback = false;
+        }
 
         AnimatedBoardElement firstImage = this.getAnimatedElement(first);
         AnimatedBoardElement secondImage = this.getAnimatedElement(second);
 
-        SwitchAnimation s = new SwitchAnimation(firstImage, secondImage);
+        SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, switchback);
         s.start();
+
+        return switchback;
     }
 
     public void setAnimatedElement(Coords coords, AnimatedBoardElement element)
@@ -154,7 +162,6 @@ public class AnimatedBoard extends Board
 
     /**
      * Changes the color of of a imageview to black and white.
-     * TODO: Usage?
      *
      * @param elements
      */

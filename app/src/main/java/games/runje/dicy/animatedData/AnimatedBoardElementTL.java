@@ -96,8 +96,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                     return true;
                 }
 
-
-                Action a = new SwitchAction(position, direction);
+                Action a = new SwitchAction(position, direction, true);
                 Gamemaster.getInstance().performAction(a);
                 Logger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown);
                 Toast t = Toast.makeText(view.getContext(), direction.toString() + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown, Toast.LENGTH_LONG);

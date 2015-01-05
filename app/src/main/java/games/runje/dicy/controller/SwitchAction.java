@@ -2,6 +2,7 @@ package games.runje.dicy.controller;
 
 import android.util.Log;
 
+import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 
@@ -10,14 +11,16 @@ import games.runje.dicymodel.data.Coords;
  */
 public class SwitchAction extends Action
 {
+    private final boolean switchBackPossible;
     private Direction direction;
 
     private Coords position;
 
-    public SwitchAction(Coords p, Direction d)
+    public SwitchAction(Coords p, Direction d, boolean switchBackPossible)
     {
         this.position = p;
         this.direction = d;
+        this.switchBackPossible = switchBackPossible;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class SwitchAction extends Action
                 break;
         }
 
-        this.board.switchElements(position, second);
+        ((AnimatedBoard) this.board).switchElements(position, second, switchBackPossible);
         Log.d("TL", "Exectued switch elements: " + position + " with " + second);
     }
 
