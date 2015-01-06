@@ -12,6 +12,7 @@ import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
+import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.PointElement;
 
 /**
@@ -195,6 +196,7 @@ public class AnimatedBoard extends Board
     {
         ArrayList<BoardElement> elements = super.recreateElements();
         Logger.logInfo(LogKey, "Recreating elements: " + elements);
+        int[] max = getMaxFallLength(elements);
         for (BoardElement element : elements)
         {
             Coords pos = element.getPosition();
@@ -203,22 +205,23 @@ public class AnimatedBoard extends Board
 
             int x = 0;
             int y = 0;
+
             switch (this.gravity)
             {
                 case Up:
                     x = CoordsToX(pos);
-                    y = CoordsToY(new Coords(rows, pos.column));
+                    y = CoordsToY(new Coords(pos.row + max[pos.column], pos.column));
                     break;
                 case Down:
                     x = CoordsToX(pos);
-                    y = CoordsToY(new Coords(-1, pos.column));
+                    y = CoordsToY(new Coords(pos.row - max[pos.column], pos.column));
                     break;
                 case Right:
-                    x = CoordsToX(new Coords(pos.row, -1));
+                    x = CoordsToX(new Coords(pos.row, pos.column - max[pos.row]));
                     y = CoordsToY(pos);
                     break;
                 case Left:
-                    x = CoordsToX(new Coords(pos.row, columns));
+                    x = CoordsToX(new Coords(pos.row, pos.column + max[pos.row]));
                     y = CoordsToY(pos);
                     break;
             }
@@ -231,6 +234,86 @@ public class AnimatedBoard extends Board
         }
 
         return elements;
+    }
+
+    /**
+     * Gets the maximum fall length for each column/row depending on the gravity.
+     *
+     * @param fallingElements
+     * @return
+     */
+    private int[] getMaxFallLength(ArrayList<BoardElement> fallingElements)
+    {
+        int n;
+        if (gravity == Gravity.Down || gravity == Gravity.Up)
+        {
+            n = columns;
+        }
+        else
+        {
+            n = rows;
+        }
+
+        int max[] = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            max[i] = -1;
+        }
+
+        switch (this.gravity)
+        {
+
+            case Up:
+                for (BoardElement e : fallingElements)
+                {
+                    //+1 for length
+                    int r = rows - e.getPosition().row;
+                    if (max[e.getPosition().column] < r)
+                    {
+                        max[e.getPosition().column] = r;
+                    }
+
+                }
+                break;
+            case Down:
+                for (BoardElement e : fallingElements)
+                {
+                    //+1 for length
+                    int r = e.getPosition().row + 1;
+                    if (max[e.getPosition().column] < r)
+                    {
+                        max[e.getPosition().column] = r;
+                    }
+
+                }
+                break;
+            case Right:
+                for (BoardElement e : fallingElements)
+                {
+                    //+1 for length
+                    int r = e.getPosition().column + 1;
+                    if (max[e.getPosition().row] < r)
+                    {
+                        max[e.getPosition().row] = r;
+                    }
+
+                }
+                break;
+            case Left:
+                for (BoardElement e : fallingElements)
+                {
+                    //+1 for length
+                    int r = columns - e.getPosition().column;
+                    if (max[e.getPosition().row] < r)
+                    {
+                        max[e.getPosition().row] = r;
+                    }
+
+                }
+                break;
+        }
+
+        return max;
     }
 
     public void deleteElements(ArrayList<PointElement> elements)
