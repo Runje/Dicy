@@ -1,6 +1,7 @@
 package games.runje.dicy.util;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -9,11 +10,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import games.runje.dicy.R;
 import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicymodel.data.Gravity;
 
 /**
  * Created by Thomas on 02.01.2015.
@@ -42,6 +45,10 @@ public class Controls extends RelativeLayout
         pR.addRule(RelativeLayout.RIGHT_OF, R.id.straight);
         pR.addRule(RelativeLayout.ALIGN_BASELINE, R.id.pointsText);
         addView(restart(), pR);
+
+        RelativeLayout.LayoutParams pA = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pA.addRule(RelativeLayout.BELOW, R.id.pointsText);
+        addView(gravityArrows(), pA);
     }
 
     private View restart()
@@ -56,6 +63,8 @@ public class Controls extends RelativeLayout
                 Gamemaster.getInstance().restart();
             }
         });
+
+        b.setId(R.id.restart);
         return b;
     }
 
@@ -148,6 +157,61 @@ public class Controls extends RelativeLayout
         return l;
     }
 
+    View gravityArrows()
+    {
+        int arrow = R.drawable.arrow2;
+        int length = 100;
+        RelativeLayout l = new RelativeLayout(getContext());
+
+        ImageView arrowLeft = new ImageView(getContext());
+        ImageView arrowRight = new ImageView(getContext());
+        ImageView arrowUp = new ImageView(getContext());
+        ImageView arrowDown = new ImageView(getContext());
+        arrowLeft.setOnClickListener(new GravityListener(Gravity.Left));
+        arrowRight.setOnClickListener(new GravityListener(Gravity.Right));
+        arrowUp.setOnClickListener(new GravityListener(Gravity.Up));
+        arrowDown.setOnClickListener(new GravityListener(Gravity.Down));
+        arrowLeft.setImageResource(arrow);
+        arrowLeft.setColorFilter(Color.BLUE);
+        arrowLeft.setId(R.id.arrowLeft);
+        arrowLeft.setRotation(180);
+
+        RelativeLayout.LayoutParams paramsLeft = new RelativeLayout.LayoutParams(length, length);
+        paramsLeft.leftMargin = 0;
+        paramsLeft.topMargin = length;
+        l.addView(arrowLeft, paramsLeft);
+
+        arrowUp.setImageResource(arrow);
+        arrowUp.setColorFilter(Color.BLUE);
+        arrowUp.setId(R.id.arrowUp);
+        arrowUp.setRotation(270);
+
+        RelativeLayout.LayoutParams paramsUp = new RelativeLayout.LayoutParams(length, length);
+        paramsUp.leftMargin = length;
+        paramsUp.topMargin = 0;
+        l.addView(arrowUp, paramsUp);
+
+        arrowRight.setImageResource(arrow);
+        arrowRight.setColorFilter(Color.BLUE);
+        arrowRight.setId(R.id.arrowRight);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(length, length);
+        params.leftMargin = 2 * length;
+        params.topMargin = length;
+        l.addView(arrowRight, params);
+
+        arrowDown.setImageResource(arrow);
+        arrowDown.setColorFilter(Color.BLUE);
+        arrowDown.setRotation(90);
+        arrowDown.setId(R.id.arrowDown);
+        RelativeLayout.LayoutParams paramsDown = new RelativeLayout.LayoutParams(length, length);
+        paramsDown.leftMargin = length;
+        paramsDown.topMargin = 2 * length;
+        l.addView(arrowDown, paramsDown);
+
+        return l;
+    }
+
     View minXOfAKind()
     {
         RelativeLayout l = new RelativeLayout(getContext());
@@ -207,6 +271,7 @@ public class Controls extends RelativeLayout
         updateDiagonal();
         updateStraight();
         updateXOfAKind();
+        updateGravity();
     }
 
     private void updateXOfAKind()
@@ -239,6 +304,15 @@ public class Controls extends RelativeLayout
 
         CheckBox cb = (CheckBox) findViewById(R.id.diagonalCB);
         cb.setEnabled(false);
+
+        ImageView leftArrow = (ImageView) findViewById(R.id.arrowLeft);
+        leftArrow.setEnabled(false);
+        ImageView rightArrow = (ImageView) findViewById(R.id.arrowRight);
+        rightArrow.setEnabled(false);
+        ImageView upArrow = (ImageView) findViewById(R.id.arrowUp);
+        upArrow.setEnabled(false);
+        ImageView downArrow = (ImageView) findViewById(R.id.arrowDown);
+        downArrow.setEnabled(false);
     }
 
     public void enable()
@@ -253,11 +327,48 @@ public class Controls extends RelativeLayout
 
         CheckBox cb = (CheckBox) findViewById(R.id.diagonalCB);
         cb.setEnabled(true);
+
+        ImageView leftArrow = (ImageView) findViewById(R.id.arrowLeft);
+        leftArrow.setEnabled(true);
+        ImageView rightArrow = (ImageView) findViewById(R.id.arrowRight);
+        rightArrow.setEnabled(true);
+        ImageView upArrow = (ImageView) findViewById(R.id.arrowUp);
+        upArrow.setEnabled(true);
+        ImageView downArrow = (ImageView) findViewById(R.id.arrowDown);
+        downArrow.setEnabled(true);
     }
 
     public void updatePoints()
     {
         TextView t = (TextView) findViewById(R.id.pointsText);
         t.setText("Points: " + Integer.toString(Gamemaster.getInstance().points));
+    }
+
+    public void updateGravity()
+    {
+        ImageView leftArrow = (ImageView) findViewById(R.id.arrowLeft);
+        leftArrow.setColorFilter(Color.BLUE);
+        ImageView rightArrow = (ImageView) findViewById(R.id.arrowRight);
+        rightArrow.setColorFilter(Color.BLUE);
+        ImageView upArrow = (ImageView) findViewById(R.id.arrowUp);
+        upArrow.setColorFilter(Color.BLUE);
+        ImageView downArrow = (ImageView) findViewById(R.id.arrowDown);
+        downArrow.setColorFilter(Color.BLUE);
+
+        switch (Gamemaster.getInstance().getBoard().getGravity())
+        {
+            case Up:
+                upArrow.setColorFilter(Color.RED);
+                break;
+            case Down:
+                downArrow.setColorFilter(Color.RED);
+                break;
+            case Right:
+                rightArrow.setColorFilter(Color.RED);
+                break;
+            case Left:
+                leftArrow.setColorFilter(Color.RED);
+                break;
+        }
     }
 }

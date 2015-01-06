@@ -11,4 +11,9 @@
     <item name="xOfAKindText" type="id"/>
     <item name="xOfAKindEdit" type="id"/>
     <item name="xOfAKind" type="id"/>
+    <item name="restart" type="id"/>
+    <item name="arrowLeft" type="id"/>
+    <item name="arrowUp" type="id"/>
+    <item name="arrowRight" type="id"/>
+    <item name="arrowDown" type="id"/>
 </resources>

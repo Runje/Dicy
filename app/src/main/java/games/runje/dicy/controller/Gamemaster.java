@@ -50,7 +50,7 @@ public class Gamemaster
                 3, 1, 3, 3, 2,
                 3, 2, 3, 2, 2,
                 1, 2, 1, 1, 2}, a);*/
-        Board b = new AnimatedBoard(9, 5, a);
+        Board b = new AnimatedBoard(5, 5, a);
         Rules rules = new Rules();
         rules.setDiagonalActive(false);
         rules.setMinStraight(7);
@@ -162,7 +162,7 @@ public class Gamemaster
     public void restart()
     {
         Activity a = ((AnimatedBoard) board).getActivity();
-        board = new AnimatedBoard(9, 5, a);
+        board = new AnimatedBoard(5, 5, a);
         points = 0;
         AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
         RelativeLayout b = board.getRelativeLayout();
@@ -193,5 +193,10 @@ public class Gamemaster
                 controls.enable();
             }
         }
+    }
+
+    public void updateGravity()
+    {
+        this.controls.updateGravity();
     }
 }
