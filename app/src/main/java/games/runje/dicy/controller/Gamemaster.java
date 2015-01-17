@@ -78,7 +78,7 @@ public class Gamemaster
         rules.setMinStraight(3);
         rules.initStraightPoints(4);
         b.setGravity(Gravity.Down);
-        LocalGame game = new LocalGame(3, rules.getPointLimit());
+        LocalGame game = new LocalGame(2, 80);
         Controls controls = new LocalGameControls(activity, game);
         instance = new Gamemaster(game, b, rules, controls);
         Gamemaster.getInstance().update();

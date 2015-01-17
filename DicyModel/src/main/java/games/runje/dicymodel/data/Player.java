@@ -31,6 +31,11 @@ public class Player
     public void addStrike()
     {
         this.strikes++;
+        if (strikes == 3)
+        {
+            points = 0;
+            strikes = 0;
+        }
     }
 
     public void addPoints(int p)

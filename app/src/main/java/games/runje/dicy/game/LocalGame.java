@@ -51,6 +51,7 @@ public class LocalGame extends Game
         }
         else
         {
+            players.get(turn).addStrike();
             moveEnds();
         }
 

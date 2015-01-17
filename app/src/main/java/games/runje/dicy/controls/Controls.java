@@ -30,6 +30,7 @@ public class Controls extends RelativeLayout
 {
     LocalGame game;
     List<TextView> playersView = new ArrayList<>();
+    private List<TextView> strikesView = new ArrayList<>();
 
     //TODO: controls as member
     public Controls(Context context)
@@ -80,8 +81,27 @@ public class Controls extends RelativeLayout
                 l.addView(pointsText, p);
             }
 
-            lastId = id;
+
             playersView.add(pointsText);
+
+            // strikes
+            TextView strikeText = new TextView(getContext());
+            strikeText.setText("Strikes: ");
+            int strikeTextId = View.generateViewId();
+            strikeText.setId(strikeTextId);
+            RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            p.addRule(RelativeLayout.BELOW, id);
+            l.addView(strikeText, p);
+
+            TextView strikes = new TextView(getContext());
+            strikes.setTextColor(Color.RED);
+            RelativeLayout.LayoutParams pS = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            pS.addRule(RelativeLayout.BELOW, id);
+            pS.addRule(RelativeLayout.RIGHT_OF, strikeTextId);
+            l.addView(strikes, pS);
+
+            strikesView.add(strikes);
+            lastId = strikeTextId;
         }
 
         l.setId(R.id.playersPoints);
@@ -363,10 +383,10 @@ public class Controls extends RelativeLayout
 
     public void updatePoints()
     {
-        updatePlayerPoints();
+        updatePlayers();
     }
 
-    public void updatePlayerPoints()
+    public void updatePlayers()
     {
         List<Player> players = game.getPlayers();
         for (int i = 0; i < playersView.size(); i++)
@@ -380,7 +400,29 @@ public class Controls extends RelativeLayout
             {
                 playersView.get(i).setTextColor(Color.GRAY);
             }
+
+            strikesView.get(i).setText(strikesToString(players.get(i).getStrikes()));
         }
+    }
+
+    private String strikesToString(int strikes)
+    {
+        if (strikes == 1)
+        {
+            return "X";
+        }
+
+        if (strikes == 2)
+        {
+            return "X X";
+        }
+
+        if (strikes == 3)
+        {
+            return "X X X";
+        }
+
+        return "";
     }
 
     public void updateGravity()

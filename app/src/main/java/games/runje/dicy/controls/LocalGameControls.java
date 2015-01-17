@@ -22,7 +22,7 @@ public class LocalGameControls extends Controls
         this.game = g;
         addView(points());
         RelativeLayout.LayoutParams pA = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pA.addRule(RelativeLayout.BELOW, R.id.next);
+        pA.addRule(RelativeLayout.RIGHT_OF, R.id.points);
         addView(gravityArrows(), pA);
 
         RelativeLayout.LayoutParams pN = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -83,7 +83,7 @@ public class LocalGameControls extends Controls
 
     public void updatePoints()
     {
-        updatePlayerPoints();
+        updatePlayers();
 
 
         TextView c = (TextView) findViewById(R.id.currentPointsText);

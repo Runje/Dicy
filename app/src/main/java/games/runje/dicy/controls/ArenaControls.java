@@ -40,7 +40,7 @@ public class ArenaControls extends Controls
         addView(gravityArrows(), pA);
     }
 
-    public void updatePlayerPoints()
+    public void updatePlayers()
     {
         Logger.logInfo("Arena", "Update: " + Integer.toString(game.getSwitchPoints() + game.getMovePoints() + game.getPlayers().get(0).getPoints()));
         playersView.get(0).setText("Points: " + Integer.toString(game.getSwitchPoints() + game.getMovePoints()));
