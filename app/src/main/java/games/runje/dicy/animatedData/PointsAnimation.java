@@ -23,7 +23,7 @@ public class PointsAnimation implements Animation.AnimationListener
     public PointsAnimation(ArrayList<PointElement> elements)
     {
         this.elements = elements;
-        this.tvs = new ArrayList<TextView>();
+        this.tvs = new ArrayList<>();
     }
 
     @Override
@@ -37,6 +37,7 @@ public class PointsAnimation implements Animation.AnimationListener
     {
         AnimatedBoard board = ((AnimatedBoard) Gamemaster.getInstance().getBoard());
         ArrayList<Coords> coords = Coords.pointElementsToCoords(elements);
+
         for (Coords c : coords)
         {
             board.getAnimatedElement(c).remove();
@@ -48,9 +49,9 @@ public class PointsAnimation implements Animation.AnimationListener
         {
             ((RelativeLayout) tv.getParent()).removeView(tv);
         }
+
         Gamemaster.getInstance().anmiationEnded();
         Gamemaster.getInstance().updaterAfterPoints();
-
     }
 
     @Override

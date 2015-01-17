@@ -1,4 +1,4 @@
-package games.runje.dicy.util;
+package games.runje.dicy.controls;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,44 +14,31 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import games.runje.dicy.R;
 import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.game.LocalGame;
 import games.runje.dicymodel.data.Gravity;
+import games.runje.dicymodel.data.Player;
 
 /**
  * Created by Thomas on 02.01.2015.
  */
 public class Controls extends RelativeLayout
 {
+    LocalGame game;
+    List<TextView> playersView = new ArrayList<>();
+
     //TODO: controls as member
     public Controls(Context context)
     {
         super(context);
-        addView(diagonalCheck());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, R.id.diagonal);
-        addView(minStraight(), params);
 
-        RelativeLayout.LayoutParams pX = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pX.addRule(RelativeLayout.RIGHT_OF, R.id.straight);
-        pX.addRule(RelativeLayout.ALIGN_BASELINE, R.id.straight);
-        addView(minXOfAKind(), pX);
-
-        RelativeLayout.LayoutParams pp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pp.addRule(RelativeLayout.BELOW, R.id.straight);
-        addView(points(), pp);
-
-        RelativeLayout.LayoutParams pR = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pR.addRule(RelativeLayout.RIGHT_OF, R.id.straight);
-        pR.addRule(RelativeLayout.ALIGN_BASELINE, R.id.pointsText);
-        addView(restart(), pR);
-
-        RelativeLayout.LayoutParams pA = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pA.addRule(RelativeLayout.BELOW, R.id.pointsText);
-        addView(gravityArrows(), pA);
     }
 
-    private View restart()
+    protected View restart()
     {
         Button b = new Button(getContext());
         b.setText("Restart");
@@ -68,12 +55,37 @@ public class Controls extends RelativeLayout
         return b;
     }
 
-    private View points()
+    public View playerPoints()
     {
-        TextView pointsText = new TextView(getContext());
-        pointsText.setText("Points: 0");
-        pointsText.setId(R.id.pointsText);
-        return pointsText;
+        RelativeLayout l = new RelativeLayout(getContext());
+
+        List<Player> players = game.getPlayers();
+        int lastId = -1;
+        for (int i = 0; i < players.size(); i++)
+        {
+            TextView pointsText = new TextView(getContext());
+            pointsText.setText("Player " + (i + 1) + ": 0");
+            int id = View.generateViewId();
+            pointsText.setId(id);
+
+            if (lastId == -1)
+            {
+                // first
+                l.addView(pointsText);
+            }
+            else
+            {
+                RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                p.addRule(RelativeLayout.BELOW, lastId);
+                l.addView(pointsText, p);
+            }
+
+            lastId = id;
+            playersView.add(pointsText);
+        }
+
+        l.setId(R.id.playersPoints);
+        return l;
     }
 
     View diagonalCheck()
@@ -272,6 +284,7 @@ public class Controls extends RelativeLayout
         updateStraight();
         updateXOfAKind();
         updateGravity();
+        updatePoints();
     }
 
     private void updateXOfAKind()
@@ -305,6 +318,11 @@ public class Controls extends RelativeLayout
         CheckBox cb = (CheckBox) findViewById(R.id.diagonalCB);
         cb.setEnabled(false);
 
+        disableGravity();
+    }
+
+    protected void disableGravity()
+    {
         ImageView leftArrow = (ImageView) findViewById(R.id.arrowLeft);
         leftArrow.setEnabled(false);
         ImageView rightArrow = (ImageView) findViewById(R.id.arrowRight);
@@ -328,6 +346,11 @@ public class Controls extends RelativeLayout
         CheckBox cb = (CheckBox) findViewById(R.id.diagonalCB);
         cb.setEnabled(true);
 
+        enableGravity();
+    }
+
+    protected void enableGravity()
+    {
         ImageView leftArrow = (ImageView) findViewById(R.id.arrowLeft);
         leftArrow.setEnabled(true);
         ImageView rightArrow = (ImageView) findViewById(R.id.arrowRight);
@@ -340,8 +363,24 @@ public class Controls extends RelativeLayout
 
     public void updatePoints()
     {
-        TextView t = (TextView) findViewById(R.id.pointsText);
-        t.setText("Points: " + Integer.toString(Gamemaster.getInstance().points));
+        updatePlayerPoints();
+    }
+
+    public void updatePlayerPoints()
+    {
+        List<Player> players = game.getPlayers();
+        for (int i = 0; i < playersView.size(); i++)
+        {
+            playersView.get(i).setText("Player " + (i + 1) + ": " + Integer.toString(players.get(i).getPoints()));
+            if (i == game.getTurn())
+            {
+                playersView.get(i).setTextColor(Color.RED);
+            }
+            else
+            {
+                playersView.get(i).setTextColor(Color.GRAY);
+            }
+        }
     }
 
     public void updateGravity()

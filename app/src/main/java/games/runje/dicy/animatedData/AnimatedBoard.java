@@ -2,17 +2,19 @@ package games.runje.dicy.animatedData;
 
 import android.app.Activity;
 import android.widget.RelativeLayout;
-import android.widget.TableRow;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.controller.Gamemaster;
 import games.runje.dicy.controller.Logger;
+import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
+import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.PointElement;
 
 /**
@@ -51,6 +53,20 @@ public class AnimatedBoard extends Board
         createAnimatedBoard(root, root);
     }
 
+    public static AnimatedBoard createBoardNoPoints(int rows, int columns, Activity activity, Rules rules)
+    {
+        while (true)
+        {
+            AnimatedBoard b = new AnimatedBoard(rows, columns, activity);
+            ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(b, rules);
+            if (BoardChecker.getAll(b, rules).size() == 0 && moves.size() > 0)
+            {
+                Logger.logInfo(LogKey, "Possible Moves: " + moves);
+                return b;
+            }
+        }
+    }
+
     /**
      * Fills the animated board with dummy dices and creates the layout.
      *
@@ -82,7 +98,7 @@ public class AnimatedBoard extends Board
     private void createAbsoluteLayout()
     {
         this.relativeLayout = new RelativeLayout(this.activity);
-        RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(diceSize * (rows + 1), diceSize * (columns + 1));
         relativeLayout.setLayoutParams(tableParams);
 
         for (ArrayList<AnimatedBoardElement> row : this.animatedBoard)

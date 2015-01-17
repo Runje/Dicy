@@ -51,6 +51,7 @@ public class Rules
      * The minimum following dices for a straight.
      */
     private int minStraight;
+    private int pointLimit;
 
     /**
      * Creates standard Rules:
@@ -66,9 +67,11 @@ public class Rules
         this.minStraight = this.numberOfDices + 1;
         this.minXOfAKind = 3;
         this.maxXOfAKind = 10;
-        this.initStraightPoints(0);
+        this.initStraightPoints(2);
         this.initFullHousePoints(0);
         this.initXOfAKindPoints(this.minXOfAKind, this.maxXOfAKind, 1, 2);
+        // TODO: Calculate
+        this.pointLimit = 65;
     }
 
     /**
@@ -136,15 +139,15 @@ public class Rules
         int factor = 1;
         for (int i = 0; i < this.numberOfDices + 1; i++)
         {
-            if (this.minStraight <= i)
+            //if (this.minStraight <= i)
             {
                 this.straightPoints[i] = points * factor;
                 // double the factor
                 factor *= 2;
             }
-            else
+            //else
             {
-                this.straightPoints[i] = 0;
+                //this.straightPoints[i] = 0;
             }
         }
     }
@@ -207,5 +210,15 @@ public class Rules
         }
 
         return 0;
+    }
+
+    public int getPointLimit()
+    {
+        return pointLimit;
+    }
+
+    public void setPointLimit(int pointLimit)
+    {
+        this.pointLimit = pointLimit;
     }
 }

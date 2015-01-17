@@ -6,7 +6,7 @@
     <item name="diagonal" type="id"/>
     <item name="straightEdit" type="id"/>
     <item name="diagonalCB" type="id"/>
-    <item name="pointsText" type="id"/>
+    <item name="pointsP1Text" type="id"/>
     <item name="straight" type="id"/>
     <item name="xOfAKindText" type="id"/>
     <item name="xOfAKindEdit" type="id"/>
@@ -16,4 +16,10 @@
     <item name="arrowUp" type="id"/>
     <item name="arrowRight" type="id"/>
     <item name="arrowDown" type="id"/>
+    <item name="pointsP2Text" type="id"/>
+    <item name="points" type="id"/>
+    <item name="currentPointsText" type="id"/>
+    <item name="next" type="id"/>
+    <item name="switchPointsText" type="id"/>
+    <item name="playersPoints" type="id"/>
 </resources>
