@@ -1,6 +1,6 @@
 package games.runje.dicy.controls;
 
-import android.content.Context;
+import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import games.runje.dicy.R;
@@ -12,7 +12,7 @@ import games.runje.dicy.game.LocalGame;
  */
 public class ArenaControls extends Controls
 {
-    public ArenaControls(Context context, LocalGame g)
+    public ArenaControls(Activity context, LocalGame g)
     {
         super(context);
         this.game = g;

@@ -66,7 +66,7 @@ public class Gamemaster
         rules.setMinXOfAKind(4);
         rules.initStraightPoints(2);
         b.setGravity(Gravity.Down);
-        LocalGame g = new LocalGame(1, -1);
+        LocalGame g = new LocalGame(1, -1, 9999);
         Controls controls = new ArenaControls(a, g);
         instance = new Gamemaster(g, b, rules, controls);
         Gamemaster.getInstance().update();
@@ -81,7 +81,7 @@ public class Gamemaster
         Board b = AnimatedBoard.createBoardNoPoints(5, 5, activity, rules);
         b.setGravity(Gravity.Down);
         rules.setPointLimit(Simulator.getLimit(rules, b));
-        LocalGame game = new LocalGame(2, rules.getPointLimit());
+        LocalGame game = new LocalGame(2, rules.getPointLimit(), 200);
         Controls controls = new LocalGameControls(activity, game);
         instance = new Gamemaster(game, b, rules, controls);
         Gamemaster.getInstance().update();
@@ -222,7 +222,7 @@ public class Gamemaster
                 // end move
                 game.endSwitch();
 
-                controls.updatePoints();
+                controls.update();
                 // check if moves are possible
                 ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
 

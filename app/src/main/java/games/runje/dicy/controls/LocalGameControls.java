@@ -1,6 +1,6 @@
 package games.runje.dicy.controls;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -16,7 +16,7 @@ import games.runje.dicy.game.LocalGame;
 public class LocalGameControls extends Controls
 {
 
-    public LocalGameControls(Context context, LocalGame g)
+    public LocalGameControls(Activity context, LocalGame g)
     {
         super(context);
         this.game = g;
@@ -91,6 +91,18 @@ public class LocalGameControls extends Controls
     {
         updatePoints();
         updateGravity();
+        gameOver();
+    }
+
+    private void gameOver()
+    {
+        if (game.isGameOver())
+        {
+            disable();
+            FinishedDialog d = new FinishedDialog();
+            d.setName(game.getWinner());
+            d.show(activity.getFragmentManager(), "Game is finished");
+        }
     }
 
     public void updatePoints()

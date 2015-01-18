@@ -5,7 +5,10 @@ package games.runje.dicy.game;
  */
 public abstract class Game
 {
-    abstract public void moveEnds();
+    /**
+     * @return if the game is over.
+     */
+    abstract public boolean moveEnds();
 
 
     public abstract void addSwitchPoints(int points);

@@ -7,6 +7,12 @@ public class Player
 {
     private int points;
     private int strikes;
+    private String name;
+
+    public Player(String n)
+    {
+        name = n;
+    }
 
     public int getStrikes()
     {
@@ -41,5 +47,10 @@ public class Player
     public void addPoints(int p)
     {
         points += p;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 }

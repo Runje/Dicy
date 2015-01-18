@@ -2,6 +2,7 @@ package games.runje.dicy.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.data.Player;
@@ -11,27 +12,32 @@ import games.runje.dicymodel.data.Player;
  */
 public class LocalGame extends Game
 {
+    private final int startingPlayer;
+    int gameEndPoints;
     private List<Player> players;
     /**
      * Which players turn it is.
      */
     private int turn;
-
     private int movePoints;
-
     private int switchPoints;
     private String LogKey = "LocalGame";
     private int pointsLimit;
+    private String winner;
 
-    public LocalGame(int p, int pLimit)
+    public LocalGame(int p, int pLimit, int gameLimit)
     {
         pointsLimit = pLimit;
-
+        gameEndPoints = gameLimit;
         players = new ArrayList<>();
         for (int i = 0; i < p; i++)
         {
-            players.add(new Player());
+            players.add(new Player("Player " + (i + 1)));
         }
+
+        // random starting player
+        startingPlayer = new Random().nextInt(p);
+        turn = startingPlayer;
     }
 
     @Override
@@ -100,7 +106,7 @@ public class LocalGame extends Game
     }
 
     @Override
-    public void moveEnds()
+    public boolean moveEnds()
     {
         players.get(turn).addPoints(movePoints);
         if (movePoints > 0)
@@ -110,10 +116,43 @@ public class LocalGame extends Game
 
         movePoints = 0;
         nextPlayer();
+
+        return isGameOver();
+    }
+
+    public boolean isGameOver()
+    {
+        boolean lastPlayerTurn = (turn == startingPlayer);
+        boolean enoughPoints = false;
+        int maxPoints = 0;
+        String w = "Unknown";
+        // TODO: What if two player with same points?
+        for (Player p : players)
+        {
+            if (p.getPoints() >= maxPoints)
+            {
+                maxPoints = p.getPoints();
+                w = p.getName();
+            }
+        }
+
+        if (maxPoints >= gameEndPoints)
+        {
+            enoughPoints = true;
+            winner = w;
+        }
+
+        Logger.logInfo(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
+        return lastPlayerTurn && enoughPoints;
     }
 
     public int getPointsLimit()
     {
         return pointsLimit;
+    }
+
+    public String getWinner()
+    {
+        return winner;
     }
 }

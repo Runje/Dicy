@@ -1,6 +1,6 @@
 package games.runje.dicy.controls;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputType;
@@ -28,14 +28,16 @@ import games.runje.dicymodel.data.Player;
  */
 public class Controls extends RelativeLayout
 {
+    protected final Activity activity;
     LocalGame game;
     List<TextView> playersView = new ArrayList<>();
     private List<TextView> strikesView = new ArrayList<>();
 
     //TODO: controls as member
-    public Controls(Context context)
+    public Controls(Activity context)
     {
         super(context);
+        this.activity = context;
 
     }
 
@@ -65,7 +67,7 @@ public class Controls extends RelativeLayout
         for (int i = 0; i < players.size(); i++)
         {
             TextView pointsText = new TextView(getContext());
-            pointsText.setText("Player " + (i + 1) + ": 0");
+            pointsText.setText(players.get(i).getName() + ": 0");
             int id = View.generateViewId();
             pointsText.setId(id);
 
@@ -355,6 +357,11 @@ public class Controls extends RelativeLayout
 
     public void enable()
     {
+        if (game.isGameOver())
+        {
+            return;
+        }
+
         EditText edit = (EditText) findViewById(R.id.straightEdit);
         edit.setEnabled(true);
         edit.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -391,7 +398,7 @@ public class Controls extends RelativeLayout
         List<Player> players = game.getPlayers();
         for (int i = 0; i < playersView.size(); i++)
         {
-            playersView.get(i).setText("Player " + (i + 1) + ": " + Integer.toString(players.get(i).getPoints()));
+            playersView.get(i).setText(players.get(i).getName() + ": " + Integer.toString(players.get(i).getPoints()));
             if (i == game.getTurn())
             {
                 playersView.get(i).setTextColor(Color.RED);
