@@ -15,6 +15,7 @@ public class SwitchAnimation implements Animation.AnimationListener
     private final boolean withSwitchBack;
     private AnimatedBoardElement secondImage;
     private AnimatedBoardElement firstImage;
+    private boolean update = true;
 
     public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage)
     {
@@ -93,12 +94,29 @@ public class SwitchAnimation implements Animation.AnimationListener
         if (withSwitchBack)
         {
             // switch back
-            new SwitchAnimation(secondImage, firstImage, false).start();
+            SwitchAnimation s = new SwitchAnimation(secondImage, firstImage, false);
+            s.setNoUpdate();
+            s.start();
         }
         else
         {
-            Gamemaster.getInstance().updateAfterSwitch();
+            if (update)
+            {
+                Gamemaster.getInstance().updateAfterSwitch();
+            }
+            else
+            {
+                Gamemaster.getInstance().getControls().enable();
+            }
         }
+    }
+
+    /**
+     * No UpdateAfterSwitch will be called.
+     */
+    private void setNoUpdate()
+    {
+        this.update = false;
     }
 
     @Override

@@ -25,9 +25,21 @@ public class LocalGameControls extends Controls
         pA.addRule(RelativeLayout.RIGHT_OF, R.id.points);
         addView(gravityArrows(), pA);
 
+        RelativeLayout.LayoutParams pL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pL.addRule(RelativeLayout.BELOW, R.id.points);
+        addView(pointLimit(), pL);
+
         RelativeLayout.LayoutParams pN = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pN.addRule(RelativeLayout.BELOW, R.id.points);
+        pN.addRule(RelativeLayout.BELOW, R.id.pointLimit);
         addView(Next(), pN);
+    }
+
+    private View pointLimit()
+    {
+        TextView limit = new TextView(getContext());
+        limit.setText("Limit: " + game.getPointsLimit());
+        limit.setId(R.id.pointLimit);
+        return limit;
     }
 
 

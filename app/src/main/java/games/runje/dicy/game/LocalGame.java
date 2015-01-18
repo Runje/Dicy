@@ -52,6 +52,7 @@ public class LocalGame extends Game
         else
         {
             players.get(turn).addStrike();
+            movePoints = 0;
             moveEnds();
         }
 
@@ -102,7 +103,17 @@ public class LocalGame extends Game
     public void moveEnds()
     {
         players.get(turn).addPoints(movePoints);
+        if (movePoints > 0)
+        {
+            players.get(turn).setStrikes(0);
+        }
+
         movePoints = 0;
         nextPlayer();
+    }
+
+    public int getPointsLimit()
+    {
+        return pointsLimit;
     }
 }

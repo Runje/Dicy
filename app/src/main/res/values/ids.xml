@@ -22,4 +22,5 @@
     <item name="next" type="id"/>
     <item name="switchPointsText" type="id"/>
     <item name="playersPoints" type="id"/>
+    <item name="pointLimit" type="id"/>
 </resources>

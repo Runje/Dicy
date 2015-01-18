@@ -64,6 +64,26 @@ public class Board
     }
 
     /**
+     * Copy Constructor.
+     * @param b
+     */
+    public Board(Board b)
+    {
+        this(b.getNumberOfRows(), b.getNumberOfColumns());
+        this.gravity = b.gravity;
+
+        for (int i = 0; i < rows; i++)
+        {
+            // copy every element
+            for (int j = 0; j < columns; j++)
+            {
+                Coords c = new Coords(i, j);
+                this.setElement(c, b.getElement(c).copy());
+            }
+        }
+    }
+
+    /**
      * Creates a board with dices.
      *
      * @param elements each element is the value of the dice. (row after row)
@@ -118,6 +138,19 @@ public class Board
         }
 
         return createBoard(boardElements);
+    }
+
+    public static Board createBoardNoPoints(int rows, int columns, Rules rules)
+    {
+        while (true)
+        {
+            Board b = new Board(rows, columns);
+            ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(b, rules);
+            if (BoardChecker.getAll(b, rules).size() == 0 && moves.size() > 0)
+            {
+                return b;
+            }
+        }
     }
 
     public ArrayList<ArrayList<BoardElement>> getBoard()
@@ -260,7 +293,6 @@ public class Board
     public void deleteElements(ArrayList<PointElement> elements)
     {
         ArrayList<Coords> coords = Coords.pointElementsToCoords(elements);
-        System.out.println("Deleting elements: " + coords);
         for (Coords c : coords)
         {
             this.setElement(c, new NoElement(c));

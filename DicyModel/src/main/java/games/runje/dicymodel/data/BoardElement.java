@@ -90,4 +90,6 @@ public abstract class BoardElement
                 ", position=" + position +
                 '}';
     }
+
+    public abstract BoardElement copy();
 }

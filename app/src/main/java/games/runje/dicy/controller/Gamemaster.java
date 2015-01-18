@@ -14,6 +14,8 @@ import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicy.game.Game;
 import games.runje.dicy.game.LocalGame;
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.Utilities;
+import games.runje.dicymodel.ai.Simulator;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
@@ -73,12 +75,13 @@ public class Gamemaster
     public static void createLocalGame(LocalGameActivity activity)
     {
         Rules rules = new Rules();
-        Board b = AnimatedBoard.createBoardNoPoints(5, 5, activity, rules);
         rules.setDiagonalActive(false);
         rules.setMinStraight(3);
         rules.initStraightPoints(4);
+        Board b = AnimatedBoard.createBoardNoPoints(5, 5, activity, rules);
         b.setGravity(Gravity.Down);
-        LocalGame game = new LocalGame(2, 80);
+        rules.setPointLimit(Simulator.getLimit(rules, b));
+        LocalGame game = new LocalGame(2, rules.getPointLimit());
         Controls controls = new LocalGameControls(activity, game);
         instance = new Gamemaster(game, b, rules, controls);
         Gamemaster.getInstance().update();
@@ -130,12 +133,7 @@ public class Gamemaster
         this.animationsWillStart = 0;
 
         ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
-        int points = 0;
-        for (PointElement e : elements)
-        {
-            points += e.getPoints();
-        }
-
+        int points = Utilities.getPointsFrom(elements);
         game.addSwitchPoints(points);
 
         updatePoints();
@@ -175,7 +173,7 @@ public class Gamemaster
         this.animationsWillStart++;
     }
 
-    public RelativeLayout getControls()
+    public Controls getControls()
     {
         return controls;
     }

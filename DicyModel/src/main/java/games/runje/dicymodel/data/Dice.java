@@ -42,6 +42,12 @@ public class Dice extends BoardElement
         return "Pos = " + this.position + ", value = " + Integer.toString(value);
     }
 
+    @Override
+    public BoardElement copy()
+    {
+        return new Dice(value, position);
+    }
+
     public void setValue(int value)
     {
         this.value = value;

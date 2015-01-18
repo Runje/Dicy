@@ -13,6 +13,12 @@ public class NoElement extends BoardElement
     @Override
     public int getValue()
     {
-        return 0;
+        return -1;
+    }
+
+    @Override
+    public BoardElement copy()
+    {
+        return new NoElement(position);
     }
 }

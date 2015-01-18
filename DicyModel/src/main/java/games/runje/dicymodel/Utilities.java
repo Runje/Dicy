@@ -1,5 +1,9 @@
 package games.runje.dicymodel;
 
+import java.util.ArrayList;
+
+import games.runje.dicymodel.data.PointElement;
+
 /**
  * Created by Thomas on 05.10.2014.
  */
@@ -18,5 +22,16 @@ public class Utilities
 
         long tst = (long) (Math.sqrt(n) + 0.5);
         return tst * tst == n;
+    }
+
+    public static int getPointsFrom(ArrayList<PointElement> pointElements)
+    {
+        int points = 0;
+        for (PointElement e : pointElements)
+        {
+            points += e.getPoints();
+        }
+
+        return points;
     }
 }
