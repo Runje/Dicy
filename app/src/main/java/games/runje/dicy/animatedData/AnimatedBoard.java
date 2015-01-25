@@ -8,6 +8,7 @@ import java.util.List;
 
 import games.runje.dicy.controller.Gamemaster;
 import games.runje.dicy.controller.Logger;
+import games.runje.dicy.layouts.GameLayout;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
@@ -24,16 +25,11 @@ public class AnimatedBoard extends Board
 {
     public static final String LogKey = "AnimatedBoard";
 
-    /**
-     * Length of a dice.
-     */
-    private final int diceSize = 100;
-
     private Activity activity;
 
     private ArrayList<ArrayList<AnimatedBoardElement>> animatedBoard;
 
-    private RelativeLayout relativeLayout;
+    private GameLayout gameLayout;
 
     public AnimatedBoard(int rows, int columns, Activity activity)
     {
@@ -89,45 +85,13 @@ public class AnimatedBoard extends Board
             }
         }
 
-        this.createAbsoluteLayout();
+        // TODO: heightWeight
+        this.gameLayout = new GameLayout(this, 0.5);
     }
 
-    /**
-     * Creates an absolute Layout.
-     */
-    private void createAbsoluteLayout()
+    public GameLayout getGameLayout()
     {
-        this.relativeLayout = new RelativeLayout(this.activity);
-        RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(diceSize * (rows + 1), diceSize * (columns + 1));
-        relativeLayout.setLayoutParams(tableParams);
-
-        for (ArrayList<AnimatedBoardElement> row : this.animatedBoard)
-        {
-            for (AnimatedBoardElement iv : row)
-            {
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(diceSize, diceSize);
-                params.leftMargin = CoordsToX(iv.getPosition());
-                params.topMargin = CoordsToY(iv.getPosition());
-                relativeLayout.addView(iv, params);
-            }
-        }
-    }
-
-    public int CoordsToX(Coords pos)
-    {
-        //offset + 1 to have one column on the left for fall down
-        return diceSize * (pos.column + 1);
-    }
-
-    public int CoordsToY(Coords pos)
-    {
-        // offset + 1 to have one row on top for fall down
-        return diceSize * (pos.row + 1);
-    }
-
-    public RelativeLayout getRelativeLayout()
-    {
-        return this.relativeLayout;
+        return this.gameLayout;
     }
 
     public boolean switchElements(Coords first, Coords second, boolean switchBackPossible)
@@ -217,7 +181,7 @@ public class AnimatedBoard extends Board
         {
             Coords pos = element.getPosition();
             AnimatedBoardElement animatedElement = new AnimatedBoardElement(this.activity, element);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(diceSize, diceSize);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(gameLayout.getDiceSize(), gameLayout.getDiceSize());
 
             int x = 0;
             int y = 0;
@@ -225,26 +189,26 @@ public class AnimatedBoard extends Board
             switch (this.gravity)
             {
                 case Up:
-                    x = CoordsToX(pos);
-                    y = CoordsToY(new Coords(pos.row + max[pos.column], pos.column));
+                    x = gameLayout.CoordsToX(pos);
+                    y = gameLayout.CoordsToY(new Coords(pos.row + max[pos.column], pos.column));
                     break;
                 case Down:
-                    x = CoordsToX(pos);
-                    y = CoordsToY(new Coords(pos.row - max[pos.column], pos.column));
+                    x = gameLayout.CoordsToX(pos);
+                    y = gameLayout.CoordsToY(new Coords(pos.row - max[pos.column], pos.column));
                     break;
                 case Right:
-                    x = CoordsToX(new Coords(pos.row, pos.column - max[pos.row]));
-                    y = CoordsToY(pos);
+                    x = gameLayout.CoordsToX(new Coords(pos.row, pos.column - max[pos.row]));
+                    y = gameLayout.CoordsToY(pos);
                     break;
                 case Left:
-                    x = CoordsToX(new Coords(pos.row, pos.column + max[pos.row]));
-                    y = CoordsToY(pos);
+                    x = gameLayout.CoordsToX(new Coords(pos.row, pos.column + max[pos.row]));
+                    y = gameLayout.CoordsToY(pos);
                     break;
             }
 
             animatedElement.setX(x);
             animatedElement.setY(y);
-            relativeLayout.addView(animatedElement, params);
+            gameLayout.addView(animatedElement, params);
             Logger.logDebug(LogKey, "Pos: " + pos + ". X: " + params.leftMargin + " Y: " + params.topMargin);
             new FallAnimation(animatedElement, pos).start();
         }

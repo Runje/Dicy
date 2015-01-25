@@ -25,8 +25,8 @@ public class FallAnimation implements Animation.AnimationListener
     public void start()
     {
         AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
-        float dx = board.CoordsToX(to) - element.getX();
-        float dy = board.CoordsToY(to) - element.getY();
+        float dx = board.getGameLayout().CoordsToX(to) - element.getX();
+        float dy = board.getGameLayout().CoordsToY(to) - element.getY();
 
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, dx,
@@ -54,8 +54,8 @@ public class FallAnimation implements Animation.AnimationListener
         board.setAnimatedElement(to, element);
 
         element.setPosition(to);
-        element.setX(board.CoordsToX(to));
-        element.setY(board.CoordsToY(to));
+        element.setX(board.getGameLayout().CoordsToX(to));
+        element.setY(board.getGameLayout().CoordsToY(to));
 
         Logger.logDebug(LogKey, "End from To: " + this.to + " ex: " + element.getX() + ", ey: " + element.getY());
 

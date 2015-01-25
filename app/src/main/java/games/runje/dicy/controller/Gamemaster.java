@@ -188,7 +188,7 @@ public class Gamemaster
         Activity a = ((AnimatedBoard) board).getActivity();
         board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a);
         AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
-        RelativeLayout b = board.getRelativeLayout();
+        RelativeLayout b = board.getGameLayout();
         b.setId(R.id.board);
         RelativeLayout l = new RelativeLayout(a);
         l.addView(b);
@@ -233,7 +233,7 @@ public class Gamemaster
                     Activity a = ((AnimatedBoard) board).getActivity();
                     this.board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a);
                     AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
-                    RelativeLayout b = board.getRelativeLayout();
+                    RelativeLayout b = board.getGameLayout();
                     b.setId(R.id.board);
                     RelativeLayout l = new RelativeLayout(a);
                     l.addView(b);

@@ -169,7 +169,7 @@ public class GameActivity extends Activity
         RelativeLayout l = new RelativeLayout(this);
         Gamemaster.createAnimatedGame(this);
         AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
-        RelativeLayout b = board.getRelativeLayout();
+        RelativeLayout b = board.getGameLayout();
         b.setId(R.id.board);
         l.addView(b);
 
