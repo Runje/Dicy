@@ -56,15 +56,22 @@ public class LocalGameControls extends Controls
         movePointsText.setText("Switch Points: 0");
         movePointsText.setId(R.id.switchPointsText);
 
+        TextView goal = new TextView(getContext());
+        goal.setText("Goal: " + game.getGameEndPoints());
+
 
         RelativeLayout.LayoutParams pC = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pC.addRule(RelativeLayout.BELOW, R.id.playersPoints);
 
         RelativeLayout.LayoutParams pM = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pM.addRule(RelativeLayout.BELOW, R.id.currentPointsText);
-        //l.addView(pointsText2, pA);
+
+        RelativeLayout.LayoutParams pG = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pG.addRule(RelativeLayout.BELOW, R.id.switchPointsText);
+
         l.addView(movePointsText, pM);
         l.addView(current, pC);
+        l.addView(goal, pG);
         l.setId(R.id.points);
         return l;
     }

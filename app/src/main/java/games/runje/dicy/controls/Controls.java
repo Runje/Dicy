@@ -19,6 +19,7 @@ import java.util.List;
 
 import games.runje.dicy.R;
 import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.Logger;
 import games.runje.dicy.game.LocalGame;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Player;
@@ -32,6 +33,7 @@ public class Controls extends RelativeLayout
     LocalGame game;
     List<TextView> playersView = new ArrayList<>();
     private List<TextView> strikesView = new ArrayList<>();
+    private String LogKey = "Controls";
 
     //TODO: controls as member
     public Controls(Activity context)
@@ -68,6 +70,7 @@ public class Controls extends RelativeLayout
         {
             TextView pointsText = new TextView(getContext());
             pointsText.setText(players.get(i).getName() + ": 0");
+            Logger.logInfo(LogKey, players.get(i).getName());
             int id = View.generateViewId();
             pointsText.setId(id);
 

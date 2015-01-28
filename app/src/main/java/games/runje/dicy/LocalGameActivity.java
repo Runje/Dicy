@@ -1,16 +1,18 @@
 package games.runje.dicy;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.Logger;
 import games.runje.dicy.util.SystemUiHider;
 
 
@@ -29,13 +31,48 @@ public class LocalGameActivity extends Activity
     protected void onPostCreate(Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-       RelativeLayout l = new RelativeLayout(this);
-        Gamemaster.createLocalGame(this);
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        Intent intent = getIntent();
+        boolean[] playing = intent.getBooleanArrayExtra(OptionActivity.PlayingIntent);
+        String[] players = intent.getStringArrayExtra(OptionActivity.PlayerIntent);
+        List<String> p = new ArrayList<>();
+
+        for (int i = 0; i < OptionActivity.MaxPlayers; i++)
+        {
+            if (playing[i])
+            {
+                p.add(players[i]);
+                Logger.logInfo("LocalGameActivity", "adding " + players[i]);
+            }
+        }
+
+        String length = intent.getStringExtra(OptionActivity.LengthIntent);
+        int f = 5;
+        switch (length)
+        {
+            case "Short":
+                f = 5;
+                break;
+            case "Middle":
+                f = 10;
+                break;
+            case "Long":
+                f = 20;
+                break;
+        }
+        RelativeLayout l = new RelativeLayout(this);
+        Gamemaster.createLocalGame(this, p, f);
         AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
         RelativeLayout b = board.getGameLayout();
+        RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
+        pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
         b.setId(R.id.board);
-        l.addView(b);
+        l.addView(b, pB);
 
         RelativeLayout controls = Gamemaster.getInstance().getControls();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

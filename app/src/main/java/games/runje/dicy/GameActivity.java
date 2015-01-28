@@ -170,8 +170,10 @@ public class GameActivity extends Activity
         Gamemaster.createAnimatedGame(this);
         AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
         RelativeLayout b = board.getGameLayout();
+        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) b.getLayoutParams();
+        p.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
         b.setId(R.id.board);
-        l.addView(b);
+        l.addView(b, p);
 
         RelativeLayout controls = Gamemaster.getInstance().getControls();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

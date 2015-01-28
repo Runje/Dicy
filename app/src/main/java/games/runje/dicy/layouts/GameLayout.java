@@ -1,15 +1,11 @@
 package games.runje.dicy.layouts;
 
-import android.content.Context;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.widget.RelativeLayout;
 
-import java.util.ArrayList;
-
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
-import games.runje.dicy.controller.Logger;
-import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -18,13 +14,9 @@ import games.runje.dicymodel.data.Coords;
 public class GameLayout extends RelativeLayout
 {
     AnimatedBoard board;
-
-    public int getDiceSize()
-    {
-        return diceSize;
-    }
-
     int diceSize;
+    private int XOffset = 1;
+    private int YOffset = 1;
 
     public GameLayout(AnimatedBoard b, double heightWeight)
     {
@@ -41,6 +33,33 @@ public class GameLayout extends RelativeLayout
         int halfHeight = (int) (heightWeight * screenHeight / (board.getNumberOfRows() + 1));
         diceSize = Math.min(diceSize, halfHeight);
         createAbsoluteLayout();
+        this.setBackgroundColor(Color.BLUE);
+    }
+
+    public int getYOffset()
+    {
+        return YOffset;
+    }
+
+    public void setYOffset(int YOffset)
+    {
+        this.YOffset = YOffset;
+
+    }
+
+    public int getXOffset()
+    {
+        return XOffset;
+    }
+
+    public void setXOffset(int XOffset)
+    {
+        this.XOffset = XOffset;
+    }
+
+    public int getDiceSize()
+    {
+        return diceSize;
     }
 
     private void createAbsoluteLayout()
@@ -65,12 +84,12 @@ public class GameLayout extends RelativeLayout
     public int CoordsToX(Coords pos)
     {
         //offset + 1 to have one column on the left for fall down
-        return getDiceSize() * (pos.column + 1);
+        return getDiceSize() * (pos.column + XOffset);
     }
 
     public int CoordsToY(Coords pos)
     {
         // offset + 1 to have one row on top for fall down
-        return getDiceSize() * (pos.row + 1);
+        return getDiceSize() * (pos.row + YOffset);
     }
 }

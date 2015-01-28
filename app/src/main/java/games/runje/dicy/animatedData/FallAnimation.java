@@ -15,11 +15,18 @@ public class FallAnimation implements Animation.AnimationListener
     private final AnimatedBoardElement element;
     private final Coords to;
     private String LogKey = "FallAnimation";
+    private boolean update;
 
-    public FallAnimation(AnimatedBoardElement element, Coords to)
+    public FallAnimation(AnimatedBoardElement element, Coords to, boolean update)
     {
         this.element = element;
         this.to = to;
+        this.update = update;
+    }
+
+    public FallAnimation(AnimatedBoardElement element, Coords to)
+    {
+        this(element, to, true);
     }
 
     public void start()
@@ -31,7 +38,7 @@ public class FallAnimation implements Animation.AnimationListener
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, dx,
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, dy);
-        animation.setDuration(2000);
+        animation.setDuration(1000);
         animation.setAnimationListener(this);
         element.startAnimation(animation);
         Logger.logDebug(LogKey, "dx: " + dx + ", dy: " + dy + ", from: " + element);
@@ -60,7 +67,11 @@ public class FallAnimation implements Animation.AnimationListener
         Logger.logDebug(LogKey, "End from To: " + this.to + " ex: " + element.getX() + ", ey: " + element.getY());
 
         Gamemaster.getInstance().anmiationEnded();
-        Gamemaster.getInstance().updateAfterFall();
+        if (update)
+        {
+            Gamemaster.getInstance().updateAfterFall();
+        }
+
     }
 
     @Override

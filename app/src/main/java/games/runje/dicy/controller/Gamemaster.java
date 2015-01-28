@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import games.runje.dicy.LocalGameActivity;
 import games.runje.dicy.R;
@@ -72,7 +73,7 @@ public class Gamemaster
         Gamemaster.getInstance().update();
     }
 
-    public static void createLocalGame(LocalGameActivity activity)
+    public static void createLocalGame(LocalGameActivity activity, List<String> players, int length)
     {
         Rules rules = new Rules();
         rules.setDiagonalActive(false);
@@ -81,7 +82,7 @@ public class Gamemaster
         Board b = AnimatedBoard.createBoardNoPoints(5, 5, activity, rules);
         b.setGravity(Gravity.Down);
         rules.setPointLimit(Simulator.getLimit(rules, b));
-        LocalGame game = new LocalGame(2, rules.getPointLimit(), 200);
+        LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, players);
         Controls controls = new LocalGameControls(activity, game);
         instance = new Gamemaster(game, b, rules, controls);
         Gamemaster.getInstance().update();
@@ -90,6 +91,11 @@ public class Gamemaster
     public void anmiationEnded()
     {
         animationEnded++;
+
+        if (!isAnimationIsRunning())
+        {
+            this.controls.enable();
+        }
     }
 
     private void update()

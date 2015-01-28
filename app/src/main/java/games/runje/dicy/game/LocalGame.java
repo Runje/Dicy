@@ -15,6 +15,7 @@ public class LocalGame extends Game
     private final int startingPlayer;
     int gameEndPoints;
     private List<Player> players;
+
     /**
      * Which players turn it is.
      */
@@ -38,6 +39,27 @@ public class LocalGame extends Game
         // random starting player
         startingPlayer = new Random().nextInt(p);
         turn = startingPlayer;
+    }
+
+    public LocalGame(int pointLimit, int gameLimit, List<String> playerNames)
+    {
+        pointsLimit = pointLimit;
+        gameEndPoints = gameLimit;
+        players = new ArrayList<>();
+        for (int i = 0; i < playerNames.size(); i++)
+        {
+            players.add(new Player(playerNames.get(i)));
+            Logger.logInfo("LocalGame", playerNames.get(i));
+        }
+
+        // random starting player
+        startingPlayer = new Random().nextInt(playerNames.size());
+        turn = startingPlayer;
+    }
+
+    public int getGameEndPoints()
+    {
+        return gameEndPoints;
     }
 
     @Override

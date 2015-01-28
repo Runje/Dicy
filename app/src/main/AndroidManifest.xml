@@ -17,6 +17,7 @@
         <activity
             android:name=".StartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:icon="@drawable/dice3d"
             android:label="@string/title_activity_start"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
@@ -29,6 +30,12 @@
             android:name=".LocalGameActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_highscore"
+            android:theme="@style/FullscreenTheme">
+        </activity>
+        <activity
+            android:name=".OptionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_option"
             android:theme="@style/FullscreenTheme">
         </activity>
     </application>

@@ -26,7 +26,7 @@ public class StartActivity extends Activity
 
     public void clickHighscore(View v)
     {
-        Intent intent = new Intent(this, LocalGameActivity.class);
+        Intent intent = new Intent(this, OptionActivity.class);
         startActivity(intent);
     }
 }
