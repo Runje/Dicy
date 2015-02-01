@@ -14,6 +14,7 @@ import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.Gamemaster;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicy.util.SystemUiHider;
+import games.runje.dicymodel.Rules;
 
 
 /**
@@ -65,8 +66,15 @@ public class LocalGameActivity extends Activity
                 f = 20;
                 break;
         }
+
+        boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
+
+        Rules rules = new Rules();
+        rules.setDiagonalActive(diagonal);
+        rules.setMinStraight(3);
+        rules.initStraightPoints(4);
         RelativeLayout l = new RelativeLayout(this);
-        Gamemaster.createLocalGame(this, p, f);
+        Gamemaster.createLocalGame(this, p, f, rules);
         AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
         RelativeLayout b = board.getGameLayout();
         RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();

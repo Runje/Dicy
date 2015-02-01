@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,13 @@ public class OptionActivity extends Activity
     public static final String PlayingIntent = "Playing";
     public static final String PlayerIntent = "Player";
     public static final String LengthIntent = "Length";
+    public static final String DiagonalIntent = "Diagonal";
     final static int MaxPlayers = 4;
     private EditText[] editPlayers = new EditText[MaxPlayers];
     private CheckBox[] playingCb = new CheckBox[MaxPlayers];
     private Spinner lengthSpinner;
     private String LogKey = "Options";
+    private CheckBox diagonal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -64,12 +67,32 @@ public class OptionActivity extends Activity
         ps.addRule(RelativeLayout.BELOW, playButton.getId());
         l.addView(length, ps);
 
+        View diagonal = diagonal();
+        RelativeLayout.LayoutParams pD = ViewUtilities.createRelativeLayoutParams();
+        pD.addRule(RelativeLayout.BELOW, length.getId());
+        l.addView(diagonal, pD);
+
         // push layout below action bar
         RelativeLayout.LayoutParams pL = ViewUtilities.createRelativeLayoutParams();
         pL.topMargin = android.R.attr.actionBarSize;
         setContentView(l);
 
 
+    }
+
+    private View diagonal()
+    {
+        RelativeLayout l = new RelativeLayout(this);
+        diagonal = new CheckBox(this);
+        TextView t = new TextView(this);
+        t.setText("Diagonal");
+        t.setId(View.generateViewId());
+        l.addView(t);
+        RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
+        p.addRule(RelativeLayout.RIGHT_OF, t.getId());
+        l.addView(diagonal, p);
+        l.setId(View.generateViewId());
+        return l;
     }
 
     private View lengthSpinner()
@@ -120,6 +143,8 @@ public class OptionActivity extends Activity
 
                 intent.putExtra(PlayerIntent, players);
                 intent.putExtra(LengthIntent, (String) lengthSpinner.getSelectedItem());
+                intent.putExtra(DiagonalIntent, diagonal.isChecked());
+
                 startActivity(intent);
             }
         });

@@ -73,12 +73,9 @@ public class Gamemaster
         Gamemaster.getInstance().update();
     }
 
-    public static void createLocalGame(LocalGameActivity activity, List<String> players, int length)
+    public static void createLocalGame(LocalGameActivity activity, List<String> players, int length, Rules rules)
     {
-        Rules rules = new Rules();
-        rules.setDiagonalActive(false);
-        rules.setMinStraight(3);
-        rules.initStraightPoints(4);
+
         Board b = AnimatedBoard.createBoardNoPoints(5, 5, activity, rules);
         b.setGravity(Gravity.Down);
         rules.setPointLimit(Simulator.getLimit(rules, b));
