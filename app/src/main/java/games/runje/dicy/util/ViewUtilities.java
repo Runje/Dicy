@@ -30,4 +30,6 @@ public class ViewUtilities
     {
         return new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
     }
+
+
 }

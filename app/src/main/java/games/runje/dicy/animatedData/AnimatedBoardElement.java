@@ -38,7 +38,7 @@ public class AnimatedBoardElement extends ImageView
         return valueToImageResource(element.getValue());
     }
 
-    private static int valueToImageResource(int value)
+    public static int valueToImageResource(int value)
     {
         switch (value)
         {

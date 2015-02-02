@@ -71,7 +71,7 @@ public class LocalGameActivity extends Activity
 
         Rules rules = new Rules();
         rules.setDiagonalActive(diagonal);
-        rules.setMinStraight(3);
+        rules.setMinStraight(intent.getIntExtra(OptionActivity.StraightIntent, 7));
         rules.initStraightPoints(4);
         RelativeLayout l = new RelativeLayout(this);
         Gamemaster.createLocalGame(this, p, f, rules);

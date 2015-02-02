@@ -12,11 +12,13 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.controller.Logger;
+import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicy.util.ViewUtilities;
 
@@ -34,12 +36,14 @@ public class OptionActivity extends Activity
     public static final String PlayerIntent = "Player";
     public static final String LengthIntent = "Length";
     public static final String DiagonalIntent = "Diagonal";
+    public static final String StraightIntent = "Straight";
     final static int MaxPlayers = 4;
     private EditText[] editPlayers = new EditText[MaxPlayers];
     private CheckBox[] playingCb = new CheckBox[MaxPlayers];
     private Spinner lengthSpinner;
     private String LogKey = "Options";
     private CheckBox diagonal;
+    private StraightLayout straight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,12 +76,43 @@ public class OptionActivity extends Activity
         pD.addRule(RelativeLayout.BELOW, length.getId());
         l.addView(diagonal, pD);
 
-        // push layout below action bar
-        RelativeLayout.LayoutParams pL = ViewUtilities.createRelativeLayoutParams();
-        pL.topMargin = android.R.attr.actionBarSize;
+        View straight = straight();
+        RelativeLayout.LayoutParams pS = ViewUtilities.createRelativeLayoutParams();
+        pS.addRule(RelativeLayout.BELOW, diagonal.getId());
+        l.addView(straight, pS);
+
         setContentView(l);
 
 
+    }
+
+    private View straight()
+    {
+        RelativeLayout l = new RelativeLayout(this);
+        TextView t = new TextView(this);
+        t.setText("Straight");
+        t.setId(View.generateViewId());
+        l.addView(t);
+
+        // TODO: height of dices should be same as textview
+        straight = new StraightLayout(this, 3, 50);
+        RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
+        final int id = t.getId();
+        p.addRule(RelativeLayout.RIGHT_OF, id);
+        p.leftMargin = 100;
+        l.addView(straight, p);
+
+        straight.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                straight.increaseLength();
+            }
+        });
+
+        l.setId(View.generateViewId());
+        return l;
     }
 
     private View diagonal()
@@ -126,12 +161,22 @@ public class OptionActivity extends Activity
             {
                 Intent intent = new Intent(OptionActivity.this, LocalGameActivity.class);
                 boolean[] playing = new boolean[4];
+                int numberPlayers = 0;
                 for (int i = 0; i < MaxPlayers; i++)
                 {
                     playing[i] = playingCb[i].isChecked();
+                    if (playing[i])
+                    {
+                        numberPlayers++;
+                    }
                     Logger.logInfo("Options", i + " playing: " + playing[i]);
                 }
 
+                if (numberPlayers == 0)
+                {
+                    Toast.makeText(OptionActivity.this, "At least one player should play", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 intent.putExtra(PlayingIntent, playing);
 
                 String[] players = new String[4];
@@ -144,6 +189,7 @@ public class OptionActivity extends Activity
                 intent.putExtra(PlayerIntent, players);
                 intent.putExtra(LengthIntent, (String) lengthSpinner.getSelectedItem());
                 intent.putExtra(DiagonalIntent, diagonal.isChecked());
+                intent.putExtra(StraightIntent, straight.getLength());
 
                 startActivity(intent);
             }
