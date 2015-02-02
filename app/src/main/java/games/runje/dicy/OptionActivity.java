@@ -19,6 +19,7 @@ import java.util.List;
 
 import games.runje.dicy.controller.Logger;
 import games.runje.dicy.layouts.StraightLayout;
+import games.runje.dicy.layouts.XOfAKindLayout;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicy.util.ViewUtilities;
 
@@ -37,6 +38,7 @@ public class OptionActivity extends Activity
     public static final String LengthIntent = "Length";
     public static final String DiagonalIntent = "Diagonal";
     public static final String StraightIntent = "Straight";
+    public static final String XOfAKindIntent = "XOfAKind";
     final static int MaxPlayers = 4;
     private EditText[] editPlayers = new EditText[MaxPlayers];
     private CheckBox[] playingCb = new CheckBox[MaxPlayers];
@@ -44,6 +46,7 @@ public class OptionActivity extends Activity
     private String LogKey = "Options";
     private CheckBox diagonal;
     private StraightLayout straight;
+    private XOfAKindLayout xOfAKind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -76,14 +79,52 @@ public class OptionActivity extends Activity
         pD.addRule(RelativeLayout.BELOW, length.getId());
         l.addView(diagonal, pD);
 
-        View straight = straight();
+        View straightView = straight();
         RelativeLayout.LayoutParams pS = ViewUtilities.createRelativeLayoutParams();
         pS.addRule(RelativeLayout.BELOW, diagonal.getId());
-        l.addView(straight, pS);
+        l.addView(straightView, pS);
 
+
+        View xOfAKindView = xOfAKind();
+        RelativeLayout.LayoutParams pX = ViewUtilities.createRelativeLayoutParams();
+        pX.addRule(RelativeLayout.BELOW, straightView.getId());
+        pX.topMargin = 50;
+        l.addView(xOfAKindView, pX);
         setContentView(l);
 
 
+    }
+
+    private View xOfAKind()
+    {
+        RelativeLayout l = new RelativeLayout(this);
+        TextView t = new TextView(this);
+        t.setText("X Of A Kind");
+        t.setId(View.generateViewId());
+        l.addView(t);
+
+        // TODO: height of dices should be same as textview
+        xOfAKind = new XOfAKindLayout(this, 3, 50, 7);
+        RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
+        final int id = t.getId();
+        p.addRule(RelativeLayout.RIGHT_OF, id);
+        //p.addRule(RelativeLayout.ALIGN_LEFT, straight.getId());
+        p.leftMargin = 55;
+
+
+        l.addView(xOfAKind, p);
+
+        xOfAKind.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                xOfAKind.increaseLength();
+            }
+        });
+
+        l.setId(View.generateViewId());
+        return l;
     }
 
     private View straight()
@@ -190,6 +231,7 @@ public class OptionActivity extends Activity
                 intent.putExtra(LengthIntent, (String) lengthSpinner.getSelectedItem());
                 intent.putExtra(DiagonalIntent, diagonal.isChecked());
                 intent.putExtra(StraightIntent, straight.getLength());
+                intent.putExtra(XOfAKindIntent, xOfAKind.getLength());
 
                 startActivity(intent);
             }
