@@ -2,6 +2,9 @@ package games.runje.dicymodel.ai;
 
 import java.util.List;
 
+import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.boardChecker.BoardChecker;
+import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Move;
 
 /**
@@ -23,5 +26,12 @@ public class Strategy
         }
 
         return maxMove;
+    }
+
+    public Move getNextMove(Rules rules, Board board)
+    {
+        List<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
+        // TODO
+        return moves.get(0);
     }
 }

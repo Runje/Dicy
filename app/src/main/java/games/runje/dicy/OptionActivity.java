@@ -233,6 +233,12 @@ public class OptionActivity extends Activity
                 intent.putExtra(StraightIntent, straight.getLength());
                 intent.putExtra(XOfAKindIntent, xOfAKind.getLength());
 
+                if (straight.getLength() == straight.MaxLength + 1 && xOfAKind.getLength() == xOfAKind.MaxLength + 1)
+                {
+                    Toast.makeText(OptionActivity.this, "No Points possible", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 startActivity(intent);
             }
         });

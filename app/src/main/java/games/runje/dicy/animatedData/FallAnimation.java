@@ -71,6 +71,10 @@ public class FallAnimation implements Animation.AnimationListener
         {
             Gamemaster.getInstance().updateAfterFall();
         }
+        else
+        {
+            Gamemaster.getInstance().getControls().enable();
+        }
 
     }
 

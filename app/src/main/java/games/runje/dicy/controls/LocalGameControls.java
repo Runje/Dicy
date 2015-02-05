@@ -128,6 +128,17 @@ public class LocalGameControls extends Controls
 
     public void enable()
     {
+        if (game.isGameOver())
+        {
+            return;
+        }
+
+        if (game.hasAIPlayerTurn())
+        {
+            disable();
+            return;
+        }
+
         enableNext();
         enableGravity();
     }

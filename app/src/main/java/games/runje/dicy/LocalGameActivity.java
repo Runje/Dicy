@@ -89,6 +89,7 @@ public class LocalGameActivity extends Activity
         params.topMargin = 50;
         l.addView(controls, params);
         setContentView(l);
+
     }
 
 }

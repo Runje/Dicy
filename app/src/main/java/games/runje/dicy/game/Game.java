@@ -1,5 +1,7 @@
 package games.runje.dicy.game;
 
+import games.runje.dicymodel.data.Player;
+
 /**
  * Created by Thomas on 17.01.2015.
  */
@@ -15,4 +17,9 @@ public abstract class Game
 
     public abstract void endSwitch();
 
+    public abstract boolean hasTurn(Player player);
+
+    public abstract boolean hasAIPlayerTurn();
+
+    public abstract Player getPlayingPlayer();
 }

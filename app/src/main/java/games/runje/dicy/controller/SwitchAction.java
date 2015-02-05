@@ -12,47 +12,51 @@ import games.runje.dicymodel.data.Coords;
 public class SwitchAction extends Action
 {
     private final boolean switchBackPossible;
-    private Direction direction;
+    private Coords first;
+    private Coords second;
 
-    private Coords position;
-
-    public SwitchAction(Coords p, Direction d, boolean switchBackPossible)
+    public SwitchAction(Coords p, Direction direction, boolean switchBackPossible)
     {
-        this.position = p;
-        this.direction = d;
+        this.first = p;
+        this.switchBackPossible = switchBackPossible;
+
+        switch (direction)
+        {
+            case Up:
+                second = new Coords(first.row - 1, first.column);
+                break;
+            case Down:
+                second = new Coords(first.row + 1, first.column);
+                break;
+            case Left:
+                second = new Coords(first.row, first.column - 1);
+                break;
+            case Right:
+                second = new Coords(first.row, first.column + 1);
+                break;
+        }
+    }
+
+    public SwitchAction(Coords p1, Coords p2, boolean switchBackPossible)
+    {
+        this.first = p1;
+        this.second = p2;
         this.switchBackPossible = switchBackPossible;
     }
 
     @Override
     public void execute()
     {
-        Coords second = new Coords(0, 0);
-        switch (direction)
-        {
-            case Up:
-                second = new Coords(position.row - 1, position.column);
-                break;
-            case Down:
-                second = new Coords(position.row + 1, position.column);
-                break;
-            case Left:
-                second = new Coords(position.row, position.column - 1);
-                break;
-            case Right:
-                second = new Coords(position.row, position.column + 1);
-                break;
-        }
-
-        ((AnimatedBoard) this.board).switchElements(position, second, switchBackPossible);
-        Log.d("TL", "Exectued switch elements: " + position + " with " + second);
+        ((AnimatedBoard) this.board).switchElements(first, second, switchBackPossible);
+        Log.d("TL", "Exectued switch elements: " + first + " with " + second);
     }
 
     @Override
     public String toString()
     {
         return "SwitchAction{" +
-                "direction=" + direction +
-                ", position=" + position +
+                ", first=" + first +
+                ", second=" + second +
                 '}';
     }
 
@@ -66,19 +70,8 @@ public class SwitchAction extends Action
 
         Board board = Gamemaster.getInstance().getBoard();
 
-        switch (direction)
-        {
-            case Up:
-                return position.row != 0;
-            case Down:
-                return position.row != board.getNumberOfRows() - 1;
-            case Left:
-                return position.column != 0;
-            case Right:
-                return position.column != board.getNumberOfColumns() - 1;
-        }
+        return !(second.row < 0 || second.row >= board.getNumberOfRows() ||
+                second.column < 0 || second.column >= board.getNumberOfColumns());
 
-        assert false : "Unknown Direction";
-        return false;
     }
 }

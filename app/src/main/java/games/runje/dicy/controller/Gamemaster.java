@@ -22,6 +22,7 @@ import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Move;
+import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
 
 /**
@@ -38,6 +39,7 @@ public class Gamemaster
     private int animationEnded = 0;
     private int animationsWillStart = 0;
     private Controls controls;
+    private boolean locked = false;
 
     private Gamemaster(Game game, Board b, Rules r, Controls controls)
     {
@@ -75,24 +77,26 @@ public class Gamemaster
 
     public static void createLocalGame(LocalGameActivity activity, List<String> players, int length, Rules rules)
     {
-
         Board b = AnimatedBoard.createBoardNoPoints(5, 5, activity, rules);
         b.setGravity(Gravity.Down);
         rules.setPointLimit(Simulator.getLimit(rules, b));
         LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, players);
+        for (Player p : game.getPlayers())
+        {
+            if (p.isAi())
+            {
+                new AIController(p, activity);
+            }
+        }
         Controls controls = new LocalGameControls(activity, game);
         instance = new Gamemaster(game, b, rules, controls);
+
         Gamemaster.getInstance().update();
     }
 
     public void anmiationEnded()
     {
         animationEnded++;
-
-        if (!isAnimationIsRunning())
-        {
-            this.controls.enable();
-        }
     }
 
     private void update()
@@ -107,7 +111,7 @@ public class Gamemaster
 
     public boolean isAnimationIsRunning()
     {
-        return animationEnded != animationsWillStart;
+        return animationEnded != animationsWillStart || locked;
     }
 
     public void performAction(Action action)
@@ -115,7 +119,9 @@ public class Gamemaster
         action.setBoard(this.board);
         if (action.isPossible())
         {
+            locked = true;
             action.execute();
+            locked = false;
         }
         else
         {
@@ -130,6 +136,7 @@ public class Gamemaster
             return;
         }
 
+        locked = true;
         ((AnimatedBoard) board).consistencyCheck();
 
         this.animationEnded = 0;
@@ -141,6 +148,7 @@ public class Gamemaster
 
         updatePoints();
         board.deleteElements(elements);
+        locked = false;
     }
 
     private void updatePoints()
@@ -154,16 +162,21 @@ public class Gamemaster
         {
             return;
         }
+
+        locked = true;
         ((AnimatedBoard) board).consistencyCheck();
 
         this.animationEnded = 0;
         // check board if there have to be created new elements
         ArrayList<BoardElement> elements = board.recreateElements();
         this.animationsWillStart = elements.size();
+        locked = false;
         if (elements.size() == 0)
         {
             updateAfterSwitch();
         }
+
+
     }
 
     public Rules getRules()
@@ -212,6 +225,7 @@ public class Gamemaster
             return;
         }
 
+        locked = true;
 
         this.animationEnded = 0;
         ArrayList<BoardElement> fallingElements = board.moveElementsFromGravity();
@@ -253,6 +267,8 @@ public class Gamemaster
                 controls.enable();
             }
         }
+
+        locked = false;
     }
 
     public void updateGravity()
@@ -262,8 +278,17 @@ public class Gamemaster
 
     public void next()
     {
+        locked = true;
         Logger.logInfo(LogKey, "Next");
         game.moveEnds();
+        controls.enable();
+
         controls.update();
+        locked = false;
+    }
+
+    public Game getGame()
+    {
+        return game;
     }
 }

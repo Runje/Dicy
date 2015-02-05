@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import games.runje.dicy.controller.Logger;
+import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Player;
 
 /**
@@ -14,6 +15,7 @@ public class LocalGame extends Game
 {
     private final int startingPlayer;
     int gameEndPoints;
+    private ArrayList<Strategy> strategies;
     private List<Player> players;
 
     /**
@@ -33,7 +35,7 @@ public class LocalGame extends Game
         players = new ArrayList<>();
         for (int i = 0; i < p; i++)
         {
-            players.add(new Player("Player " + (i + 1)));
+            players.add(new Player("Player " + (i + 1), strategies.get(i)));
         }
 
         // random starting player
@@ -45,11 +47,21 @@ public class LocalGame extends Game
     {
         pointsLimit = pointLimit;
         gameEndPoints = gameLimit;
+
+        strategies = new ArrayList<>();
+
+        // TODO: Make strategy as parameter
+        strategies.add(null);
+        strategies.add(new Strategy());
+        strategies.add(null);
+        strategies.add(null);
         players = new ArrayList<>();
+
         for (int i = 0; i < playerNames.size(); i++)
         {
-            players.add(new Player(playerNames.get(i)));
-            Logger.logInfo("LocalGame", playerNames.get(i));
+            Player p = new Player(playerNames.get(i), strategies.get(i));
+            players.add(p);
+            Logger.logInfo("LocalGame", playerNames.get(i) + " is AI: " + p.isAi());
         }
 
         // random starting player
@@ -80,11 +92,31 @@ public class LocalGame extends Game
         else
         {
             players.get(turn).addStrike();
+            getPlayingPlayer().setLastMoveWasStrike(true);
             movePoints = 0;
             moveEnds();
         }
 
         switchPoints = 0;
+    }
+
+    @Override
+    public boolean hasTurn(Player player)
+    {
+        // TODO: if same name?
+        return players.get(turn).getName().equals(player.getName());
+    }
+
+    @Override
+    public boolean hasAIPlayerTurn()
+    {
+        return players.get(turn).isAi();
+    }
+
+    @Override
+    public Player getPlayingPlayer()
+    {
+        return players.get(turn);
     }
 
     public int getMovePoints()
@@ -122,9 +154,13 @@ public class LocalGame extends Game
         return players;
     }
 
-    private void nextPlayer()
+    /**
+     * @return If next player is AI
+     */
+    private boolean nextPlayer()
     {
         turn = (turn + 1) % players.size();
+        return (players.get(turn).isAi());
     }
 
     @Override
@@ -134,6 +170,7 @@ public class LocalGame extends Game
         if (movePoints > 0)
         {
             players.get(turn).setStrikes(0);
+            getPlayingPlayer().setLastMoveWasStrike(false);
         }
 
         movePoints = 0;

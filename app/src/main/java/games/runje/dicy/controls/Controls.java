@@ -344,6 +344,7 @@ public class Controls extends RelativeLayout
         cb.setEnabled(false);
 
         disableGravity();
+
     }
 
     protected void disableGravity()
@@ -362,6 +363,12 @@ public class Controls extends RelativeLayout
     {
         if (game.isGameOver())
         {
+            return;
+        }
+
+        if (game.hasAIPlayerTurn())
+        {
+            disable();
             return;
         }
 

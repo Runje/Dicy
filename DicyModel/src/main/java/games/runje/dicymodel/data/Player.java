@@ -1,5 +1,7 @@
 package games.runje.dicymodel.data;
 
+import games.runje.dicymodel.ai.Strategy;
+
 /**
  * Created by Thomas on 17.01.2015.
  */
@@ -8,9 +10,12 @@ public class Player
     private int points;
     private int strikes;
     private String name;
+    private Strategy strategy;
+    private boolean lastMoveWasStrike = false;
 
-    public Player(String n)
+    public Player(String n, Strategy strategy)
     {
+        this.strategy = strategy;
         name = n;
     }
 
@@ -42,6 +47,8 @@ public class Player
             points = 0;
             strikes = 0;
         }
+
+
     }
 
     public void addPoints(int p)
@@ -52,5 +59,25 @@ public class Player
     public String getName()
     {
         return name;
+    }
+
+    public Strategy getStrategy()
+    {
+        return strategy;
+    }
+
+    public boolean isAi()
+    {
+        return strategy != null;
+    }
+
+    public boolean lastMoveWasStrike()
+    {
+        return lastMoveWasStrike;
+    }
+
+    public void setLastMoveWasStrike(boolean lastMoveWasStrike)
+    {
+        this.lastMoveWasStrike = lastMoveWasStrike;
     }
 }
