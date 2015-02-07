@@ -17,6 +17,7 @@ import games.runje.dicy.game.LocalGame;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Simulator;
+import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
@@ -75,12 +76,12 @@ public class Gamemaster
         Gamemaster.getInstance().update();
     }
 
-    public static void createLocalGame(LocalGameActivity activity, List<String> players, int length, Rules rules)
+    public static void createLocalGame(LocalGameActivity activity, List<String> players, int length, Rules rules, List<Strategy> s)
     {
         Board b = AnimatedBoard.createBoardNoPoints(5, 5, activity, rules);
         b.setGravity(Gravity.Down);
         rules.setPointLimit(Simulator.getLimit(rules, b));
-        LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, players);
+        LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, players, s);
         for (Player p : game.getPlayers())
         {
             if (p.isAi())

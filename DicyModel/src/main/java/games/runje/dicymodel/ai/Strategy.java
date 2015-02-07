@@ -12,6 +12,23 @@ import games.runje.dicymodel.data.Move;
  */
 public class Strategy
 {
+    public static final String Human = "Human";
+    public static final String Simple = "Simple";
+
+    public static Strategy makeStrategy(String s)
+    {
+        switch (s)
+        {
+            case Human:
+                return null;
+
+            case Simple:
+                return new Strategy();
+            default:
+                return null;
+        }
+    }
+
     public static Move getBestSwitchMove(List<Move> moves)
     {
         int max = 0;

@@ -22,6 +22,7 @@ import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.layouts.XOfAKindLayout;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicy.util.ViewUtilities;
+import games.runje.dicymodel.ai.Strategy;
 
 
 /**
@@ -47,6 +48,8 @@ public class OptionActivity extends Activity
     private CheckBox diagonal;
     private StraightLayout straight;
     private XOfAKindLayout xOfAKind;
+    private Spinner[] strategySpinner = new Spinner[MaxPlayers];
+    public static final String StrategyIntent = "Strategy";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -90,6 +93,8 @@ public class OptionActivity extends Activity
         pX.addRule(RelativeLayout.BELOW, straightView.getId());
         pX.topMargin = 50;
         l.addView(xOfAKindView, pX);
+
+
         setContentView(l);
 
 
@@ -220,12 +225,20 @@ public class OptionActivity extends Activity
                 }
                 intent.putExtra(PlayingIntent, playing);
 
-                String[] players = new String[4];
+                String[] players = new String[MaxPlayers];
                 for (int i = 0; i < MaxPlayers; i++)
                 {
                     players[i] = editPlayers[i].getText().toString();
                     Logger.logInfo("Options", players[i]);
                 }
+
+                String[] strategies = new String[MaxPlayers];
+                for (int i = 0; i < MaxPlayers; i++)
+                {
+                    strategies[i] = strategySpinner[i].getSelectedItem().toString();
+                    Logger.logInfo("Options", strategies[i]);
+                }
+                intent.putExtra(StrategyIntent, strategies);
 
                 intent.putExtra(PlayerIntent, players);
                 intent.putExtra(LengthIntent, (String) lengthSpinner.getSelectedItem());
@@ -290,6 +303,21 @@ public class OptionActivity extends Activity
 
         l.addView(playing, p);
         playingCb[number] = playing;
+
+        Spinner s = new Spinner(this);
+        s.setId(View.generateViewId());
+        List<String> list = new ArrayList<>();
+        list.add(Strategy.Human);
+        list.add(Strategy.Simple);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        s.setAdapter(adapter);
+        strategySpinner[number] = s;
+
+        RelativeLayout.LayoutParams pS = ViewUtilities.createRelativeLayoutParams();
+        pS.addRule(RelativeLayout.RIGHT_OF, playing.getId());
+        l.addView(s, pS);
         return l;
     }
 }

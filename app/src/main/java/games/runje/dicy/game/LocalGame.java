@@ -15,7 +15,7 @@ public class LocalGame extends Game
 {
     private final int startingPlayer;
     int gameEndPoints;
-    private ArrayList<Strategy> strategies;
+    private List<Strategy> strategies;
     private List<Player> players;
 
     /**
@@ -43,25 +43,20 @@ public class LocalGame extends Game
         turn = startingPlayer;
     }
 
-    public LocalGame(int pointLimit, int gameLimit, List<String> playerNames)
+    public LocalGame(int pointLimit, int gameLimit, List<String> playerNames, List<Strategy> s)
     {
         pointsLimit = pointLimit;
         gameEndPoints = gameLimit;
 
-        strategies = new ArrayList<>();
+        strategies = s;
 
-        // TODO: Make strategy as parameter
-        strategies.add(null);
-        strategies.add(new Strategy());
-        strategies.add(null);
-        strategies.add(null);
         players = new ArrayList<>();
 
         for (int i = 0; i < playerNames.size(); i++)
         {
             Player p = new Player(playerNames.get(i), strategies.get(i));
             players.add(p);
-            Logger.logInfo("LocalGame", playerNames.get(i) + " is AI: " + p.isAi());
+            Logger.logInfo("LocalGame", playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
 
         // random starting player

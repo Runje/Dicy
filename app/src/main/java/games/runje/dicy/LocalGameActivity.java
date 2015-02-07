@@ -15,6 +15,7 @@ import games.runje.dicy.controller.Gamemaster;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.ai.Strategy;
 
 
 /**
@@ -52,6 +53,18 @@ public class LocalGameActivity extends Activity
             }
         }
 
+        String[] strategies = intent.getStringArrayExtra(OptionActivity.StrategyIntent);
+        List<Strategy> s = new ArrayList<>();
+
+        for (int i = 0; i < OptionActivity.MaxPlayers; i++)
+        {
+            if (playing[i])
+            {
+                s.add(Strategy.makeStrategy(strategies[i]));
+                Logger.logInfo("LocalGameActivity", "adding " + strategies[i]);
+            }
+        }
+
         String length = intent.getStringExtra(OptionActivity.LengthIntent);
         int f = 5;
         switch (length)
@@ -75,7 +88,8 @@ public class LocalGameActivity extends Activity
         rules.setMinXOfAKind(intent.getIntExtra(OptionActivity.XOfAKindIntent, 11));
         rules.initStraightPoints(4);
         RelativeLayout l = new RelativeLayout(this);
-        Gamemaster.createLocalGame(this, p, f, rules);
+        // TODO: create local game here
+        Gamemaster.createLocalGame(this, p, f, rules, s);
         AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
         RelativeLayout b = board.getGameLayout();
         RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
