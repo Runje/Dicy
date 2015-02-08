@@ -292,4 +292,10 @@ public class Gamemaster
     {
         return game;
     }
+
+    public void help()
+    {
+        Move move = BoardChecker.getPossiblePointMoves(board, rules).get(0);
+        ((AnimatedBoard) board).highlightElements(move);
+    }
 }

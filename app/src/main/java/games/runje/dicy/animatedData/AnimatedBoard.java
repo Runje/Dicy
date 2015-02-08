@@ -1,6 +1,9 @@
 package games.runje.dicy.animatedData;
 
 import android.app.Activity;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -356,5 +359,25 @@ public class AnimatedBoard extends Board
     public Activity getActivity()
     {
         return activity;
+    }
+
+    public void highlightElements(Move move)
+    {
+        List<AnimatedBoardElement> l = new ArrayList<>();
+        l.add(getAnimatedElement(move.getFirst()));
+        l.add(getAnimatedElement(move.getSecond()));
+        float brightness = 100;
+        float[] colorMatrix = {1f, 0f, 0f, 0, brightness, // red
+                0f, 1f, 0f, 0, brightness, // green
+                1f, 1f, 1f, 0, brightness, // blue
+                0, 0, 0, 1, 0 // alpha
+        };
+
+        ColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+
+        for (AnimatedBoardElement e : l)
+        {
+            e.setColorFilter(filter);
+        }
     }
 }

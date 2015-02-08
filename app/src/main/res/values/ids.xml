@@ -23,4 +23,5 @@
     <item name="switchPointsText" type="id"/>
     <item name="playersPoints" type="id"/>
     <item name="pointLimit" type="id"/>
+    <item name="helpButton" type="id"/>
 </resources>

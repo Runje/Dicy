@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import games.runje.dicy.R;
 import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.HelpAction;
 import games.runje.dicy.game.LocalGame;
 
 /**
@@ -32,6 +33,26 @@ public class LocalGameControls extends Controls
         RelativeLayout.LayoutParams pN = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pN.addRule(RelativeLayout.BELOW, R.id.pointLimit);
         addView(Next(), pN);
+
+        RelativeLayout.LayoutParams pH = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pH.addRule(RelativeLayout.BELOW, R.id.next);
+        addView(Help(), pH);
+    }
+
+    private View Help()
+    {
+        Button b = new Button(getContext());
+        b.setText("Help");
+        b.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Gamemaster.getInstance().performAction(new HelpAction());
+            }
+        });
+        b.setId(R.id.helpButton);
+        return b;
     }
 
     private View pointLimit()
