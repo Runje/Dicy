@@ -1,14 +1,21 @@
 package games.runje.dicy.controller;
 
+import games.runje.dicymodel.skills.Skill;
+
 /**
  * Created by thomas on 08.02.15.
  */
-public class HelpAction extends Action
+public class SkillAction extends Action
 {
+    private Skill skill;
+    public SkillAction(Skill skill)
+    {
+        this.skill = skill;
+    }
     @Override
     public void execute()
     {
-        Gamemaster.getInstance().help();
+        Gamemaster.getInstance().executeSkill(skill);
     }
 
     @Override

@@ -8,8 +8,9 @@ import android.widget.TextView;
 
 import games.runje.dicy.R;
 import games.runje.dicy.controller.Gamemaster;
-import games.runje.dicy.controller.HelpAction;
+import games.runje.dicy.controller.SkillAction;
 import games.runje.dicy.game.LocalGame;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 08.01.2015.
@@ -48,7 +49,7 @@ public class LocalGameControls extends Controls
             @Override
             public void onClick(View view)
             {
-                Gamemaster.getInstance().performAction(new HelpAction());
+                Gamemaster.getInstance().performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Help)));
             }
         });
         b.setId(R.id.helpButton);
@@ -119,7 +120,17 @@ public class LocalGameControls extends Controls
     {
         updatePoints();
         updateGravity();
+        updateSkills();
         gameOver();
+    }
+
+    private void updateSkills()
+    {
+        Button c = (Button) findViewById(R.id.helpButton);
+        Skill skill = game.getPlayingPlayer().getSkill(Skill.Help);
+        int max = skill.getMaxLoad();
+        int v = skill.getLoadValue();
+        c.setText(Skill.Help + " " + v + "/" + max);
     }
 
     private void gameOver()

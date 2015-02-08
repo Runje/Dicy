@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicy.controller.Gamemaster;
 import games.runje.dicy.controller.Logger;
+import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.data.PointElement;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 17.01.2015.
@@ -56,6 +62,7 @@ public class LocalGame extends Game
         for (int i = 0; i < playerNames.size(); i++)
         {
             Player p = new Player(playerNames.get(i), strategies.get(i));
+            p.addSkill(new Skill(1, 6, Skill.Help));
             players.add(p);
             Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
@@ -71,10 +78,31 @@ public class LocalGame extends Game
     }
 
     @Override
-    public void addSwitchPoints(int points)
+    public void addPointElements(ArrayList<PointElement> elements)
     {
+        int points = Utilities.getPointsFrom(elements);
         Logger.logInfo(LogKey, "Add switch points: " + points);
         switchPoints += points;
+
+        loadSkills(elements);
+    }
+
+    private void loadSkills(ArrayList<PointElement> elements)
+    {
+        //TODO: Move to PointElement Class!?
+        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        //TODO: 7 should be a constant
+        int[] count = new int[7];
+        for(PointElement pointElement : elements)
+        {
+            Coords[] coords = pointElement.getCoords();
+            for(Coords c : coords)
+            {
+                count[board.getElement(c).getValue()]++;
+            }
+        }
+
+        getPlayingPlayer().loadSkills(count);
     }
 
     @Override

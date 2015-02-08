@@ -25,6 +25,7 @@ import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 18.10.2014.
@@ -144,10 +145,10 @@ public class Gamemaster
         this.animationsWillStart = 0;
 
         ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
-        int points = Utilities.getPointsFrom(elements);
-        game.addSwitchPoints(points);
 
-        updatePoints();
+        game.addPointElements(elements);
+
+        controls.update();
         board.deleteElements(elements);
         locked = false;
     }
@@ -293,9 +294,29 @@ public class Gamemaster
         return game;
     }
 
-    public void help()
+    public void executeSkill(Skill s)
     {
-        Move move = BoardChecker.getPossiblePointMoves(board, rules).get(0);
-        ((AnimatedBoard) board).highlightElements(move);
+        // TODO
+
+        switch(s.getName())
+        {
+            case Skill.Help:
+                if (s.isExecutable())
+                {
+                    Move move = BoardChecker.getPossiblePointMoves(board, rules).get(0);
+                    ((AnimatedBoard) board).highlightElements(move);
+                    s.execute();
+                }
+                else
+                {
+                    // TODO: Show dialog
+                    Move move = BoardChecker.getPossiblePointMoves(board, rules).get(0);
+                    ((AnimatedBoard) board).highlightElements(move);
+                    s.execute();
+                    game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
+                }
+
+        }
+
     }
 }

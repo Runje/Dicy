@@ -1,6 +1,9 @@
 package games.runje.dicy.game;
 
+import java.util.ArrayList;
+
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.data.PointElement;
 
 /**
  * Created by Thomas on 17.01.2015.
@@ -13,7 +16,7 @@ public abstract class Game
     abstract public boolean moveEnds();
 
 
-    public abstract void addSwitchPoints(int points);
+    public abstract void addPointElements(ArrayList<PointElement> elements);
 
     public abstract void endSwitch();
 
@@ -26,4 +29,6 @@ public abstract class Game
     public abstract boolean isFinishedOrCancelled();
 
     public abstract void cancel();
+
+    public abstract int getPointsLimit();
 }

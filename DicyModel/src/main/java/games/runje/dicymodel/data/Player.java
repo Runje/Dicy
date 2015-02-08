@@ -1,6 +1,10 @@
 package games.runje.dicymodel.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 17.01.2015.
@@ -12,6 +16,7 @@ public class Player
     private String name;
     private Strategy strategy;
     private boolean lastMoveWasStrike = false;
+    private List<Skill> skills = new ArrayList<>();
 
     public Player(String n, Strategy strategy)
     {
@@ -79,5 +84,32 @@ public class Player
     public void setLastMoveWasStrike(boolean lastMoveWasStrike)
     {
         this.lastMoveWasStrike = lastMoveWasStrike;
+    }
+
+    public void loadSkills(int[] count)
+    {
+        for(Skill s : skills)
+        {
+            s.load(count[s.getLoadValue()]);
+        }
+    }
+
+    public Skill getSkill(String s)
+    {
+        // TODO with isInstanceOf???
+        for(Skill sk : skills)
+        {
+            if (sk.getName().equals(s))
+            {
+                return sk;
+            }
+        }
+
+        return null;
+    }
+
+    public void addSkill(Skill skill)
+    {
+        skills.add(skill);
     }
 }
