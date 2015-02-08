@@ -43,6 +43,10 @@ public class AIController
                     }
 
                     Game game = Gamemaster.getInstance().getGame();
+                    if (game.isFinishedOrCancelled())
+                    {
+                        break;
+                    }
                     if (game.hasTurn(player) && !Gamemaster.getInstance().isAnimationIsRunning())
                     {
                         LocalGame l = (LocalGame) game;

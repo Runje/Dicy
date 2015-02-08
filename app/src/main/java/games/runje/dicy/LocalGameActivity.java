@@ -106,4 +106,11 @@ public class LocalGameActivity extends Activity
 
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        Gamemaster.getInstance().getGame().cancel();
+        super.onBackPressed();
+    }
+
 }

@@ -27,6 +27,7 @@ public class LocalGame extends Game
     private String LogKey = "LocalGame";
     private int pointsLimit;
     private String winner;
+    private boolean cancelled = false;
 
     public LocalGame(int p, int pLimit, int gameLimit)
     {
@@ -56,7 +57,7 @@ public class LocalGame extends Game
         {
             Player p = new Player(playerNames.get(i), strategies.get(i));
             players.add(p);
-            Logger.logInfo("LocalGame", playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
+            Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
 
         // random starting player
@@ -112,6 +113,23 @@ public class LocalGame extends Game
     public Player getPlayingPlayer()
     {
         return players.get(turn);
+    }
+
+    @Override
+    public boolean isFinishedOrCancelled()
+    {
+        return isGameOver() || isCancelled();
+    }
+
+    @Override
+    public void cancel()
+    {
+        cancelled = true;
+    }
+
+    private boolean isCancelled()
+    {
+        return cancelled;
     }
 
     public int getMovePoints()

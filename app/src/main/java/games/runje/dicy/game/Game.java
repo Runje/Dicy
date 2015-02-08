@@ -22,4 +22,8 @@ public abstract class Game
     public abstract boolean hasAIPlayerTurn();
 
     public abstract Player getPlayingPlayer();
+
+    public abstract boolean isFinishedOrCancelled();
+
+    public abstract void cancel();
 }
