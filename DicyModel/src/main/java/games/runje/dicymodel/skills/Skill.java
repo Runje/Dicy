@@ -11,6 +11,7 @@ public class Skill
 
     public static final String Help = "Help";
     private String name;
+    private int currentValue;
 
     public Skill(int value, int max, String name)
     {
@@ -50,5 +51,10 @@ public class Skill
     public int getMaxLoad()
     {
         return maxLoad;
+    }
+
+    public int getCurrentValue()
+    {
+        return currentValue;
     }
 }

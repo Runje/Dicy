@@ -129,7 +129,7 @@ public class LocalGameControls extends Controls
         Button c = (Button) findViewById(R.id.helpButton);
         Skill skill = game.getPlayingPlayer().getSkill(Skill.Help);
         int max = skill.getMaxLoad();
-        int v = skill.getLoadValue();
+        int v = skill.getCurrentValue();
         c.setText(Skill.Help + " " + v + "/" + max);
     }
 
