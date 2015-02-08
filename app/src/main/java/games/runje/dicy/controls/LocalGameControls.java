@@ -162,12 +162,26 @@ public class LocalGameControls extends Controls
 
         enableNext();
         enableGravity();
+        enableHelp();
+    }
+
+    private void enableHelp()
+    {
+        Button c = (Button) findViewById(R.id.helpButton);
+        c.setEnabled(true);
+    }
+
+    private void disableHelp()
+    {
+        Button c = (Button) findViewById(R.id.helpButton);
+        c.setEnabled(false);
     }
 
     public void disable()
     {
         disableNext();
         disableGravity();
+        disableHelp();
     }
 
     private void disableNext()
