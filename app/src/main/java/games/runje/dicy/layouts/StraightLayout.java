@@ -25,16 +25,4 @@ public class StraightLayout extends DicesLayout
     {
         return "No Straight";
     }
-
-    @Override
-    public void increaseLength()
-    {
-
-    }
-
-    @Override
-    public int getLength()
-    {
-        return 3;
-    }
 }
