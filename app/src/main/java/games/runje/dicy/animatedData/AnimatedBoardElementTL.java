@@ -16,7 +16,8 @@ import games.runje.dicymodel.data.Coords;
  */
 public class AnimatedBoardElementTL implements View.OnTouchListener
 {
-    private Coords position;
+    protected Coords position;
+    private boolean switchEnabled = true;
 
     public AnimatedBoardElementTL(Coords position)
     {
@@ -38,6 +39,31 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent)
+    {
+        if (switchEnabled)
+        {
+            return switchOnTouch(view, motionEvent);
+        }
+        else
+        {
+            return selectOnTouch(view, motionEvent);
+        }
+    }
+
+    private boolean selectOnTouch(View view, MotionEvent motionEvent)
+    {
+        switch (motionEvent.getAction())
+        {
+            case (MotionEvent.ACTION_UP):
+                Gamemaster.getInstance().select(position);
+                break;
+
+
+        }
+        return true;
+    }
+
+    private boolean switchOnTouch(View view, MotionEvent motionEvent)
     {
         float x1 = 0;
         float x2 = 0;
@@ -104,5 +130,15 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
             }
         }
         return true;
+    }
+
+    public boolean isSwitchEnabled()
+    {
+        return switchEnabled;
+    }
+
+    public void setSwitchEnabled(boolean switchEnabled)
+    {
+        this.switchEnabled = switchEnabled;
     }
 }

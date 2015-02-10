@@ -24,4 +24,5 @@
     <item name="playersPoints" type="id"/>
     <item name="pointLimit" type="id"/>
     <item name="helpButton" type="id"/>
+    <item name="changeButton" type="id"/>
 </resources>

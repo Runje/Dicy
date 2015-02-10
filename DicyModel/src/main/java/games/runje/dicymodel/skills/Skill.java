@@ -5,13 +5,12 @@ package games.runje.dicymodel.skills;
  */
 public class Skill
 {
+    public static final String Help = "Help";
+    public static final String Change = "Change";
     private int loadValue;
     private int maxLoad;
     private int currentLoad;
-
-    public static final String Help = "Help";
     private String name;
-    private int currentValue;
 
     public Skill(int value, int max, String name)
     {
@@ -46,6 +45,11 @@ public class Skill
     public void execute()
     {
         currentLoad -= maxLoad;
+
+        if (currentLoad < 0)
+        {
+            currentLoad = 0;
+        }
     }
 
     public int getMaxLoad()
@@ -53,8 +57,8 @@ public class Skill
         return maxLoad;
     }
 
-    public int getCurrentValue()
+    public int getCurrentLoad()
     {
-        return currentValue;
+        return currentLoad;
     }
 }

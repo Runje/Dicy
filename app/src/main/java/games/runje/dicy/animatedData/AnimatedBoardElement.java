@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,8 +21,8 @@ public class AnimatedBoardElement extends ImageView
     private final String LogKey = "AnimatedElement";
     private int value;
     private AnimatedBoardElementTL touchListener;
-
     private Coords position;
+
 
     public AnimatedBoardElement(Context context, BoardElement element)
     {
@@ -67,6 +68,11 @@ public class AnimatedBoardElement extends ImageView
                 return 0;
 
         }
+    }
+
+    public AnimatedBoardElementTL getTouchListener()
+    {
+        return touchListener;
     }
 
     public int getValue()
@@ -136,5 +142,12 @@ public class AnimatedBoardElement extends ImageView
         Logger.logInfo(LogKey, "Removing from View: " + this.getPosition() + ". Value = " + this.getValue() + ". NULL: " + (this.getParent() == null));
         // Attention: dependent from the parents layout
         ((RelativeLayout) this.getParent()).removeView(this);
+    }
+
+    @Override
+    public void setOnTouchListener(View.OnTouchListener l)
+    {
+        super.setOnTouchListener(l);
+        touchListener = (AnimatedBoardElementTL) l;
     }
 }

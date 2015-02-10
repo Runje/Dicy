@@ -38,6 +38,10 @@ public class LocalGameControls extends Controls
         RelativeLayout.LayoutParams pH = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pH.addRule(RelativeLayout.BELOW, R.id.next);
         addView(Help(), pH);
+
+        RelativeLayout.LayoutParams pC = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pC.addRule(RelativeLayout.BELOW, R.id.helpButton);
+        addView(Change(), pC);
     }
 
     private View Help()
@@ -53,6 +57,22 @@ public class LocalGameControls extends Controls
             }
         });
         b.setId(R.id.helpButton);
+        return b;
+    }
+
+    private View Change()
+    {
+        Button b = new Button(getContext());
+        b.setText(Skill.Change);
+        b.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Gamemaster.getInstance().performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Change)));
+            }
+        });
+        b.setId(R.id.changeButton);
         return b;
     }
 
@@ -129,8 +149,14 @@ public class LocalGameControls extends Controls
         Button c = (Button) findViewById(R.id.helpButton);
         Skill skill = game.getPlayingPlayer().getSkill(Skill.Help);
         int max = skill.getMaxLoad();
-        int v = skill.getCurrentValue();
+        int v = skill.getCurrentLoad();
         c.setText(Skill.Help + " " + v + "/" + max);
+
+        Button cB = (Button) findViewById(R.id.changeButton);
+        skill = game.getPlayingPlayer().getSkill(Skill.Change);
+        max = skill.getMaxLoad();
+        v = skill.getCurrentLoad();
+        cB.setText(Skill.Change + " " + v + "/" + max);
     }
 
     private void gameOver()
@@ -174,6 +200,19 @@ public class LocalGameControls extends Controls
         enableNext();
         enableGravity();
         enableHelp();
+        enableChange();
+    }
+
+    private void enableChange()
+    {
+        Button c = (Button) findViewById(R.id.changeButton);
+        c.setEnabled(true);
+    }
+
+    private void disableChange()
+    {
+        Button c = (Button) findViewById(R.id.changeButton);
+        c.setEnabled(false);
     }
 
     private void enableHelp()
@@ -193,6 +232,7 @@ public class LocalGameControls extends Controls
         disableNext();
         disableGravity();
         disableHelp();
+        disableChange();
     }
 
     private void disableNext()

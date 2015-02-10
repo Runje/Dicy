@@ -10,6 +10,8 @@ import games.runje.dicymodel.data.PointElement;
  */
 public abstract class Game
 {
+    private boolean strikePossible = true;
+
     /**
      * @return if the game is over.
      */
@@ -31,4 +33,14 @@ public abstract class Game
     public abstract void cancel();
 
     public abstract int getPointsLimit();
+
+    public boolean isStrikePossible()
+    {
+        return strikePossible;
+    }
+
+    public void setStrikePossible(boolean strikePossible)
+    {
+        this.strikePossible = strikePossible;
+    }
 }

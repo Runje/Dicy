@@ -72,6 +72,11 @@ public abstract class BoardElement
         return this.value;
     }
 
+    public void setValue(int value)
+    {
+        this.value = value;
+    }
+
     public Coords getPosition()
     {
         return this.position;

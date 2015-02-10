@@ -15,12 +15,12 @@ import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicy.game.Game;
 import games.runje.dicy.game.LocalGame;
 import games.runje.dicymodel.Rules;
-import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Simulator;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
+import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.Player;
@@ -267,6 +267,7 @@ public class Gamemaster
                 }
 
                 controls.enable();
+                game.setStrikePossible(true);
             }
         }
 
@@ -316,7 +317,45 @@ public class Gamemaster
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
 
+            case Skill.Change:
+                if (s.isExecutable())
+                {
+                    // TODO: Build Skill Executor
+                    Gamemaster.getInstance().controls.disable();
+                    Gamemaster.getInstance().waitForDiceToGetTouched(s);
+                    s.execute();
+                }
+                else
+                {
+                    // TODO: Show dialog
+                    Gamemaster.getInstance().controls.disable();
+                    Gamemaster.getInstance().waitForDiceToGetTouched(s);
+                    s.execute();
+                    game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
+                }
+
         }
 
+        controls.update();
+    }
+
+    private void waitForDiceToGetTouched(Skill s)
+    {
+        AnimatedBoard b = (AnimatedBoard) board;
+        b.changeToSelectListener();
+
+        // TODO: SwitchListener still on!
+    }
+
+    public void select(Coords position)
+    {
+        int newValue = 6;
+        board.changeElement(position, newValue);
+        AnimatedBoard b = (AnimatedBoard) board;
+        b.changeToSwitchListener();
+        game.setStrikePossible(false);
+        updateAfterSwitch();
+
+        // TODO: execute skill
     }
 }

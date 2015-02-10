@@ -63,6 +63,7 @@ public class LocalGame extends Game
         {
             Player p = new Player(playerNames.get(i), strategies.get(i));
             p.addSkill(new Skill(1, 6, Skill.Help));
+            p.addSkill(new Skill(6, 6, Skill.Change));
             players.add(p);
             Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
@@ -103,13 +104,19 @@ public class LocalGame extends Game
         }
 
         getPlayingPlayer().loadSkills(count);
+        for (int i = 0; i < count.length; i++)
+        {
+            Logger.logInfo(LogKey, "i: " + i + ", count: " + count[i]);
+        }
+
+        Logger.logInfo(LogKey, "Skillload: " + getPlayingPlayer().getSkill(Skill.Help).getCurrentLoad());
     }
 
     @Override
     public void endSwitch()
     {
         Logger.logInfo(LogKey, "End switch");
-        if (switchPoints > pointsLimit)
+        if (switchPoints > pointsLimit || !isStrikePossible())
         {
             movePoints += switchPoints;
         }

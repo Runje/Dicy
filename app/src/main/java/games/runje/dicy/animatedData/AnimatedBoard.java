@@ -2,7 +2,6 @@ package games.runje.dicy.animatedData;
 
 import android.app.Activity;
 import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.widget.RelativeLayout;
 
@@ -379,5 +378,33 @@ public class AnimatedBoard extends Board
         {
             e.setColorFilter(filter);
         }
+    }
+
+    public void changeToSelectListener()
+    {
+        for (int row = 0; row < this.rows; row++)
+        {
+            for (int column = 0; column < this.columns; column++)
+            {
+                this.animatedBoard.get(row).get(column).getTouchListener().setSwitchEnabled(false);
+            }
+        }
+    }
+
+    public void changeToSwitchListener()
+    {
+        for (int row = 0; row < this.rows; row++)
+        {
+            for (int column = 0; column < this.columns; column++)
+            {
+                this.animatedBoard.get(row).get(column).getTouchListener().setSwitchEnabled(true);
+            }
+        }
+    }
+
+    public void changeElement(Coords position, int newValue)
+    {
+        super.changeElement(position, newValue);
+        getAnimatedElement(position).setValue(newValue);
     }
 }

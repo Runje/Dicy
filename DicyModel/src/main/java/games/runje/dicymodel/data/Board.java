@@ -65,6 +65,7 @@ public class Board
 
     /**
      * Copy Constructor.
+     *
      * @param b
      */
     public Board(Board b)
@@ -527,5 +528,10 @@ public class Board
                 return new Coords(pos.row, pos.column - offset);
         }
         return null;
+    }
+
+    public void changeElement(Coords position, int newValue)
+    {
+        getElement(position).setValue(newValue);
     }
 }

@@ -91,6 +91,7 @@ public class Player
         for(Skill s : skills)
         {
             s.load(count[s.getLoadValue()]);
+
         }
     }
 
