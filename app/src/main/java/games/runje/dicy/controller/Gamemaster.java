@@ -316,6 +316,7 @@ public class Gamemaster
                     s.execute();
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
+                break;
 
             case Skill.Change:
                 if (s.isExecutable())
@@ -333,6 +334,7 @@ public class Gamemaster
                     s.execute();
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
+                break;
 
         }
 
