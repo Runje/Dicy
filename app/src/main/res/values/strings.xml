@@ -8,4 +8,6 @@
     <string name="title_activity_highscore">HighscoreActivity</string>
     <string name="title_activity_option">Options</string>
 
+    <string name="title_activity_online_game">OnlineGameActivity</string>
+
 </resources>

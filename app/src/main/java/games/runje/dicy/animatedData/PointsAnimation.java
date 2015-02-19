@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.PointElement;
 
@@ -19,23 +19,25 @@ public class PointsAnimation implements Animation.AnimationListener
 {
     private final ArrayList<PointElement> elements;
     private ArrayList<TextView> tvs;
+    private AnimatedGamemaster gamemaster;
 
-    public PointsAnimation(ArrayList<PointElement> elements)
+    public PointsAnimation(ArrayList<PointElement> elements, AnimatedGamemaster gm)
     {
         this.elements = elements;
+        this.gamemaster = gm;
         this.tvs = new ArrayList<>();
     }
 
     @Override
     public void onAnimationStart(Animation animation)
     {
-        ((AnimatedBoard) Gamemaster.getInstance().getBoard()).highlightElements(elements);
+        ((AnimatedBoard) gamemaster.getBoard()).highlightElements(elements);
     }
 
     @Override
     public void onAnimationEnd(Animation animation)
     {
-        AnimatedBoard board = ((AnimatedBoard) Gamemaster.getInstance().getBoard());
+        AnimatedBoard board = ((AnimatedBoard) gamemaster.getBoard());
         ArrayList<Coords> coords = Coords.pointElementsToCoords(elements);
 
         for (Coords c : coords)
@@ -50,8 +52,8 @@ public class PointsAnimation implements Animation.AnimationListener
             ((RelativeLayout) tv.getParent()).removeView(tv);
         }
 
-        Gamemaster.getInstance().anmiationEnded();
-        Gamemaster.getInstance().updaterAfterPoints();
+        gamemaster.anmiationEnded();
+        gamemaster.updaterAfterPoints();
     }
 
     @Override
@@ -62,8 +64,8 @@ public class PointsAnimation implements Animation.AnimationListener
 
     public void start()
     {
-        Gamemaster.getInstance().startAnimation();
-        AnimatedBoard board = ((AnimatedBoard) Gamemaster.getInstance().getBoard());
+        gamemaster.startAnimation();
+        AnimatedBoard board = ((AnimatedBoard) gamemaster.getBoard());
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0,
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
@@ -86,6 +88,5 @@ public class PointsAnimation implements Animation.AnimationListener
             board.getGameLayout().addView(tv);
             tvs.add(tv);
         }
-
     }
 }

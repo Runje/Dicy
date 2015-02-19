@@ -3,7 +3,7 @@ package games.runje.dicy.animatedData;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.data.Coords;
 
@@ -14,24 +14,26 @@ public class FallAnimation implements Animation.AnimationListener
 {
     private final AnimatedBoardElement element;
     private final Coords to;
+    private final AnimatedGamemaster gamemaster;
     private String LogKey = "FallAnimation";
     private boolean update;
 
-    public FallAnimation(AnimatedBoardElement element, Coords to, boolean update)
+    public FallAnimation(AnimatedBoardElement element, Coords to, boolean update, AnimatedGamemaster gm)
     {
+        this.gamemaster = gm;
         this.element = element;
         this.to = to;
         this.update = update;
     }
 
-    public FallAnimation(AnimatedBoardElement element, Coords to)
+    public FallAnimation(AnimatedBoardElement element, Coords to, AnimatedGamemaster gm)
     {
-        this(element, to, true);
+        this(element, to, true, gm);
     }
 
     public void start()
     {
-        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        AnimatedBoard board = (AnimatedBoard) gamemaster.getBoard();
         float dx = board.getGameLayout().CoordsToX(to) - element.getX();
         float dy = board.getGameLayout().CoordsToY(to) - element.getY();
 
@@ -56,7 +58,7 @@ public class FallAnimation implements Animation.AnimationListener
     {
         element.clearAnimation();
         // set new position
-        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        AnimatedBoard board = (AnimatedBoard) gamemaster.getBoard();
         AnimatedBoardElement toElement = board.getAnimatedElement(to);
         board.setAnimatedElement(to, element);
 
@@ -66,14 +68,14 @@ public class FallAnimation implements Animation.AnimationListener
 
         Logger.logDebug(LogKey, "End from To: " + this.to + " ex: " + element.getX() + ", ey: " + element.getY());
 
-        Gamemaster.getInstance().anmiationEnded();
+        gamemaster.anmiationEnded();
         if (update)
         {
-            Gamemaster.getInstance().updateAfterFall();
+            gamemaster.updateAfterFall();
         }
         else
         {
-            Gamemaster.getInstance().getControls().enable();
+            gamemaster.getControls().enable();
         }
 
     }

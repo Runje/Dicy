@@ -4,17 +4,19 @@ import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import games.runje.dicy.R;
+import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.Logger;
-import games.runje.dicy.game.LocalGame;
+import games.runje.dicymodel.game.LocalGame;
 
 /**
  * Created by Thomas on 08.01.2015.
  */
 public class ArenaControls extends Controls
 {
-    public ArenaControls(Activity context, LocalGame g)
+    public ArenaControls(Activity context, LocalGame g, AnimatedBoard b, AnimatedGamemaster gm)
     {
-        super(context);
+        super(context, b, gm);
         this.game = g;
         addView(diagonalCheck());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

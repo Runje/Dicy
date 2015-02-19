@@ -7,7 +7,6 @@ import java.util.Random;
  */
 public class Dice extends BoardElement
 {
-
     public Dice()
     {
         super();

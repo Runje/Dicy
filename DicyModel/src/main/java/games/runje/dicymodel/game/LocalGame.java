@@ -1,14 +1,12 @@
-package games.runje.dicy.game;
+package games.runje.dicymodel.game;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicy.controller.Gamemaster;
-import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
@@ -54,7 +52,6 @@ public class LocalGame extends Game
     {
         pointsLimit = pointLimit;
         gameEndPoints = gameLimit;
-
         strategies = s;
 
         players = new ArrayList<>();
@@ -65,7 +62,7 @@ public class LocalGame extends Game
             p.addSkill(new Skill(1, 6, Skill.Help));
             p.addSkill(new Skill(6, 6, Skill.Change));
             players.add(p);
-            Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
+            //Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
 
         // random starting player
@@ -79,25 +76,24 @@ public class LocalGame extends Game
     }
 
     @Override
-    public void addPointElements(ArrayList<PointElement> elements)
+    public void addPointElements(ArrayList<PointElement> elements, Board board)
     {
         int points = Utilities.getPointsFrom(elements);
-        Logger.logInfo(LogKey, "Add switch points: " + points);
+        //Logger.logInfo(LogKey, "Add switch points: " + points);
         switchPoints += points;
 
-        loadSkills(elements);
+        loadSkills(elements, board);
     }
 
-    private void loadSkills(ArrayList<PointElement> elements)
+    private void loadSkills(ArrayList<PointElement> elements, Board board)
     {
-        //TODO: Move to PointElement Class!?
-        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        //TODO: Move to PointElement Class!? In PointElement should be the value!
         //TODO: 7 should be a constant
         int[] count = new int[7];
-        for(PointElement pointElement : elements)
+        for (PointElement pointElement : elements)
         {
             Coords[] coords = pointElement.getCoords();
-            for(Coords c : coords)
+            for (Coords c : coords)
             {
                 count[board.getElement(c).getValue()]++;
             }
@@ -106,16 +102,16 @@ public class LocalGame extends Game
         getPlayingPlayer().loadSkills(count);
         for (int i = 0; i < count.length; i++)
         {
-            Logger.logInfo(LogKey, "i: " + i + ", count: " + count[i]);
+            //Logger.logInfo(LogKey, "i: " + i + ", count: " + count[i]);
         }
 
-        Logger.logInfo(LogKey, "Skillload: " + getPlayingPlayer().getSkill(Skill.Help).getCurrentLoad());
+        //Logger.logInfo(LogKey, "Skillload: " + getPlayingPlayer().getSkill(Skill.Help).getCurrentLoad());
     }
 
     @Override
     public void endSwitch()
     {
-        Logger.logInfo(LogKey, "End switch");
+        //Logger.logInfo(LogKey, "End switch");
         if (switchPoints > pointsLimit || !isStrikePossible())
         {
             movePoints += switchPoints;
@@ -249,7 +245,7 @@ public class LocalGame extends Game
             winner = w;
         }
 
-        Logger.logInfo(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
+        //Logger.logInfo(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
         return lastPlayerTurn && enoughPoints;
     }
 

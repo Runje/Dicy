@@ -3,7 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="#0099cc"
-             tools:context="games.runje.dicy.StartActivity">
+             tools:context="games.runje.dicy.OnlineGameActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -36,39 +36,30 @@
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 
-            <Button
-                android:id="@+id/dummy_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button"/>
-
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/StatusClient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
+            android:text="Connecting To Server..."/>
+
         <Button
-            android:id="@+id/button"
+            android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:onClick="clickTestarena"
-            android:text="Testarena"/>
+            android:onClick="clickFindOpponent"
+            android:text="Find Opponent"/>
 
-        <Button
-            android:id="@+id/button2"
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
-            android:onClick="clickHighscore"
-            android:text="Local Game"/>
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:onClick="clickOnlineGame"
-            android:text="Online Game"/>
+            android:layout_gravity="center_horizontal|bottom"
+            android:text="No Opponent"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
     </FrameLayout>
 
 </FrameLayout>

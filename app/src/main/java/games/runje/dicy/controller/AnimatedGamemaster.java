@@ -6,18 +6,16 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.LocalGameActivity;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicy.controls.ArenaControls;
 import games.runje.dicy.controls.Controls;
 import games.runje.dicy.controls.LocalGameControls;
-import games.runje.dicy.game.Game;
-import games.runje.dicy.game.LocalGame;
+import games.runje.dicymodel.Gamemaster;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Simulator;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
+import games.runje.dicymodel.communication.Message;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
@@ -25,41 +23,50 @@ import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
+import games.runje.dicymodel.game.Game;
+import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 18.10.2014.
  */
-public class Gamemaster
+public class AnimatedGamemaster extends Gamemaster
 {
-    private static Gamemaster instance;
+    private static AnimatedGamemaster animatedInstance;
     private final String LogKey = "Gamemaster";
+    protected Activity activity;
 
-    private Game game;
-    private Board board;
-    private Rules rules;
-    private int animationEnded = 0;
-    private int animationsWillStart = 0;
-    private Controls controls;
-    private boolean locked = false;
+    protected Game game;
+    protected Board board;
+    protected Rules rules;
+    protected int animationEnded = 0;
+    protected int animationsWillStart = 0;
+    protected Controls controls;
+    protected boolean locked = false;
 
-    private Gamemaster(Game game, Board b, Rules r, Controls controls)
+    protected AnimatedGamemaster(LocalGame game, Board b, Rules r, Activity a)
     {
         this.game = game;
-        this.board = b;
+        this.activity = a;
+        this.board = new AnimatedBoard(b, a, this);
         this.rules = r;
-        this.controls = controls;
+        this.controls = new LocalGameControls(activity, game, (AnimatedBoard) b, this);
     }
 
-    public static Gamemaster getInstance()
+    protected AnimatedGamemaster()
     {
-        return instance;
+
+    }
+
+    public static AnimatedGamemaster getInstance()
+    {
+        return animatedInstance;
     }
 
     public static void createAnimatedGame(Activity a)
     {
-        assert instance == null : "Game is already created";
-        Board b = new AnimatedBoard(new int[]{3, 3, 1, 2, 1,
+        assert animatedInstance == null : "Game is already created";
+        /*AnimatedBoard b = new AnimatedBoard(new int[]{3, 3, 1, 2, 1,
                 1, 2, 2, 3, 2,
                 3, 1, 3, 3, 2,
                 3, 2, 3, 2, 2,
@@ -72,28 +79,30 @@ public class Gamemaster
         rules.initStraightPoints(2);
         b.setGravity(Gravity.Down);
         LocalGame g = new LocalGame(1, -1, 9999);
-        Controls controls = new ArenaControls(a, g);
-        instance = new Gamemaster(g, b, rules, controls);
-        Gamemaster.getInstance().update();
+        Controls controls = new ArenaControls(a, g, b);
+        instance = new AnimatedGamemaster(g, b, rules, controls);
+        update();*/
     }
 
-    public static void createLocalGame(LocalGameActivity activity, List<String> players, int length, Rules rules, List<Strategy> s)
+    public static void createLocalGame(Activity activity, List<String> players, int length, Rules rules, List<Strategy> s)
     {
-        Board b = AnimatedBoard.createBoardNoPoints(5, 5, activity, rules);
+        Board b = Board.createBoardNoPoints(5, 5, rules);
         b.setGravity(Gravity.Down);
         rules.setPointLimit(Simulator.getLimit(rules, b));
+        // TODO: gamemaster
         LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, players, s);
         for (Player p : game.getPlayers())
         {
             if (p.isAi())
             {
-                new AIController(p, activity);
+                // TODO: gamemaster
+                new AIController(p, activity, null);
             }
         }
-        Controls controls = new LocalGameControls(activity, game);
-        instance = new Gamemaster(game, b, rules, controls);
 
-        Gamemaster.getInstance().update();
+        animatedInstance = new AnimatedGamemaster(game, b, rules, activity);
+
+        AnimatedGamemaster.getInstance().update();
     }
 
     public void anmiationEnded()
@@ -101,7 +110,7 @@ public class Gamemaster
         animationEnded++;
     }
 
-    private void update()
+    protected void update()
     {
         this.controls.update();
     }
@@ -109,6 +118,11 @@ public class Gamemaster
     public Board getBoard()
     {
         return board;
+    }
+
+    public void setBoard(Board board)
+    {
+        this.board = board;
     }
 
     public boolean isAnimationIsRunning()
@@ -131,6 +145,16 @@ public class Gamemaster
         }
     }
 
+    public void lock()
+    {
+        locked = true;
+    }
+
+    public void unlock()
+    {
+        locked = false;
+    }
+
     public void updateAfterSwitch()
     {
         if (isAnimationIsRunning())
@@ -146,7 +170,7 @@ public class Gamemaster
 
         ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
 
-        game.addPointElements(elements);
+        game.addPointElements(elements, board);
 
         controls.update();
         board.deleteElements(elements);
@@ -186,6 +210,11 @@ public class Gamemaster
         return rules;
     }
 
+    public void setRules(Rules rules)
+    {
+        this.rules = rules;
+    }
+
     public void startAnimation()
     {
         this.animationsWillStart++;
@@ -196,6 +225,11 @@ public class Gamemaster
         return controls;
     }
 
+    public void setControls(Controls controls)
+    {
+        this.controls = controls;
+    }
+
     public void disableControls()
     {
         controls.disable();
@@ -203,9 +237,9 @@ public class Gamemaster
 
     public void restart()
     {
-        Activity a = ((AnimatedBoard) board).getActivity();
+        /*Activity a = ((AnimatedBoard) board).getActivity();
         board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a);
-        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        AnimatedBoard board = (AnimatedBoard) getBoard();
         RelativeLayout b = board.getGameLayout();
         b.setId(R.id.board);
         RelativeLayout l = new RelativeLayout(a);
@@ -217,7 +251,7 @@ public class Gamemaster
         params.topMargin = 50;
         l.addView(controls, params);
         a.setContentView(l);
-        this.controls.updatePoints();
+        this.controls.updatePoints();*/
     }
 
     public void updaterAfterPoints()
@@ -250,8 +284,8 @@ public class Gamemaster
                     // recreate board
                     Logger.logInfo(LogKey, "No more moves possible");
                     Activity a = ((AnimatedBoard) board).getActivity();
-                    this.board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a);
-                    AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+                    this.board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a, this);
+                    AnimatedBoard board = (AnimatedBoard) getBoard();
                     RelativeLayout b = board.getGameLayout();
                     b.setId(R.id.board);
                     RelativeLayout l = new RelativeLayout(a);
@@ -295,11 +329,16 @@ public class Gamemaster
         return game;
     }
 
+    public void setGame(LocalGame game)
+    {
+        this.game = game;
+    }
+
     public void executeSkill(Skill s)
     {
         // TODO
 
-        switch(s.getName())
+        switch (s.getName())
         {
             case Skill.Help:
                 if (s.isExecutable())
@@ -322,15 +361,15 @@ public class Gamemaster
                 if (s.isExecutable())
                 {
                     // TODO: Build Skill Executor
-                    Gamemaster.getInstance().controls.disable();
-                    Gamemaster.getInstance().waitForDiceToGetTouched(s);
+                    controls.disable();
+                    waitForDiceToGetTouched(s);
                     s.execute();
                 }
                 else
                 {
                     // TODO: Show dialog
-                    Gamemaster.getInstance().controls.disable();
-                    Gamemaster.getInstance().waitForDiceToGetTouched(s);
+                    controls.disable();
+                    waitForDiceToGetTouched(s);
                     s.execute();
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
@@ -359,5 +398,9 @@ public class Gamemaster
         updateAfterSwitch();
 
         // TODO: execute skill
+    }
+
+    public void sendMessageToClient(Message message)
+    {
     }
 }

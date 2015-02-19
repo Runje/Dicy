@@ -38,6 +38,13 @@
             android:label="@string/title_activity_option"
             android:theme="@style/FullscreenTheme">
         </activity>
+        <activity
+            android:name=".OnlineGameActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_online_game"
+            android:theme="@style/FullscreenTheme">
+        </activity>
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.util.SystemUiHider;
 
 
@@ -167,15 +167,15 @@ public class GameActivity extends Activity
         // are available.
         delayedHide(100);
         RelativeLayout l = new RelativeLayout(this);
-        Gamemaster.createAnimatedGame(this);
-        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        AnimatedGamemaster.createAnimatedGame(this);
+        AnimatedBoard board = (AnimatedBoard) AnimatedGamemaster.getInstance().getBoard();
         RelativeLayout b = board.getGameLayout();
         RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) b.getLayoutParams();
         p.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
         b.setId(R.id.board);
         l.addView(b, p);
 
-        RelativeLayout controls = Gamemaster.getInstance().getControls();
+        RelativeLayout controls = AnimatedGamemaster.getInstance().getControls();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.BELOW, R.id.board);
         params.topMargin = 50;

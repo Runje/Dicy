@@ -18,11 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.R;
-import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.Logger;
-import games.runje.dicy.game.LocalGame;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.LocalGame;
 
 /**
  * Created by Thomas on 02.01.2015.
@@ -30,16 +31,21 @@ import games.runje.dicymodel.data.Player;
 public class Controls extends RelativeLayout
 {
     protected final Activity activity;
+    protected final AnimatedGamemaster gamemaster;
     LocalGame game;
     List<TextView> playersView = new ArrayList<>();
     private List<TextView> strikesView = new ArrayList<>();
     private String LogKey = "Controls";
+    private AnimatedBoard board;
+
 
     //TODO: controls as member
-    public Controls(Activity context)
+    public Controls(Activity context, AnimatedBoard b, AnimatedGamemaster gm)
     {
         super(context);
+        this.gamemaster = gm;
         this.activity = context;
+        this.board = b;
 
     }
 
@@ -52,7 +58,7 @@ public class Controls extends RelativeLayout
             @Override
             public void onClick(View view)
             {
-                Gamemaster.getInstance().restart();
+                //gamemaster.restart();
             }
         });
 
@@ -132,7 +138,7 @@ public class Controls extends RelativeLayout
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b)
             {
-                Gamemaster.getInstance().getRules().setDiagonalActive(b);
+                game.getRules().setDiagonalActive(b);
             }
         });
         cb.setId(R.id.diagonalCB);
@@ -174,7 +180,7 @@ public class Controls extends RelativeLayout
             public void afterTextChanged(Editable editable)
             {
                 EditText edit = (EditText) findViewById(R.id.straightEdit);
-                int value = Gamemaster.getInstance().getRules().getMinStraight();
+                int value = game.getRules().getMinStraight();
                 try
                 {
                     int v = Integer.parseInt(edit.getText().toString());
@@ -182,12 +188,13 @@ public class Controls extends RelativeLayout
                     {
                         value = v;
                     }
-                } catch (NumberFormatException nfe)
+                }
+                catch (NumberFormatException nfe)
                 {
                     // do nothing
                 }
 
-                Gamemaster.getInstance().getRules().setMinStraight(value);
+                game.getRules().setMinStraight(value);
             }
         });
         l.setId(R.id.straight);
@@ -204,10 +211,10 @@ public class Controls extends RelativeLayout
         ImageView arrowRight = new ImageView(getContext());
         ImageView arrowUp = new ImageView(getContext());
         ImageView arrowDown = new ImageView(getContext());
-        arrowLeft.setOnClickListener(new GravityListener(Gravity.Left));
-        arrowRight.setOnClickListener(new GravityListener(Gravity.Right));
-        arrowUp.setOnClickListener(new GravityListener(Gravity.Up));
-        arrowDown.setOnClickListener(new GravityListener(Gravity.Down));
+        arrowLeft.setOnClickListener(new GravityListener(Gravity.Left, gamemaster));
+        arrowRight.setOnClickListener(new GravityListener(Gravity.Right, gamemaster));
+        arrowUp.setOnClickListener(new GravityListener(Gravity.Up, gamemaster));
+        arrowDown.setOnClickListener(new GravityListener(Gravity.Down, gamemaster));
         arrowLeft.setImageResource(arrow);
         arrowLeft.setColorFilter(Color.BLUE);
         arrowLeft.setId(R.id.arrowLeft);
@@ -283,7 +290,7 @@ public class Controls extends RelativeLayout
             public void afterTextChanged(Editable editable)
             {
                 EditText edit = (EditText) findViewById(R.id.xOfAKindEdit);
-                int value = Gamemaster.getInstance().getRules().getMinXOfAKind();
+                int value = game.getRules().getMinXOfAKind();
                 try
                 {
                     int v = Integer.parseInt(edit.getText().toString());
@@ -291,12 +298,13 @@ public class Controls extends RelativeLayout
                     {
                         value = v;
                     }
-                } catch (NumberFormatException nfe)
+                }
+                catch (NumberFormatException nfe)
                 {
                     // do nothing
                 }
 
-                Gamemaster.getInstance().getRules().setMinXOfAKind(value);
+                game.getRules().setMinXOfAKind(value);
             }
         });
         l.setId(R.id.xOfAKind);
@@ -315,19 +323,19 @@ public class Controls extends RelativeLayout
     private void updateXOfAKind()
     {
         EditText edit = (EditText) findViewById(R.id.xOfAKindEdit);
-        edit.setText(Integer.toString(Gamemaster.getInstance().getRules().getMinXOfAKind()));
+        edit.setText(Integer.toString(game.getRules().getMinXOfAKind()));
     }
 
     private void updateDiagonal()
     {
         CheckBox cb = (CheckBox) findViewById(R.id.diagonalCB);
-        cb.setChecked(Gamemaster.getInstance().getRules().isDiagonalActive());
+        cb.setChecked(game.getRules().isDiagonalActive());
     }
 
     private void updateStraight()
     {
         EditText edit = (EditText) findViewById(R.id.straightEdit);
-        edit.setText(Integer.toString(Gamemaster.getInstance().getRules().getMinStraight()));
+        edit.setText(Integer.toString(game.getRules().getMinStraight()));
     }
 
     public void disable()
@@ -453,7 +461,7 @@ public class Controls extends RelativeLayout
         ImageView downArrow = (ImageView) findViewById(R.id.arrowDown);
         downArrow.setColorFilter(Color.BLUE);
 
-        switch (Gamemaster.getInstance().getBoard().getGravity())
+        switch (board.getGravity())
         {
             case Up:
                 upArrow.setColorFilter(Color.RED);

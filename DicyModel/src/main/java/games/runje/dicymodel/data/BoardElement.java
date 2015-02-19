@@ -33,6 +33,23 @@ public abstract class BoardElement
         this.position = c;
     }
 
+    public static BoardElement createFromValue(int value, int row, int column)
+    {
+        return createFromValue(value, new Coords(row, column));
+    }
+
+    public static BoardElement createFromValue(int value, Coords pos)
+    {
+        switch (value)
+        {
+            case 0:
+                return new NoElement(pos);
+            default:
+                return new Dice(value, pos);
+        }
+
+    }
+
     @Override
     public boolean equals(Object o)
     {

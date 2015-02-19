@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicy.layouts.GameLayout;
 import games.runje.dicymodel.Rules;
@@ -32,30 +32,51 @@ public class AnimatedBoard extends Board
     private ArrayList<ArrayList<AnimatedBoardElement>> animatedBoard;
 
     private GameLayout gameLayout;
+    private AnimatedGamemaster gamemaster;
 
-    public AnimatedBoard(int rows, int columns, Activity activity)
+    public AnimatedBoard(int rows, int columns, Activity activity, AnimatedGamemaster gm)
     {
         super(rows, columns);
         this.activity = activity;
+        this.gamemaster = gm;
 
         createAnimatedBoard(rows, columns);
     }
 
-    public AnimatedBoard(int[] dices, Activity a)
+    public AnimatedBoard(int[] dices, Activity a, AnimatedGamemaster gm)
     {
         super((int) Math.sqrt(dices.length));
+        this.gamemaster = gm;
         int root = (int) Math.sqrt(dices.length);
         this.activity = a;
         Board b = Board.createElementsBoard(dices);
         this.board = b.getBoard();
         createAnimatedBoard(root, root);
+
     }
 
-    public static AnimatedBoard createBoardNoPoints(int rows, int columns, Activity activity, Rules rules)
+    public AnimatedBoard(Board b, Activity activity, AnimatedGamemaster gm)
+    {
+        super(b.getNumberOfRows(), b.getNumberOfColumns());
+        this.activity = activity;
+        this.gamemaster = gm;
+
+        for (int i = 0; i < b.getNumberOfRows(); i++)
+        {
+            for (int j = 0; j < b.getNumberOfColumns(); j++)
+            {
+                getElement(i, j).setValue(b.getElement(i, j).getValue());
+            }
+        }
+
+        createAnimatedBoard(rows, columns);
+    }
+
+    public static AnimatedBoard createBoardNoPoints(int rows, int columns, Activity activity, Rules rules, AnimatedGamemaster gm)
     {
         while (true)
         {
-            AnimatedBoard b = new AnimatedBoard(rows, columns, activity);
+            AnimatedBoard b = new AnimatedBoard(rows, columns, activity, gm);
             ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(b, rules);
             if (BoardChecker.getAll(b, rules).size() == 0 && moves.size() > 0)
             {
@@ -83,7 +104,7 @@ public class AnimatedBoard extends Board
             // fill rows with dummy dices
             for (int j = 0; j < columns; j++)
             {
-                row.add(new AnimatedBoardElement(this.activity, this.getElement(i, j)));
+                row.add(new AnimatedBoardElement(this.activity, this.getElement(i, j), gamemaster));
             }
         }
 
@@ -100,7 +121,7 @@ public class AnimatedBoard extends Board
     {
         Logger.logDebug(LogKey, "Animated Switch, first: " + first + ", second: " + second + ", Board: " + this.board + "\n" + this.animatedBoard);
 
-        boolean switchback = super.switchElements(first, second, switchBackPossible, Gamemaster.getInstance().getRules());
+        boolean switchback = super.switchElements(first, second, switchBackPossible, gamemaster.getRules());
 
         if (!switchBackPossible)
         {
@@ -110,7 +131,7 @@ public class AnimatedBoard extends Board
         AnimatedBoardElement firstImage = this.getAnimatedElement(first);
         AnimatedBoardElement secondImage = this.getAnimatedElement(second);
 
-        SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, switchback);
+        SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, switchback, gamemaster);
         s.start();
 
         return switchback;
@@ -178,11 +199,25 @@ public class AnimatedBoard extends Board
     {
         ArrayList<BoardElement> elements = super.recreateElements();
         Logger.logInfo(LogKey, "Recreating elements: " + elements);
+        recreateElements(elements);
+        return elements;
+    }
+
+    /**
+     * recreates the given elements
+     *
+     * @param elements the new elements
+     */
+    public void recreateElements(ArrayList<BoardElement> elements)
+    {
+        gamemaster.lock();
+        super.recreateElements(elements);
+
         int[] max = getMaxFallLength(elements);
         for (BoardElement element : elements)
         {
             Coords pos = element.getPosition();
-            AnimatedBoardElement animatedElement = new AnimatedBoardElement(this.activity, element);
+            AnimatedBoardElement animatedElement = new AnimatedBoardElement(this.activity, element, gamemaster);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(gameLayout.getDiceSize(), gameLayout.getDiceSize());
 
             int x = 0;
@@ -212,10 +247,10 @@ public class AnimatedBoard extends Board
             animatedElement.setY(y);
             gameLayout.addView(animatedElement, params);
             Logger.logDebug(LogKey, "Pos: " + pos + ". X: " + params.leftMargin + " Y: " + params.topMargin);
-            new FallAnimation(animatedElement, pos).start();
+            new FallAnimation(animatedElement, pos, gamemaster).start();
+            gamemaster.unlock();
         }
 
-        return elements;
     }
 
     /**
@@ -301,7 +336,7 @@ public class AnimatedBoard extends Board
     public void deleteElements(ArrayList<PointElement> elements)
     {
         super.deleteElements(elements);
-        new PointsAnimation(elements).start();
+        new PointsAnimation(elements, gamemaster).start();
     }
 
     /**
@@ -348,7 +383,7 @@ public class AnimatedBoard extends Board
             AnimatedBoardElement animatedElement = this.getAnimatedElement(pos);
 
             Coords newPos = determineFallingPosition(element);
-            new FallAnimation(animatedElement, newPos).start();
+            new FallAnimation(animatedElement, newPos, gamemaster).start();
         }
 
         super.moveElementsFromGravity();

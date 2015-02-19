@@ -7,9 +7,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import games.runje.dicy.R;
-import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.SkillAction;
-import games.runje.dicy.game.LocalGame;
+import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
 /**
@@ -18,9 +19,9 @@ import games.runje.dicymodel.skills.Skill;
 public class LocalGameControls extends Controls
 {
 
-    public LocalGameControls(Activity context, LocalGame g)
+    public LocalGameControls(Activity context, LocalGame g, AnimatedBoard board, AnimatedGamemaster gm)
     {
-        super(context);
+        super(context, board, gm);
         this.game = g;
         addView(points());
         RelativeLayout.LayoutParams pA = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -53,7 +54,7 @@ public class LocalGameControls extends Controls
             @Override
             public void onClick(View view)
             {
-                Gamemaster.getInstance().performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Help)));
+                gamemaster.performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Help), gamemaster));
             }
         });
         b.setId(R.id.helpButton);
@@ -69,7 +70,7 @@ public class LocalGameControls extends Controls
             @Override
             public void onClick(View view)
             {
-                Gamemaster.getInstance().performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Change)));
+                gamemaster.performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Change), gamemaster));
             }
         });
         b.setId(R.id.changeButton);
@@ -128,7 +129,7 @@ public class LocalGameControls extends Controls
             @Override
             public void onClick(View view)
             {
-                Gamemaster.getInstance().next();
+                gamemaster.next();
             }
         });
 

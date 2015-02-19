@@ -2,10 +2,10 @@ package games.runje.dicy.controller;
 
 import android.app.Activity;
 
-import games.runje.dicy.game.Game;
-import games.runje.dicy.game.LocalGame;
 import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.Game;
+import games.runje.dicymodel.game.LocalGame;
 
 /**
  * Created by Thomas on 05.02.2015.
@@ -15,9 +15,11 @@ public class AIController
     private final Player player;
     private final Activity activity;
     private String LogKey = "AIController";
+    private AnimatedGamemaster gamemaster;
 
-    public AIController(Player p, Activity a)
+    public AIController(Player p, Activity a, AnimatedGamemaster gm)
     {
+        gamemaster = gm;
         player = p;
         activity = a;
         start();
@@ -35,19 +37,20 @@ public class AIController
                     try
                     {
                         Thread.sleep(1000);
-                    } catch (InterruptedException e)
+                    }
+                    catch (InterruptedException e)
                     {
                         // TODO
                         e.printStackTrace();
                         break;
                     }
 
-                    Game game = Gamemaster.getInstance().getGame();
+                    Game game = AnimatedGamemaster.getInstance().getGame();
                     if (game.isFinishedOrCancelled())
                     {
                         break;
                     }
-                    if (game.hasTurn(player) && !Gamemaster.getInstance().isAnimationIsRunning())
+                    if (game.hasTurn(player) && !AnimatedGamemaster.getInstance().isAnimationIsRunning())
                     {
                         LocalGame l = (LocalGame) game;
 
@@ -71,7 +74,7 @@ public class AIController
                                 @Override
                                 public void run()
                                 {
-                                    Gamemaster.getInstance().next();
+                                    AnimatedGamemaster.getInstance().next();
                                 }
                             });
 
@@ -85,9 +88,9 @@ public class AIController
     private void makeMove()
     {
         Logger.logInfo(LogKey, "Making a move");
-        Move m = player.getStrategy().getNextMove(Gamemaster.getInstance().getRules(), Gamemaster.getInstance().getBoard());
-        Action a = new SwitchAction(m.getFirst(), m.getSecond(), true);
-        Gamemaster.getInstance().performAction(a);
+        Move m = player.getStrategy().getNextMove(AnimatedGamemaster.getInstance().getRules(), gamemaster.getBoard());
+        Action a = new SwitchAction(m.getFirst(), m.getSecond(), true, gamemaster);
+        AnimatedGamemaster.getInstance().performAction(a);
     }
 
 

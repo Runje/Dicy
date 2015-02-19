@@ -24,6 +24,12 @@ public class StartActivity extends Activity
         startActivity(intent);
     }
 
+    public void clickOnlineGame(View v)
+    {
+        Intent intent = new Intent(this, OnlineGameActivity.class);
+        startActivity(intent);
+    }
+
     public void clickHighscore(View v)
     {
         Intent intent = new Intent(this, OptionActivity.class);

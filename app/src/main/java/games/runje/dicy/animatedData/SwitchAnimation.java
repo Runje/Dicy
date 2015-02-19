@@ -3,7 +3,7 @@ package games.runje.dicy.animatedData;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -16,16 +16,19 @@ public class SwitchAnimation implements Animation.AnimationListener
     private AnimatedBoardElement secondImage;
     private AnimatedBoardElement firstImage;
     private boolean update = true;
+    private AnimatedGamemaster gamemaster;
 
-    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage)
+    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, AnimatedGamemaster gm)
     {
+        this.gamemaster = gm;
         this.firstImage = firstImage;
         this.secondImage = secondImage;
         this.withSwitchBack = true;
     }
 
-    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, boolean withSwitchBack)
+    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, boolean withSwitchBack, AnimatedGamemaster gm)
     {
+        this.gamemaster = gm;
         this.firstImage = firstImage;
         this.secondImage = secondImage;
         this.withSwitchBack = withSwitchBack;
@@ -33,8 +36,8 @@ public class SwitchAnimation implements Animation.AnimationListener
 
     public void start()
     {
-        Gamemaster.getInstance().startAnimation();
-        Gamemaster.getInstance().disableControls();
+        gamemaster.startAnimation();
+        gamemaster.disableControls();
         float dx = firstImage.getX() - secondImage.getX();
         float dy = firstImage.getY() - secondImage.getY();
         TranslateAnimation first = this.createAnimation(-dx, -dy, false);
@@ -86,15 +89,15 @@ public class SwitchAnimation implements Animation.AnimationListener
         firstImage.setPosition(second);
         secondImage.setPosition(first);
 
-        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        AnimatedBoard board = (AnimatedBoard) gamemaster.getBoard();
         board.setAnimatedElement(first, secondImage);
         board.setAnimatedElement(second, firstImage);
-        Gamemaster.getInstance().anmiationEnded();
+        gamemaster.anmiationEnded();
 
         if (withSwitchBack)
         {
             // switch back
-            SwitchAnimation s = new SwitchAnimation(secondImage, firstImage, false);
+            SwitchAnimation s = new SwitchAnimation(secondImage, firstImage, false, gamemaster);
             s.setNoUpdate();
             s.start();
         }
@@ -102,11 +105,11 @@ public class SwitchAnimation implements Animation.AnimationListener
         {
             if (update)
             {
-                Gamemaster.getInstance().updateAfterSwitch();
+                gamemaster.updateAfterSwitch();
             }
             else
             {
-                Gamemaster.getInstance().getControls().enable();
+                gamemaster.getControls().enable();
             }
         }
     }

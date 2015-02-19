@@ -266,9 +266,14 @@ public class Board
         e.setPosition(pos);
     }
 
-    private void setElement(Coords c, BoardElement element)
+    public void setElement(int row, int column, BoardElement element)
     {
-        this.board.get(c.row).set(c.column, element);
+        this.board.get(row).set(column, element);
+    }
+
+    public void setElement(Coords c, BoardElement element)
+    {
+        setElement(c.row, c.column, element);
     }
 
     public ArrayList<BoardElement> recreateElements()
@@ -289,6 +294,20 @@ public class Board
         }
 
         return elements;
+    }
+
+    /**
+     * recreates the given elements
+     *
+     * @param elements the new elements
+     */
+    public void recreateElements(ArrayList<BoardElement> elements)
+    {
+        for (BoardElement element : elements)
+        {
+            setElement(element.getPosition(), element);
+            System.out.println("Setting element with value " + element.getValue() + " at " + element.getPosition());
+        }
     }
 
     public void deleteElements(ArrayList<PointElement> elements)

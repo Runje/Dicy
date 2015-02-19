@@ -8,14 +8,18 @@ import games.runje.dicymodel.skills.Skill;
 public class SkillAction extends Action
 {
     private Skill skill;
-    public SkillAction(Skill skill)
+    private AnimatedGamemaster gamemaster;
+
+    public SkillAction(Skill skill, AnimatedGamemaster gm)
     {
         this.skill = skill;
+        this.gamemaster = gm;
     }
+
     @Override
     public void execute()
     {
-        Gamemaster.getInstance().executeSkill(skill);
+        gamemaster.executeSkill(skill);
     }
 
     @Override

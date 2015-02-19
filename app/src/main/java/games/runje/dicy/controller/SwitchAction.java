@@ -3,6 +3,7 @@ package games.runje.dicy.controller;
 import android.util.Log;
 
 import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicymodel.communication.SwitchMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 
@@ -12,13 +13,15 @@ import games.runje.dicymodel.data.Coords;
 public class SwitchAction extends Action
 {
     private final boolean switchBackPossible;
+    private AnimatedGamemaster gamemaster;
     private Coords first;
     private Coords second;
 
-    public SwitchAction(Coords p, Direction direction, boolean switchBackPossible)
+    public SwitchAction(Coords p, Direction direction, boolean switchBackPossible, AnimatedGamemaster gm)
     {
         this.first = p;
         this.switchBackPossible = switchBackPossible;
+        this.gamemaster = gm;
 
         switch (direction)
         {
@@ -37,17 +40,23 @@ public class SwitchAction extends Action
         }
     }
 
-    public SwitchAction(Coords p1, Coords p2, boolean switchBackPossible)
+    public SwitchAction(Coords p1, Coords p2, boolean switchBackPossible, AnimatedGamemaster gm)
     {
         this.first = p1;
         this.second = p2;
         this.switchBackPossible = switchBackPossible;
+        this.gamemaster = gm;
     }
 
     @Override
     public void execute()
     {
-        ((AnimatedBoard) this.board).switchElements(first, second, switchBackPossible);
+        boolean switchedBack = ((AnimatedBoard) this.board).switchElements(first, second, switchBackPossible);
+        if (!switchedBack)
+        {
+            gamemaster.sendMessageToClient(new SwitchMessage(first, second));
+        }
+
         Log.d("TL", "Exectued switch elements: " + first + " with " + second);
     }
 
@@ -63,12 +72,12 @@ public class SwitchAction extends Action
     @Override
     public boolean isPossible()
     {
-        if (Gamemaster.getInstance().isAnimationIsRunning())
+        if (gamemaster.isAnimationIsRunning())
         {
             return false;
         }
 
-        Board board = Gamemaster.getInstance().getBoard();
+        Board board = gamemaster.getBoard();
 
         return !(second.row < 0 || second.row >= board.getNumberOfRows() ||
                 second.column < 0 || second.column >= board.getNumberOfColumns());

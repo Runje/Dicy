@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import games.runje.dicy.controller.Action;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.Direction;
-import games.runje.dicy.controller.Gamemaster;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicy.controller.SwitchAction;
 import games.runje.dicymodel.data.Coords;
@@ -18,9 +18,11 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
 {
     protected Coords position;
     private boolean switchEnabled = true;
+    private AnimatedGamemaster gamemaster;
 
-    public AnimatedBoardElementTL(Coords position)
+    public AnimatedBoardElementTL(Coords position, AnimatedGamemaster gm)
     {
+        this.gamemaster = gm;
         this.position = position;
     }
 
@@ -55,7 +57,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
         switch (motionEvent.getAction())
         {
             case (MotionEvent.ACTION_UP):
-                Gamemaster.getInstance().select(position);
+                gamemaster.select(position);
                 break;
 
 
@@ -122,8 +124,8 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                     return true;
                 }
 
-                Action a = new SwitchAction(position, direction, true);
-                Gamemaster.getInstance().performAction(a);
+                Action a = new SwitchAction(position, direction, true, gamemaster);
+                gamemaster.performAction(a);
                 Logger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown);
                 Toast t = Toast.makeText(view.getContext(), direction.toString() + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown, Toast.LENGTH_LONG);
                 //t.show();

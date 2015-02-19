@@ -5,7 +5,7 @@ import android.view.View;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
 import games.runje.dicy.animatedData.FallAnimation;
-import games.runje.dicy.controller.Gamemaster;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 
@@ -15,17 +15,19 @@ import games.runje.dicymodel.data.Gravity;
 public class GravityListener implements View.OnClickListener
 {
     Gravity gravity;
+    private AnimatedGamemaster gamemaster;
 
-    public GravityListener(Gravity g)
+    public GravityListener(Gravity g, AnimatedGamemaster gm)
     {
         this.gravity = g;
+        this.gamemaster = gm;
     }
 
     @Override
     public void onClick(View view)
     {
-        Gamemaster.getInstance().getBoard().setGravity(this.gravity);
-        AnimatedBoard board = (AnimatedBoard) Gamemaster.getInstance().getBoard();
+        gamemaster.getBoard().setGravity(this.gravity);
+        AnimatedBoard board = (AnimatedBoard) gamemaster.getBoard();
 
         switch (this.gravity)
         {
@@ -43,17 +45,18 @@ public class GravityListener implements View.OnClickListener
                 board.getGameLayout().setXOffset(0);
                 break;
         }
-        Gamemaster.getInstance().disableControls();
+
+        gamemaster.disableControls();
         for (int i = 0; i < board.getNumberOfRows(); i++)
         {
             for (int j = 0; j < board.getNumberOfColumns(); j++)
             {
                 Coords pos = new Coords(i, j);
                 AnimatedBoardElement aE = board.getAnimatedElement(pos);
-                Gamemaster.getInstance().startAnimation();
-                new FallAnimation(aE, pos, false).start();
+                gamemaster.startAnimation();
+                new FallAnimation(aE, pos, false, gamemaster).start();
             }
         }
-        Gamemaster.getInstance().updateGravity();
+        gamemaster.updateGravity();
     }
 }

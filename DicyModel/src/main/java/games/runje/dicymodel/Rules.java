@@ -8,30 +8,25 @@ import games.runje.dicymodel.data.PointType;
 public class Rules
 {
     /**
+     * The maximum length of one row/column.
+     */
+    public final static int maxLengthOfRow = 10;
+    /**
      * Points can be achieved diagonally.
      */
     private boolean diagonal = false;
-
     /**
      * The number of dices.
      */
     private int numberOfDices;
-
     /**
      * If a Full House gives Points.
      */
     private boolean fullHouseActive = false;
-
     /**
      * The minimum of same dices for points.
      */
     private int minXOfAKind;
-
-    /**
-     * The maximum of same dices for points.
-     */
-    private int maxXOfAKind;
-
     /**
      * The points for a straight. The index is the length of the straight.
      */
@@ -66,10 +61,10 @@ public class Rules
         this.numberOfDices = 6;
         this.minStraight = this.numberOfDices + 1;
         this.minXOfAKind = 3;
-        this.maxXOfAKind = 10;
+
         this.initStraightPoints(2);
         this.initFullHousePoints(0);
-        this.initXOfAKindPoints(this.minXOfAKind, this.maxXOfAKind, 1, 2);
+        this.initXOfAKindPoints(this.minXOfAKind, this.maxLengthOfRow, 1, 2);
         // TODO: Calculate
         this.pointLimit = 65;
     }
@@ -162,9 +157,9 @@ public class Rules
         this.minXOfAKind = minXOfAKind;
     }
 
-    public int getMaxXOfAKind()
+    public int getMaxLengthOfRow()
     {
-        return this.maxXOfAKind;
+        return this.maxLengthOfRow;
     }
 
     public int getXOfAKindPoints(int x, int value)
