@@ -86,6 +86,21 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
     public void updateAfterFall()
     {
+        if (isAnimationIsRunning())
+        {
+            return;
+        }
+
+        locked = true;
+        AnimatedBoard b = ((AnimatedBoard) board);
+
+        locked = false;
+
+        if (!b.hasNoElements())
+        {
+            updateAfterSwitch();
+        }
+
     }
 
     public void updateAfterFall(ArrayList<BoardElement> elements)
@@ -97,7 +112,6 @@ public class OnlineGamemaster extends AnimatedGamemaster
         }
 
         locked = true;
-        ((AnimatedBoard) board).consistencyCheck();
 
         this.animationEnded = 0;
         // check board if there have to be created new elements
@@ -106,7 +120,16 @@ public class OnlineGamemaster extends AnimatedGamemaster
         locked = false;
         if (elements.size() == 0)
         {
-            updateAfterSwitch();
+                Logger.logInfo(LogKey, "Move ends");
+                // end move
+                game.endSwitch();
+
+                controls.update();
+                // check if moves are possible
+                ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
+
+                controls.enable();
+                game.setStrikePossible(true);
 
         }
     }
@@ -119,51 +142,18 @@ public class OnlineGamemaster extends AnimatedGamemaster
         }
 
         locked = true;
-        ((AnimatedBoard) board).consistencyCheck();
 
         this.animationEnded = 0;
         this.animationsWillStart = 0;
 
         ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
-        if (elements.size() == 0)
-        {
-            Logger.logInfo(LogKey, "Move ends");
-            // end move
-            game.endSwitch();
 
-            controls.update();
-            // check if moves are possible
-            ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
-
-            /*if (moves.size() == 0)
-            {
-                // recreate board
-                Logger.logInfo(LogKey, "No more moves possible");
-                Activity a = ((AnimatedBoard) board).getActivity();
-                this.board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a, this);
-                AnimatedBoard board = (AnimatedBoard) getBoard();
-                RelativeLayout b = board.getGameLayout();
-                b.setId(R.id.board);
-                RelativeLayout l = new RelativeLayout(a);
-                l.addView(b);
-
-                ((RelativeLayout) controls.getParent()).removeView(controls);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                params.addRule(RelativeLayout.BELOW, R.id.board);
-                params.topMargin = 50;
-                l.addView(controls, params);
-                a.setContentView(l);
-                this.controls.updatePoints();
-            }
-*/
-            controls.enable();
-            game.setStrikePossible(true);
-        }
-
-        game.addPointElements(elements, board);
+            game.addPointElements(elements, board);
+            board.deleteElements(elements);
 
         controls.update();
-        board.deleteElements(elements);
+
+
         locked = false;
     }
 

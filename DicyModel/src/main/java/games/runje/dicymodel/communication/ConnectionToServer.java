@@ -17,7 +17,7 @@ public class ConnectionToServer
 
     public static final int port = 4400;
     //public static final String ipaddress = "runje.ddns.net";
-    public static final String ipaddress = "192.168.1.4";
+    public static final String ipaddress = "192.168.2.240";
     private static boolean firstTime = true;
     private static Socket s;
     private static boolean connected = false;

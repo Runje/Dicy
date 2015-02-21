@@ -6,6 +6,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
@@ -18,6 +19,7 @@ import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Move;
+import games.runje.dicymodel.data.NoElement;
 import games.runje.dicymodel.data.PointElement;
 
 /**
@@ -441,5 +443,22 @@ public class AnimatedBoard extends Board
     {
         super.changeElement(position, newValue);
         getAnimatedElement(position).setValue(newValue);
+    }
+
+    public boolean hasNoElements()
+    {
+        for (ArrayList<BoardElement> row : this.board)
+        {
+            for (BoardElement element : row)
+            {
+                if (element instanceof NoElement)
+                {
+                    return true;
+                }
+
+            }
+        }
+
+        return false;
     }
 }

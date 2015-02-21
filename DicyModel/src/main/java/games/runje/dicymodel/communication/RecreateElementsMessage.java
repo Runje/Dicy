@@ -30,6 +30,8 @@ public class RecreateElementsMessage extends Message
         {
             elements.add(MessageConverter.byteToBoardElement(buffer));
         }
+
+        System.out.println("RecreateMessage Elements: " + elements);
     }
 
     @Override
