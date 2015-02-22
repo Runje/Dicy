@@ -20,6 +20,7 @@ import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.PointElement;
 import games.runje.dicymodel.game.Game;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 16.02.2015.
@@ -130,6 +131,45 @@ public class Gamemaster
         }
     }
 
+    public void executeSkill(Skill s)
+    {
+        // TODO
+        switch (s.getName())
+        {
+            case Skill.Help:
+                if (s.isExecutable())
+                {
+                    s.execute();
+                }
+                else
+                {
+                    s.execute();
+                    game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
+                }
+                break;
+
+            case Skill.Change:
+                if (s.isExecutable())
+                {
+                    s.execute();
+                }
+                else
+                {
+                    s.execute();
+                    game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
+                }
+
+                // TODO: use own class for each skill
+                Coords pos = s.getPos();
+                board.getElement(pos).setValue(6);
+                game.setStrikePossible(false);
+                updateAfterSwitch();
+                break;
+
+        }
+
+    }
+
     public void updateAfterFall()
     {
     }
@@ -160,5 +200,11 @@ public class Gamemaster
     {
         System.out.println("Recreating Board");
         this.board= board;
+    }
+
+    public void next()
+    {
+        System.out.println("Next");
+        game.moveEnds();
     }
 }

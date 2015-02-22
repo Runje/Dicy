@@ -21,6 +21,10 @@ public class MessageParser
                 return new RecreateElementsMessage(buffer, length);
             case RecreateBoardMessage.Name:
                 return new RecreateBoardMessage(buffer, length);
+            case NextMessage.Name:
+                return new NextMessage(buffer, length);
+            case SkillMessage.Name:
+                return new SkillMessage(buffer, length);
 
         }
 

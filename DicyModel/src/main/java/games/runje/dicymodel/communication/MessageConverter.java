@@ -9,6 +9,7 @@ import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 14.02.2015.
@@ -24,7 +25,8 @@ public class MessageConverter
     public static final String encoding = "UTF8";
     public static final int gravityLength = 4;
     public static final int boardLength = 2 * rowSizeLength + allBoardElementsLength + gravityLength;
-    public static int nameLength = 20;
+    public static final int nameLength = 20;
+    public static final int skillLength = 15;
 
     public static byte[] boardToByte(Board board)
     {
@@ -134,4 +136,6 @@ public class MessageConverter
     {
         return new Coords(buffer.getInt(), buffer.getInt());
     }
+
+
 }

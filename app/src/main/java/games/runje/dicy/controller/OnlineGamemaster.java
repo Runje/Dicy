@@ -15,6 +15,7 @@ import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.communication.ConnectionToServer;
 import games.runje.dicymodel.communication.Message;
+import games.runje.dicymodel.communication.NextMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Gravity;
@@ -157,6 +158,15 @@ public class OnlineGamemaster extends AnimatedGamemaster
         locked = false;
     }
 
+    public void next()
+    {
+        locked = true;
+        Logger.logInfo(LogKey, "Next");
+        super.next();
+        sendMessageToClient(new NextMessage());
+        locked = false;
+    }
+
     public void updaterAfterPoints()
     {
         if (isAnimationIsRunning())
@@ -169,45 +179,6 @@ public class OnlineGamemaster extends AnimatedGamemaster
         this.animationEnded = 0;
         ArrayList<BoardElement> fallingElements = board.moveElementsFromGravity();
         this.animationsWillStart = fallingElements.size();
-        if (fallingElements.size() == 0)
-        {
-            //ArrayList<BoardElement> rElements = board.recreateElements();
-            //this.animationsWillStart = rElements.size();
-            /*if (rElements.size() == 0)
-            {
-                // end move
-                game.endSwitch();
-
-                controls.update();
-                // check if moves are possible
-                ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
-
-                if (moves.size() == 0)
-                {
-                    // recreate board
-                    Logger.logInfo(LogKey, "No more moves possible");
-                    Activity a = ((AnimatedBoard) board).getActivity();
-                    this.board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a, this);
-                    AnimatedBoard board = (AnimatedBoard) getBoard();
-                    RelativeLayout b = board.getGameLayout();
-                    b.setId(R.id.board);
-                    RelativeLayout l = new RelativeLayout(a);
-                    l.addView(b);
-
-                    ((RelativeLayout) controls.getParent()).removeView(controls);
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    params.addRule(RelativeLayout.BELOW, R.id.board);
-                    params.topMargin = 50;
-                    l.addView(controls, params);
-                    a.setContentView(l);
-                    this.controls.updatePoints();
-                }
-
-                controls.enable();
-                game.setStrikePossible(true);
-            }*/
-        }
-
         locked = false;
     }
 

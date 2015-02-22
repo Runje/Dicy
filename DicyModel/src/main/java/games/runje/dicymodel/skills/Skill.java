@@ -1,5 +1,7 @@
 package games.runje.dicymodel.skills;
 
+import games.runje.dicymodel.data.Coords;
+
 /**
  * Created by thomas on 08.02.15.
  */
@@ -11,11 +13,18 @@ public class Skill
     private int maxLoad;
     private int currentLoad;
     private String name;
+    private Coords pos;
+
+    public void setPos(Coords pos)
+    {
+        this.pos = pos;
+    }
 
     public Skill(int value, int max, String name)
     {
         loadValue = value;
         maxLoad = max;
+
         currentLoad = 0;
         this.name = name;
 
@@ -60,5 +69,10 @@ public class Skill
     public int getCurrentLoad()
     {
         return currentLoad;
+    }
+
+    public Coords getPos()
+    {
+        return pos;
     }
 }
