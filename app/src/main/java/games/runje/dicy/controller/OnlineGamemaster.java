@@ -245,4 +245,10 @@ public class OnlineGamemaster extends AnimatedGamemaster
             });
         }
     }
+
+    public void recreateBoard(Board board)
+    {
+        Logger.logInfo(LogKey, "Recreating Board");
+        ((AnimatedBoard) this.board).updateBoard(board);
+    }
 }

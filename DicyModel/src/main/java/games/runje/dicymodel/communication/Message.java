@@ -35,6 +35,8 @@ public abstract class Message
         return buffer.array();
     }
 
+    // TODO: abstract contentToByte, and toByte(): lengthAndNameToByte(); contentToByte();
+
     public abstract void execute(Gamemaster gamemaster);
 
     public abstract byte[] toByte();

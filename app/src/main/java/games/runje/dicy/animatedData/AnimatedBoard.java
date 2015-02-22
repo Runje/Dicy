@@ -461,4 +461,17 @@ public class AnimatedBoard extends Board
 
         return false;
     }
+
+    public void updateBoard(Board board)
+    {
+        for (int row = 0; row < this.rows; row++)
+        {
+            for (int column = 0; column < this.columns; column++)
+            {
+                Coords pos = new Coords(row, column);
+                getElement(pos).setValue(board.getElement(pos).getValue());
+                getAnimatedElement(pos).setValue(board.getElement(pos).getValue());
+            }
+        }
+    }
 }

@@ -11,6 +11,7 @@ import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.communication.Message;
 import games.runje.dicymodel.communication.MessageParser;
+import games.runje.dicymodel.communication.RecreateBoardMessage;
 import games.runje.dicymodel.communication.RecreateElementsMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
@@ -114,6 +115,10 @@ public class Gamemaster
             if (moves.size() == 0)
             {
                 // TODO: recreate board
+                System.out.println("Recreating board");
+                board = Board.createBoardNoPoints(board.getNumberOfRows(), board.getNumberOfColumns(), rules);
+                sendMessageToClient(new RecreateBoardMessage(board));
+
             }
 
             // skills could have disabled it
@@ -151,4 +156,9 @@ public class Gamemaster
         }
     }
 
+    public void recreateBoard(Board board)
+    {
+        System.out.println("Recreating Board");
+        this.board= board;
+    }
 }

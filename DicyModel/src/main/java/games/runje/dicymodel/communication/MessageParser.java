@@ -19,6 +19,8 @@ public class MessageParser
                 return new SwitchMessage(buffer, length);
             case RecreateElementsMessage.Name:
                 return new RecreateElementsMessage(buffer, length);
+            case RecreateBoardMessage.Name:
+                return new RecreateBoardMessage(buffer, length);
 
         }
 
