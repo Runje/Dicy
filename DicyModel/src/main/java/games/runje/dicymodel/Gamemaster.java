@@ -16,6 +16,7 @@ import games.runje.dicymodel.communication.RecreateElementsMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
+import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.PointElement;
 import games.runje.dicymodel.game.Game;
@@ -206,5 +207,10 @@ public class Gamemaster
     {
         System.out.println("Next");
         game.moveEnds();
+    }
+
+    public void changeGravity(Gravity gravity)
+    {
+        board.setGravity(gravity);
     }
 }

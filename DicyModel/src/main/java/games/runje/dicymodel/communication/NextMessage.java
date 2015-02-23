@@ -3,7 +3,6 @@ package games.runje.dicymodel.communication;
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
-import games.runje.dicymodel.data.Coords;
 
 /**
  * Created by thomas on 22.02.15.
@@ -11,8 +10,6 @@ import games.runje.dicymodel.data.Coords;
 public class NextMessage extends Message
 {
     public static final String Name = "NextMessage";
-    private Coords second;
-    private Coords first;
 
     public NextMessage()
     {

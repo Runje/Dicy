@@ -25,6 +25,8 @@ public class MessageParser
                 return new NextMessage(buffer, length);
             case SkillMessage.Name:
                 return new SkillMessage(buffer, length);
+            case GravityMessage.Name:
+                return new GravityMessage(buffer, length);
 
         }
 

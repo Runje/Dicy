@@ -6,6 +6,7 @@ import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
 import games.runje.dicy.animatedData.FallAnimation;
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicymodel.communication.GravityMessage;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 
@@ -58,5 +59,6 @@ public class GravityListener implements View.OnClickListener
             }
         }
         gamemaster.updateGravity();
+        gamemaster.sendMessageToClient(new GravityMessage(this.gravity));
     }
 }

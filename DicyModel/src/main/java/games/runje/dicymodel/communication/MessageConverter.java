@@ -9,7 +9,6 @@ import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
-import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 14.02.2015.
@@ -53,6 +52,7 @@ public class MessageConverter
 
         return buffer.array();
     }
+
 
     public static void fillBufferWithZero(ByteBuffer buffer, int numberOfFills)
     {
