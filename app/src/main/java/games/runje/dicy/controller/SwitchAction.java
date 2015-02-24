@@ -3,7 +3,7 @@ package games.runje.dicy.controller;
 import android.util.Log;
 
 import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicymodel.communication.SwitchMessage;
+import games.runje.dicymodel.communication.messages.SwitchMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 
@@ -54,7 +54,7 @@ public class SwitchAction extends Action
         boolean switchedBack = ((AnimatedBoard) this.board).switchElements(first, second, switchBackPossible);
         if (!switchedBack)
         {
-            gamemaster.sendMessageToClient(new SwitchMessage(first, second));
+            gamemaster.sendMessageToServer(new SwitchMessage(first, second));
         }
 
         Log.d("TL", "Exectued switch elements: " + first + " with " + second);

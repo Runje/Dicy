@@ -14,8 +14,8 @@ import games.runje.dicymodel.ai.Simulator;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.communication.ConnectionToServer;
-import games.runje.dicymodel.communication.Message;
-import games.runje.dicymodel.communication.NextMessage;
+import games.runje.dicymodel.communication.messages.Message;
+import games.runje.dicymodel.communication.messages.NextMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Gravity;
@@ -80,9 +80,9 @@ public class OnlineGamemaster extends AnimatedGamemaster
         update();
     }
 
-    public void sendMessageToClient(Message message)
+    public void sendMessageToServer(Message message)
     {
-        ConnectionToServer.sendMessage(message);
+        ConnectionToServer.sendMessage(message, fromId);
     }
 
     public void updateAfterFall()
@@ -163,7 +163,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
         locked = true;
         Logger.logInfo(LogKey, "Next");
         super.next();
-        sendMessageToClient(new NextMessage());
+        sendMessageToServer(new NextMessage());
         locked = false;
     }
 

@@ -26,6 +26,7 @@ public class MessageConverter
     public static final int boardLength = 2 * rowSizeLength + allBoardElementsLength + gravityLength;
     public static final int nameLength = 20;
     public static final int skillLength = 15;
+    public static final int idLength = 8;
 
     public static byte[] boardToByte(Board board)
     {

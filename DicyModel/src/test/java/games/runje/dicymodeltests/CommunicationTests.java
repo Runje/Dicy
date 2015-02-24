@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.communication.MessageConverter;
-import games.runje.dicymodel.communication.StartGameMessage;
+import games.runje.dicymodel.communication.messages.StartGameMessage;
 import games.runje.dicymodel.data.Board;
 
 import static org.junit.Assert.assertEquals;
@@ -43,7 +43,7 @@ public class CommunicationTests
         buffer.position(buffer.position() + 4 + MessageConverter.nameLength);
         StartGameMessage message = new StartGameMessage(buffer, bytes.length);
 
-        assertEquals(expMessage.getLength(), message.getLength());
+        assertEquals(expMessage.getTotalLength(), message.getTotalLength());
         assertEquals(expMessage.getName(), message.getName());
         assertEquals(expMessage.getBoard().toString(), message.getBoard().toString());
 

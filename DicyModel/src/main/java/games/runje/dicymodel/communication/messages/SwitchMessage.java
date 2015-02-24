@@ -1,8 +1,9 @@
-package games.runje.dicymodel.communication;
+package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -18,12 +19,12 @@ public class SwitchMessage extends Message
     {
         this.first = first;
         this.second = second;
-        this.length = 4 * MessageConverter.sizeLength + MessageConverter.sizeLength + MessageConverter.nameLength;
+        this.contentLength = 4 * MessageConverter.sizeLength;
     }
 
     public SwitchMessage(ByteBuffer buffer, int length)
     {
-        this.length = length;
+        this.contentLength = length - headerLength;
         first = MessageConverter.byteToCoords(buffer);
         second = MessageConverter.byteToCoords(buffer);
     }
@@ -40,12 +41,9 @@ public class SwitchMessage extends Message
         gamemaster.switchElements(first, second);
     }
 
-    @Override
-    public byte[] toByte()
+    public byte[] contentToByte()
     {
-        // TODO: make method in base class because first two lines are uses in each sub class
-        ByteBuffer buffer = ByteBuffer.allocate(length);
-        buffer.put(lengthAndNameToByte());
+        ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         buffer.put(MessageConverter.coordsToByte(first));
         buffer.put(MessageConverter.coordsToByte(second));
         return buffer.array();

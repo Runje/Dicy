@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.communication.messages.Message;
 
 /**
  * Created by Thomas on 11.02.2015.
@@ -86,13 +87,15 @@ public class ConnectionToServer
 
     }
 
-    public static void sendMessage(Message message)
+    public static void sendMessage(Message message, long fromId)
     {
+        message.setFromId(fromId);
+        message.setToId(Message.ServerId);
         byte[] bytes = message.toByte();
         try
         {
             s.getOutputStream().write(bytes);
-            System.out.println("Sent messsage: " + message.getName() + ", length: " + bytes.length);
+            System.out.println("Sent messsage: " + message.getName() + ", totalLength: " + bytes.length);
         }
         catch (IOException e)
         {

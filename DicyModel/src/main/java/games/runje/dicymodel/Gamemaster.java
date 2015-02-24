@@ -9,10 +9,10 @@ import java.util.List;
 
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
-import games.runje.dicymodel.communication.Message;
 import games.runje.dicymodel.communication.MessageParser;
-import games.runje.dicymodel.communication.RecreateBoardMessage;
-import games.runje.dicymodel.communication.RecreateElementsMessage;
+import games.runje.dicymodel.communication.messages.Message;
+import games.runje.dicymodel.communication.messages.RecreateBoardMessage;
+import games.runje.dicymodel.communication.messages.RecreateElementsMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
@@ -28,6 +28,8 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class Gamemaster
 {
+    protected long fromId;
+    protected long toId;
     private Rules rules;
     private Board board;
     private Socket clientSocket;
@@ -179,6 +181,8 @@ public class Gamemaster
     {
         try
         {
+            message.setFromId(Message.ServerId);
+            message.setToId(toId);
             clientSocket.getOutputStream().write(message.toByte());
         }
         catch (IOException e)
@@ -212,5 +216,11 @@ public class Gamemaster
     public void changeGravity(Gravity gravity)
     {
         board.setGravity(gravity);
+    }
+
+    public void findOpponent(long id)
+    {
+        // TODO: What if two opponents have different version of game?
+        GameMatcher.findOpponent(id);
     }
 }

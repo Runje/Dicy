@@ -1,8 +1,9 @@
-package games.runje.dicymodel.communication;
+package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Gravity;
 
 /**
@@ -16,13 +17,13 @@ public class GravityMessage extends Message
 
     public GravityMessage(Gravity g)
     {
-        this.length = MessageConverter.sizeLength + MessageConverter.nameLength + MessageConverter.gravityLength;
+        this.contentLength = MessageConverter.gravityLength;
         this.gravity = g;
     }
 
     public GravityMessage(ByteBuffer buffer, int length)
     {
-        this.length = length;
+        this.contentLength = length - headerLength;
         this.gravity = Gravity.valueOf(MessageConverter.byteToString(buffer, MessageConverter.gravityLength));
     }
 
@@ -38,12 +39,9 @@ public class GravityMessage extends Message
         gamemaster.changeGravity(gravity);
     }
 
-    @Override
-    public byte[] toByte()
+    public byte[] contentToByte()
     {
-        // TODO: make method in base class because first two lines are uses in each sub class
-        ByteBuffer buffer = ByteBuffer.allocate(length);
-        buffer.put(lengthAndNameToByte());
+        ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         byte[] bytes = MessageConverter.stringToByte(gravity.toString());
         buffer.put(bytes);
         MessageConverter.fillBufferWithZero(buffer, MessageConverter.gravityLength - bytes.length);

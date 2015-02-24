@@ -15,8 +15,8 @@ import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Simulator;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
-import games.runje.dicymodel.communication.Message;
-import games.runje.dicymodel.communication.SkillMessage;
+import games.runje.dicymodel.communication.messages.Message;
+import games.runje.dicymodel.communication.messages.SkillMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
@@ -357,7 +357,7 @@ public class AnimatedGamemaster extends Gamemaster
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
 
-                sendMessageToClient(new SkillMessage(Skill.Help));
+                sendMessageToServer(new SkillMessage(Skill.Help));
                 break;
 
             case Skill.Change:
@@ -398,13 +398,13 @@ public class AnimatedGamemaster extends Gamemaster
         AnimatedBoard b = (AnimatedBoard) board;
         b.changeToSwitchListener();
         game.setStrikePossible(false);
-        sendMessageToClient(new SkillMessage(Skill.Change, position));
+        sendMessageToServer(new SkillMessage(Skill.Change, position));
         updateAfterSwitch();
 
         // TODO: execute skill
     }
 
-    public void sendMessageToClient(Message message)
+    public void sendMessageToServer(Message message)
     {
     }
 }

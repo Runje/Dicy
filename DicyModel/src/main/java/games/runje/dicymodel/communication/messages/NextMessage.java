@@ -1,4 +1,4 @@
-package games.runje.dicymodel.communication;
+package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
@@ -13,12 +13,12 @@ public class NextMessage extends Message
 
     public NextMessage()
     {
-        this.length = MessageConverter.sizeLength + MessageConverter.nameLength;
+        this.contentLength = 0;
     }
 
     public NextMessage(ByteBuffer buffer, int length)
     {
-        this.length = length;
+        this.contentLength = length - headerLength;
     }
 
     @Override
@@ -33,12 +33,8 @@ public class NextMessage extends Message
         gamemaster.next();
     }
 
-    @Override
-    public byte[] toByte()
+    public byte[] contentToByte()
     {
-        // TODO: make method in base class because first two lines are uses in each sub class
-        ByteBuffer buffer = ByteBuffer.allocate(length);
-        buffer.put(lengthAndNameToByte());
-        return buffer.array();
+        return new byte[0];
     }
 }

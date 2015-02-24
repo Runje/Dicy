@@ -1,8 +1,9 @@
-package games.runje.dicymodel.communication;
+package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.skills.Skill;
 
@@ -17,19 +18,19 @@ public class SkillMessage extends Message
 
     public SkillMessage(String skillName)
     {
-        this(skillName, new Coords(0,0));
+        this(skillName, new Coords(0, 0));
     }
 
     public SkillMessage(ByteBuffer buffer, int length)
     {
-        this.length = length;
+        this.contentLength = length - headerLength;
         this.skill = MessageConverter.byteToString(buffer, MessageConverter.skillLength);
         this.pos = MessageConverter.byteToCoords(buffer);
     }
 
     public SkillMessage(String skillName, Coords position)
     {
-        this.length = MessageConverter.coordsLength + MessageConverter.skillLength + MessageConverter.sizeLength + MessageConverter.nameLength;
+        this.contentLength = MessageConverter.coordsLength + MessageConverter.skillLength;
         this.skill = skillName;
         this.pos = position;
     }
@@ -49,17 +50,13 @@ public class SkillMessage extends Message
         gamemaster.executeSkill(s);
     }
 
-    @Override
-    public byte[] toByte()
+    public byte[] contentToByte()
     {
-        // TODO: make method in base class because first two lines are uses in each sub class
-        ByteBuffer buffer = ByteBuffer.allocate(length);
-        buffer.put(lengthAndNameToByte());
+        ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         buffer.put(MessageConverter.stringToByte(skill));
-        // TODO: fill with zeros in new stringToByte(skill, length)
+        // TODO: fill with zeros in new stringToByte(skill, totalLength)
         MessageConverter.fillBufferWithZero(buffer, MessageConverter.skillLength - skill.length());
         buffer.put(MessageConverter.coordsToByte(pos));
-        System.out.println("Writing pos: " + pos);
         return buffer.array();
     }
 }

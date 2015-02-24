@@ -164,7 +164,7 @@ public abstract class Finder
     /**
      * Creates a XOfAKind Point Element.
      *
-     * @param length      The length of the element
+     * @param length      The totalLength of the element
      * @param endIndex    The last index.
      * @param orientation The orientation.
      * @param value       The highest value of the dice.
@@ -174,7 +174,7 @@ public abstract class Finder
      */
     protected PointElement createPointElement(int length, int endIndex, Orientation orientation, int value, Coords firstPoint, PointType type)
     {
-        // 1 2 2 2 3 --> length = 3 ( Three of a kind)
+        // 1 2 2 2 3 --> totalLength = 3 ( Three of a kind)
         //       ^
         //     endIndex
         Coords startPoint = CoordsHelper.calcStartPoint(firstPoint, orientation, length, endIndex);

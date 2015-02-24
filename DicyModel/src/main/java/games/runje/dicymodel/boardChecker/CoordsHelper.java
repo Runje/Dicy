@@ -35,11 +35,11 @@ public class CoordsHelper
     }
 
     /**
-     * Calculates all Coords on the way if you go from the starting points "length" steps in the direction of the orientation.
+     * Calculates all Coords on the way if you go from the starting points "totalLength" steps in the direction of the orientation.
      *
      * @param startPoint  starting point of the element
      * @param orientation orientation of the element
-     * @param length      length of the element
+     * @param length      totalLength of the element
      * @return All coords between the starting point and the end of this element.
      */
     public static Coords[] calcCoords(Coords startPoint, Orientation orientation, int length)

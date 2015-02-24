@@ -8,7 +8,7 @@ import games.runje.dicymodel.data.PointType;
 public class Rules
 {
     /**
-     * The maximum length of one row/column.
+     * The maximum totalLength of one row/column.
      */
     public final static int maxLengthOfRow = 10;
     /**
@@ -28,7 +28,7 @@ public class Rules
      */
     private int minXOfAKind;
     /**
-     * The points for a straight. The index is the length of the straight.
+     * The points for a straight. The index is the totalLength of the straight.
      */
     private int[] straightPoints;
 

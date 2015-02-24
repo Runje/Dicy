@@ -15,7 +15,7 @@ public class MessageReader
         read(is, buffer, 0, 4);
 
         int length = buffer.getInt();
-        System.out.println("length: " + length);
+        System.out.println("totalLength: " + length);
 
         read(is, buffer, 4, length - 4);
 

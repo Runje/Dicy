@@ -6,7 +6,6 @@ import android.graphics.ColorMatrixColorFilter;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
@@ -256,7 +255,7 @@ public class AnimatedBoard extends Board
     }
 
     /**
-     * Gets the maximum fall length for each column/row depending on the gravity.
+     * Gets the maximum fall totalLength for each column/row depending on the gravity.
      *
      * @param fallingElements
      * @return
@@ -285,7 +284,7 @@ public class AnimatedBoard extends Board
             case Up:
                 for (BoardElement e : fallingElements)
                 {
-                    //+1 for length
+                    //+1 for totalLength
                     int r = rows - e.getPosition().row;
                     if (max[e.getPosition().column] < r)
                     {
@@ -297,7 +296,7 @@ public class AnimatedBoard extends Board
             case Down:
                 for (BoardElement e : fallingElements)
                 {
-                    //+1 for length
+                    //+1 for totalLength
                     int r = e.getPosition().row + 1;
                     if (max[e.getPosition().column] < r)
                     {
@@ -309,7 +308,7 @@ public class AnimatedBoard extends Board
             case Right:
                 for (BoardElement e : fallingElements)
                 {
-                    //+1 for length
+                    //+1 for totalLength
                     int r = e.getPosition().column + 1;
                     if (max[e.getPosition().row] < r)
                     {
@@ -321,7 +320,7 @@ public class AnimatedBoard extends Board
             case Left:
                 for (BoardElement e : fallingElements)
                 {
-                    //+1 for length
+                    //+1 for totalLength
                     int r = columns - e.getPosition().column;
                     if (max[e.getPosition().row] < r)
                     {

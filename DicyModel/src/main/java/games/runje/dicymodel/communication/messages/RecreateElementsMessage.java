@@ -1,9 +1,10 @@
-package games.runje.dicymodel.communication;
+package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.BoardElement;
 
 /**
@@ -17,12 +18,12 @@ public class RecreateElementsMessage extends Message
     public RecreateElementsMessage(ArrayList<BoardElement> e)
     {
         elements = e;
-        length = MessageConverter.nameLength + MessageConverter.sizeLength + MessageConverter.sizeLength + elements.size() * MessageConverter.boardElementLength;
+        contentLength = MessageConverter.sizeLength + elements.size() * MessageConverter.boardElementLength;
     }
 
     public RecreateElementsMessage(ByteBuffer buffer, int length)
     {
-        this.length = length;
+        this.contentLength = length - headerLength;
         elements = new ArrayList<>();
 
         int size = buffer.getInt();
@@ -54,11 +55,9 @@ public class RecreateElementsMessage extends Message
         gamemaster.updateAfterFall(elements);
     }
 
-    @Override
-    public byte[] toByte()
+    public byte[] contentToByte()
     {
-        ByteBuffer buffer = ByteBuffer.allocate(length);
-        buffer.put(lengthAndNameToByte());
+        ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         buffer.putInt(elements.size());
         for (BoardElement element : elements)
         {

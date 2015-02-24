@@ -3,6 +3,7 @@ package games.runje.dicymodel.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import games.runje.dicymodel.ai.OnlineStrategy;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.skills.Skill;
 
@@ -73,7 +74,17 @@ public class Player
 
     public boolean isAi()
     {
-        return strategy != null;
+        return strategy != null && !(strategy instanceof OnlineStrategy);
+    }
+
+    public boolean isHuman()
+    {
+        return strategy == null;
+    }
+
+    public boolean isOnlinePlayer()
+    {
+        return strategy instanceof OnlineStrategy;
     }
 
     public boolean lastMoveWasStrike()
@@ -88,7 +99,7 @@ public class Player
 
     public void loadSkills(int[] count)
     {
-        for(Skill s : skills)
+        for (Skill s : skills)
         {
             s.load(count[s.getLoadValue()]);
 
@@ -98,7 +109,7 @@ public class Player
     public Skill getSkill(String s)
     {
         // TODO with isInstanceOf???
-        for(Skill sk : skills)
+        for (Skill sk : skills)
         {
             if (sk.getName().equals(s))
             {

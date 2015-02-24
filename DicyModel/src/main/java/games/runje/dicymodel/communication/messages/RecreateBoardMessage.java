@@ -1,9 +1,9 @@
-package games.runje.dicymodel.communication;
+package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
-import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Board;
 
 /**
@@ -17,12 +17,12 @@ public class RecreateBoardMessage extends Message
     public RecreateBoardMessage(Board board)
     {
         this.board = board;
-        this.length = MessageConverter.boardLength + MessageConverter.sizeLength + MessageConverter.nameLength;
+        this.contentLength = MessageConverter.boardLength;
     }
 
     public RecreateBoardMessage(ByteBuffer buffer, int length)
     {
-        this.length = length;
+        this.contentLength = length - headerLength;
         board = MessageConverter.byteToBoard(buffer);
     }
 
@@ -31,12 +31,10 @@ public class RecreateBoardMessage extends Message
         return Name;
     }
 
-    public byte[] toByte()
+    public byte[] contentToByte()
     {
-        ByteBuffer buffer = ByteBuffer.allocate(length);
-        buffer.put(lengthAndNameToByte());
+        ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         buffer.put(MessageConverter.boardToByte(board));
-
         return buffer.array();
     }
 
