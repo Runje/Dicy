@@ -48,7 +48,8 @@ public class Strategy
     public Move getNextMove(Rules rules, Board board)
     {
         List<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
+        return getBestSwitchMove(moves);
         // TODO
-        return moves.get(0);
+        //return moves.get(0);
     }
 }

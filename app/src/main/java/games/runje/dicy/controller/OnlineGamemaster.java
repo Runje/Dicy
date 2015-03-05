@@ -1,23 +1,23 @@
 package games.runje.dicy.controller;
 
 import android.app.Activity;
+import android.widget.RelativeLayout;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.List;
 
+import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controls.Controls;
 import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicymodel.Rules;
-import games.runje.dicymodel.ai.Simulator;
-import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.communication.ConnectionToServer;
 import games.runje.dicymodel.communication.messages.Message;
 import games.runje.dicymodel.communication.messages.NextMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
+import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.PointElement;
@@ -42,42 +42,68 @@ public class OnlineGamemaster extends AnimatedGamemaster
         super(game, b, r, a);
     }
 
+    public OnlineGamemaster(Activity activity, long id)
+    {
+        this.activity = activity;
+        this.fromId = id;
+    }
+
     public static OnlineGamemaster getInstance()
     {
         return instance;
     }
 
-    public void startGame(Board board, Rules rules, String[] player)
+    public void startGame(Board board, Rules rules, LocalGame game)
     {
         System.out.println("Starting Game from OnlineGamemaster");
         this.board = board;
+        this.rules = rules;
+        createOnlineGame(game);
     }
 
-    public void createOnlineGame(Activity activity)
+    public void next(long id)
     {
-        assert getInstance().board != null;
-        this.activity = activity;
-        AnimatedBoard b = new AnimatedBoard(getInstance().board, activity, this);
+        super.next();
+        controls.update();
+    }
+
+    public void changeGravity(Gravity gravity, long fromId)
+    {
+        super.changeGravity(gravity, fromId);
+        updateGravity(gravity);
+        controls.update();
+    }
+
+    public void createOnlineGame(LocalGame game)
+    {
+        this.game = game;
+        this.rules = new Rules();
+        AnimatedBoard b = new AnimatedBoard(board, activity, this);
         b.setGravity(Gravity.Down);
-        Rules rules = new Rules();
-        rules.setPointLimit(Simulator.getLimit(rules, b));
-        int length = 5;
-        List<String> players = new ArrayList<>();
-        players.add("Thomas");
-        players.add("Milena");
-
-        List<Strategy> s = new ArrayList<>();
-        s.add(null);
-        s.add(null);
-        LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, players, s);
-
         Controls controls = new LocalGameControls(activity, game, b, this);
-        setGame(game);
         setBoard(b);
-        setRules(rules);
         setControls(controls);
 
         update();
+
+        RelativeLayout l = new RelativeLayout(this.activity);
+        // TODO: create local game here
+        AnimatedBoard animatedBoard = (AnimatedBoard) this.board;
+        animatedBoard.setGravity(Gravity.Down);
+        RelativeLayout bL = animatedBoard.getGameLayout();
+        RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) bL.getLayoutParams();
+        pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        bL.setId(R.id.board);
+        l.addView(bL, pB);
+
+        RelativeLayout controlsL = this.controls;
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.BELOW, R.id.board);
+        params.topMargin = 50;
+        l.addView(controlsL, params);
+        activity.setContentView(l);
+        this.controls.update();
+
     }
 
     public void sendMessageToServer(Message message)
@@ -104,6 +130,14 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
     }
 
+    public void switchElements(Coords first, Coords second, long fromId)
+    {
+        Action a = new SwitchAction(first, second, true, this);
+        performAction(a);
+        //board.switchElements(first, second);
+        //updateAfterSwitch();
+    }
+
     public void updateAfterFall(ArrayList<BoardElement> elements)
     {
         if (isAnimationIsRunning())
@@ -121,16 +155,16 @@ public class OnlineGamemaster extends AnimatedGamemaster
         locked = false;
         if (elements.size() == 0)
         {
-                Logger.logInfo(LogKey, "Move ends");
-                // end move
-                game.endSwitch();
+            Logger.logInfo(LogKey, "Move ends");
+            // end move
+            game.endSwitch();
 
-                controls.update();
-                // check if moves are possible
-                ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
+            controls.update();
+            // check if moves are possible
+            ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
 
-                controls.enable();
-                game.setStrikePossible(true);
+            controls.enable();
+            game.setStrikePossible(true);
 
         }
     }
@@ -149,8 +183,8 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
         ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
 
-            game.addPointElements(elements, board);
-            board.deleteElements(elements);
+        game.addPointElements(elements, board);
+        board.deleteElements(elements);
 
         controls.update();
 

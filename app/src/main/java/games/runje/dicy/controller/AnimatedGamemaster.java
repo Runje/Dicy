@@ -8,6 +8,8 @@ import java.util.List;
 
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicy.animatedData.AnimatedBoardElement;
+import games.runje.dicy.animatedData.FallAnimation;
 import games.runje.dicy.controls.Controls;
 import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicymodel.Gamemaster;
@@ -16,7 +18,6 @@ import games.runje.dicymodel.ai.Simulator;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.communication.messages.Message;
-import games.runje.dicymodel.communication.messages.SkillMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
@@ -37,8 +38,6 @@ public class AnimatedGamemaster extends Gamemaster
     private final String LogKey = "Gamemaster";
     protected Activity activity;
 
-    protected Game game;
-    protected Board board;
     protected Rules rules;
     protected int animationEnded = 0;
     protected int animationsWillStart = 0;
@@ -51,7 +50,7 @@ public class AnimatedGamemaster extends Gamemaster
         this.activity = a;
         this.board = new AnimatedBoard(b, a, this);
         this.rules = r;
-        this.controls = new LocalGameControls(activity, game, (AnimatedBoard) b, this);
+        this.controls = new LocalGameControls(activity, game, (AnimatedBoard) board, this);
     }
 
     protected AnimatedGamemaster()
@@ -90,19 +89,26 @@ public class AnimatedGamemaster extends Gamemaster
         Board b = Board.createBoardNoPoints(5, 5, rules);
         b.setGravity(Gravity.Down);
         rules.setPointLimit(Simulator.getLimit(rules, b));
+        List<Player> playerList = new ArrayList<>();
+        for (int i = 0; i < players.size(); i++)
+        {
+            String name = players.get(i);
+            Strategy strategy = s.get(i);
+            playerList.add(new Player(name, strategy, 77));
+        }
         // TODO: gamemaster
-        LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, players, s);
+        LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, playerList, 0);
+
+
+        animatedInstance = new AnimatedGamemaster(game, b, rules, activity);
         for (Player p : game.getPlayers())
         {
             if (p.isAi())
             {
                 // TODO: gamemaster
-                new AIController(p, activity, null);
+                new AIController(p, activity, AnimatedGamemaster.getInstance());
             }
         }
-
-        animatedInstance = new AnimatedGamemaster(game, b, rules, activity);
-
         AnimatedGamemaster.getInstance().update();
     }
 
@@ -335,7 +341,7 @@ public class AnimatedGamemaster extends Gamemaster
         this.game = game;
     }
 
-    public void executeSkill(Skill s)
+    public void executeSkill(Skill s, long fromId)
     {
         // TODO
 
@@ -357,25 +363,34 @@ public class AnimatedGamemaster extends Gamemaster
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
 
-                sendMessageToServer(new SkillMessage(Skill.Help));
                 break;
 
             case Skill.Change:
                 if (s.isExecutable())
                 {
                     // TODO: Build Skill Executor
-                    controls.disable();
-                    waitForDiceToGetTouched(s);
                     s.execute();
                 }
                 else
                 {
                     // TODO: Show dialog
-                    controls.disable();
-                    waitForDiceToGetTouched(s);
                     s.execute();
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
+
+                if (fromId == this.fromId)
+                {
+                    Logger.logInfo(LogKey, "Change from self");
+                    controls.disable();
+                    ((AnimatedBoard) board).enableSwitchListener();
+                    waitForDiceToGetTouched(s);
+                }
+                else
+                {
+                    Logger.logInfo(LogKey, "Change from other");
+                    select(s.getPos());
+                }
+
                 break;
 
         }
@@ -398,7 +413,7 @@ public class AnimatedGamemaster extends Gamemaster
         AnimatedBoard b = (AnimatedBoard) board;
         b.changeToSwitchListener();
         game.setStrikePossible(false);
-        sendMessageToServer(new SkillMessage(Skill.Change, position));
+
         updateAfterSwitch();
 
         // TODO: execute skill
@@ -406,5 +421,42 @@ public class AnimatedGamemaster extends Gamemaster
 
     public void sendMessageToServer(Message message)
     {
+    }
+
+    public void updateGravity(Gravity gravity)
+    {
+        getBoard().setGravity(gravity);
+        AnimatedBoard board = (AnimatedBoard) getBoard();
+
+        switch (gravity)
+        {
+
+            case Up:
+                board.getGameLayout().setYOffset(0);
+                break;
+            case Down:
+                board.getGameLayout().setYOffset(1);
+                break;
+            case Right:
+                board.getGameLayout().setXOffset(1);
+                break;
+            case Left:
+                board.getGameLayout().setXOffset(0);
+                break;
+        }
+
+        disableControls();
+        for (int i = 0; i < board.getNumberOfRows(); i++)
+        {
+            for (int j = 0; j < board.getNumberOfColumns(); j++)
+            {
+                Coords pos = new Coords(i, j);
+                AnimatedBoardElement aE = board.getAnimatedElement(pos);
+                startAnimation();
+                new FallAnimation(aE, pos, false, this).start();
+            }
+        }
+
+        controls.update();
     }
 }

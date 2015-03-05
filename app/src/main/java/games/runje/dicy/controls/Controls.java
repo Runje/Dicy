@@ -318,6 +318,7 @@ public class Controls extends RelativeLayout
         updateXOfAKind();
         updateGravity();
         updatePoints();
+        enable();
     }
 
     private void updateXOfAKind()
@@ -377,6 +378,7 @@ public class Controls extends RelativeLayout
         if (game.hasAIPlayerTurn())
         {
             disable();
+            Logger.logInfo(LogKey, "Disabling controls for " + game.getPlayingPlayer().getName() + ":" + game.getPlayingPlayer().getId());
             return;
         }
 

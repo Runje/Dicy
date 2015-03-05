@@ -12,6 +12,7 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class Player
 {
+    private long id;
     private int points;
     private int strikes;
     private String name;
@@ -19,10 +20,21 @@ public class Player
     private boolean lastMoveWasStrike = false;
     private List<Skill> skills = new ArrayList<>();
 
-    public Player(String n, Strategy strategy)
+    public Player(String n, Strategy strategy, long id)
     {
         this.strategy = strategy;
         name = n;
+        this.id = id;
+    }
+
+    public long getId()
+    {
+        return id;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
     }
 
     public int getStrikes()
@@ -70,6 +82,11 @@ public class Player
     public Strategy getStrategy()
     {
         return strategy;
+    }
+
+    public void setStrategy(Strategy strategy)
+    {
+        this.strategy = strategy;
     }
 
     public boolean isAi()

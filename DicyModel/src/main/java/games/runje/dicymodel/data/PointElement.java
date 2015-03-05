@@ -11,7 +11,6 @@ public class PointElement
     private int points;
 
     private PointType type;
-
     /**
      * Highest number of dice.
      */
@@ -31,6 +30,21 @@ public class PointElement
         this.coords = coords;
         this.orientation = orientation;
         this.points = points;
+    }
+
+    public int getDiceValue()
+    {
+        return diceValue;
+    }
+
+    public PointType getType()
+    {
+        return type;
+    }
+
+    public int getMultiplicity()
+    {
+        return multiplicity;
     }
 
     public Coords[] getCoords()

@@ -1,15 +1,26 @@
 package games.runje.dicy.controls;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.SkillAction;
+import games.runje.dicy.layouts.PointList;
+import games.runje.dicymodel.communication.messages.SkillMessage;
+import games.runje.dicymodel.data.Orientation;
+import games.runje.dicymodel.data.PointElement;
+import games.runje.dicymodel.data.PointType;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
@@ -43,6 +54,11 @@ public class LocalGameControls extends Controls
         RelativeLayout.LayoutParams pC = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pC.addRule(RelativeLayout.BELOW, R.id.helpButton);
         addView(Change(), pC);
+
+        RelativeLayout.LayoutParams pP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pP.addRule(RelativeLayout.RIGHT_OF, R.id.helpButton);
+        pP.addRule(RelativeLayout.ALIGN_BASELINE, R.id.helpButton);
+        addView(pointList(), pP);
     }
 
     private View Help()
@@ -55,6 +71,7 @@ public class LocalGameControls extends Controls
             public void onClick(View view)
             {
                 gamemaster.performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Help), gamemaster));
+                gamemaster.sendMessageToServer(new SkillMessage(Skill.Help));
             }
         });
         b.setId(R.id.helpButton);
@@ -112,6 +129,7 @@ public class LocalGameControls extends Controls
         RelativeLayout.LayoutParams pG = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pG.addRule(RelativeLayout.BELOW, R.id.switchPointsText);
 
+
         l.addView(movePointsText, pM);
         l.addView(current, pC);
         l.addView(goal, pG);
@@ -133,7 +151,51 @@ public class LocalGameControls extends Controls
             }
         });
 
-        b.setId(R.id.next);
+        return b;
+    }
+
+    public View pointList()
+    {
+        Button b = new Button(getContext());
+        b.setId(R.id.pointList);
+        b.setText("PointList");
+        b.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+                List<PointElement> elements = new ArrayList<PointElement>();
+                for (int i = 3; i < 6; i++)
+                {
+                    for (int j = 1; j < 7; j++)
+                    {
+                        elements.add(new PointElement(PointType.XOfAKind, i, j, null, Orientation.Down, gamemaster.getRules().getPoints(i, j, PointType.XOfAKind)));
+                    }
+
+                    elements.add(new PointElement(PointType.Straight, i, 1, null, Orientation.Down, gamemaster.getRules().getPoints(i, 1, PointType.Straight)));
+
+                }
+                // 2. Chain together various setter methods to set the dialog characteristics
+                builder.setMessage("Points")
+                        .setTitle("List").setView(new PointList(activity, elements));
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+
+                    }
+                });
+
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
         return b;
     }
 
@@ -143,6 +205,8 @@ public class LocalGameControls extends Controls
         updateGravity();
         updateSkills();
         gameOver();
+        ViewGroup vg = (ViewGroup) activity.getWindow().getDecorView();
+        vg.invalidate();
     }
 
     private void updateSkills()
@@ -198,6 +262,8 @@ public class LocalGameControls extends Controls
             return;
         }
 
+        AnimatedBoard b = (AnimatedBoard) gamemaster.getBoard();
+        b.enableSwitchListener();
         enableNext();
         enableGravity();
         enableHelp();
@@ -230,6 +296,8 @@ public class LocalGameControls extends Controls
 
     public void disable()
     {
+        AnimatedBoard b = (AnimatedBoard) gamemaster.getBoard();
+        b.disableSwitchListener();
         disableNext();
         disableGravity();
         disableHelp();
@@ -247,4 +315,6 @@ public class LocalGameControls extends Controls
         Button c = (Button) findViewById(R.id.next);
         c.setEnabled(true);
     }
+
+
 }

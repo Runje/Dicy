@@ -25,4 +25,5 @@
     <item name="pointLimit" type="id"/>
     <item name="helpButton" type="id"/>
     <item name="changeButton" type="id"/>
+    <item name="pointList" type="id"/>
 </resources>

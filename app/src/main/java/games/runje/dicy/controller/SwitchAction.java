@@ -3,7 +3,6 @@ package games.runje.dicy.controller;
 import android.util.Log;
 
 import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicymodel.communication.messages.SwitchMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 
@@ -24,6 +23,7 @@ public class SwitchAction extends Action
         this.gamemaster = gm;
 
         switch (direction)
+
         {
             case Up:
                 second = new Coords(first.row - 1, first.column);
@@ -48,13 +48,23 @@ public class SwitchAction extends Action
         this.gamemaster = gm;
     }
 
+    public Coords getFirst()
+    {
+        return first;
+    }
+
+    public Coords getSecond()
+    {
+        return second;
+    }
+
     @Override
     public void execute()
     {
         boolean switchedBack = ((AnimatedBoard) this.board).switchElements(first, second, switchBackPossible);
         if (!switchedBack)
         {
-            gamemaster.sendMessageToServer(new SwitchMessage(first, second));
+            //gamemaster.sendMessageToServer(new SwitchMessage(first, second));
         }
 
         Log.d("TL", "Exectued switch elements: " + first + " with " + second);

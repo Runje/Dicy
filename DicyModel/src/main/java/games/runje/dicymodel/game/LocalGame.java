@@ -17,8 +17,8 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class LocalGame extends Game
 {
-    private final int startingPlayer;
     int gameEndPoints;
+    private int lastLeadingPlayer;
     private List<Strategy> strategies;
     private List<Player> players;
 
@@ -40,33 +40,32 @@ public class LocalGame extends Game
         players = new ArrayList<>();
         for (int i = 0; i < p; i++)
         {
-            players.add(new Player("Player " + (i + 1), strategies.get(i)));
+            players.add(new Player("Player " + (i + 1), strategies.get(i), 0));
         }
 
         // random starting player
-        startingPlayer = new Random().nextInt(p);
-        turn = startingPlayer;
+        lastLeadingPlayer = new Random().nextInt(p);
+        turn = lastLeadingPlayer;
     }
 
-    public LocalGame(int pointLimit, int gameLimit, List<String> playerNames, List<Strategy> s)
+    public LocalGame(int pointLimit, int gameLimit, List<Player> playerList, int startingPlayer)
     {
         pointsLimit = pointLimit;
         gameEndPoints = gameLimit;
-        strategies = s;
 
-        players = new ArrayList<>();
+        this.players = playerList;
 
-        for (int i = 0; i < playerNames.size(); i++)
+        for (int i = 0; i < playerList.size(); i++)
         {
-            Player p = new Player(playerNames.get(i), strategies.get(i));
+            Player p = playerList.get(i);
             p.addSkill(new Skill(1, 6, Skill.Help));
             p.addSkill(new Skill(6, 6, Skill.Change));
-            players.add(p);
             //Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
 
         // random starting player
-        startingPlayer = new Random().nextInt(playerNames.size());
+        //lastLeadingPlayer = new Random().nextInt(playerNames.size());
+        this.lastLeadingPlayer = startingPlayer;
         turn = startingPlayer;
     }
 
@@ -137,7 +136,8 @@ public class LocalGame extends Game
     @Override
     public boolean hasAIPlayerTurn()
     {
-        return players.get(turn).isAi();
+        // TODO: differentiate between AI and Online player
+        return !players.get(turn).isHuman();
     }
 
     @Override
@@ -218,35 +218,55 @@ public class LocalGame extends Game
         }
 
         movePoints = 0;
+        updateLeader();
         nextPlayer();
 
         return isGameOver();
     }
 
-    public boolean isGameOver()
+    private void updateLeader()
     {
-        boolean lastPlayerTurn = (turn == startingPlayer);
-        boolean enoughPoints = false;
         int maxPoints = 0;
-        String w = "Unknown";
-        // TODO: What if two player with same points?
-        for (Player p : players)
+        int index = -1;
+        for (int i = 0; i < players.size(); i++)
         {
-            if (p.getPoints() >= maxPoints)
+            Player player = players.get(i);
+            if (player.getPoints() >= maxPoints)
             {
-                maxPoints = p.getPoints();
-                w = p.getName();
+                maxPoints = player.getPoints();
+                index = i;
             }
         }
 
-        if (maxPoints >= gameEndPoints)
+        if (maxPoints >= gameEndPoints && index == turn)
+        {
+            lastLeadingPlayer = index;
+            System.out.println("New Suddendeath Leader: " + getPlayingPlayer().getName());
+        }
+        else if (maxPoints < gameEndPoints)
+        {
+            System.out.println("Maxpoints: " + maxPoints + ", index " + index);
+            lastLeadingPlayer = -1;
+        }
+    }
+
+    public boolean isGameOver()
+    {
+        boolean lastLeadingPlayerTurn = (turn == lastLeadingPlayer);
+        boolean enoughPoints = false;
+
+        String w = "Unknown";
+        // TODO: What if two player with same points?
+
+
+        if (getPlayingPlayer().getPoints() >= gameEndPoints)
         {
             enoughPoints = true;
-            winner = w;
+            winner = getPlayingPlayer().getName();
         }
 
         //Logger.logInfo(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
-        return lastPlayerTurn && enoughPoints;
+        return lastLeadingPlayerTurn && enoughPoints;
     }
 
     public int getPointsLimit()
@@ -257,5 +277,10 @@ public class LocalGame extends Game
     public String getWinner()
     {
         return winner;
+    }
+
+    public int getLastLeadingPlayer()
+    {
+        return lastLeadingPlayer;
     }
 }

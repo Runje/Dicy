@@ -5,18 +5,18 @@ import java.nio.ByteBuffer;
 import games.runje.dicymodel.Gamemaster;
 
 /**
- * Created by thomas on 22.02.15.
+ * Created by Thomas on 26.02.2015.
  */
-public class NextMessage extends Message
+public class IdentifyMessage extends Message
 {
-    public static final String Name = "NextMessage";
+    public static final String Name = "IdentifyMessage";
 
-    public NextMessage()
+    public IdentifyMessage()
     {
         this.contentLength = 0;
     }
 
-    public NextMessage(ByteBuffer buffer, int length)
+    public IdentifyMessage(ByteBuffer buffer, int length)
     {
         this.contentLength = length - headerLength;
     }

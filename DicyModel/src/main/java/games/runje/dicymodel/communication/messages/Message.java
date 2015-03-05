@@ -17,6 +17,7 @@ public abstract class Message
     protected String content;
     protected long fromId;
     protected long toId;
+
     public abstract String getName();
 
     public int getTotalLength()
@@ -53,13 +54,24 @@ public abstract class Message
         return buffer.array();
     }
 
+    public long getFromId()
+    {
+        return fromId;
+    }
+
     public void setFromId(long fromId)
     {
         this.fromId = fromId;
     }
 
+    public long getToId()
+    {
+        return toId;
+    }
+
     public void setToId(long toId)
     {
+
         this.toId = toId;
     }
 }

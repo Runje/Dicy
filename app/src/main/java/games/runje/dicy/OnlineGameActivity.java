@@ -5,14 +5,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import games.runje.dicy.animatedData.AnimatedBoard;
+import java.util.Random;
+
+import games.runje.dicy.controller.Logger;
 import games.runje.dicy.controller.OnlineGamemaster;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.communication.ConnectionToServer;
-import games.runje.dicymodel.data.Gravity;
+import games.runje.dicymodel.communication.messages.FindOpponentMessage;
+import games.runje.dicymodel.communication.messages.IdentifyMessage;
 
 
 /**
@@ -24,6 +27,7 @@ import games.runje.dicymodel.data.Gravity;
 public class OnlineGameActivity extends Activity
 {
     private ConnectionToServer client;
+    private String LogKey = "OnlineGameActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,6 +39,9 @@ public class OnlineGameActivity extends Activity
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_online_game);
+
+        EditText editId = (EditText) findViewById(R.id.idEditText);
+        editId.setText(Integer.toString(new Random().nextInt(10000)));
     }
 
     @Override
@@ -43,31 +50,20 @@ public class OnlineGameActivity extends Activity
         super.onPostCreate(savedInstanceState);
 
         TextView status = (TextView) findViewById(R.id.StatusClient);
-
-        ConnectionToServer.connect(OnlineGamemaster.getInstance());
+        Logger.logInfo(LogKey, "Connecting...");
+        EditText editId = (EditText) findViewById(R.id.idEditText);
+        int id = Integer.parseInt(editId.getText().toString());
+        ConnectionToServer.connect(new OnlineGamemaster(this, id));
 
     }
 
     public void clickFindOpponent(View v)
     {
-        RelativeLayout l = new RelativeLayout(this);
-        // TODO: create local game here
-        OnlineGamemaster.getInstance().createOnlineGame(this);
-        AnimatedBoard board = (AnimatedBoard) OnlineGamemaster.getInstance().getBoard();
-        board.setGravity(Gravity.Down);
-        RelativeLayout b = board.getGameLayout();
-        RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
-        pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        b.setId(R.id.board);
-        l.addView(b, pB);
+        EditText editId = (EditText) findViewById(R.id.idEditText);
+        int id = Integer.parseInt(editId.getText().toString());
 
-        RelativeLayout controls = OnlineGamemaster.getInstance().getControls();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, R.id.board);
-        params.topMargin = 50;
-        l.addView(controls, params);
-        setContentView(l);
-        //OnlineGamemaster.getInstance().sendMessageToServer(new FindOpponentMessage());
+        ConnectionToServer.sendMessage(new IdentifyMessage(), id);
+        ConnectionToServer.sendMessage(new FindOpponentMessage(), id);
 
     }
 

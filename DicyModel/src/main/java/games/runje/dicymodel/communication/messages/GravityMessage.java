@@ -36,13 +36,14 @@ public class GravityMessage extends Message
     @Override
     public void execute(Gamemaster gamemaster)
     {
-        gamemaster.changeGravity(gravity);
+        gamemaster.changeGravity(gravity, fromId);
     }
 
     public byte[] contentToByte()
     {
         ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         byte[] bytes = MessageConverter.stringToByte(gravity.toString());
+        System.out.println("contentlength: " + contentLength + ", bytesLength: " + bytes.length + ", gravity: " + gravity);
         buffer.put(bytes);
         MessageConverter.fillBufferWithZero(buffer, MessageConverter.gravityLength - bytes.length);
         return buffer.array();

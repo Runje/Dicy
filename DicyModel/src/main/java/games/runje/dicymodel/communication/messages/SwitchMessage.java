@@ -38,7 +38,8 @@ public class SwitchMessage extends Message
     @Override
     public void execute(Gamemaster gamemaster)
     {
-        gamemaster.switchElements(first, second);
+        // TODO: check if possible
+        gamemaster.switchElements(first, second, fromId);
     }
 
     public byte[] contentToByte()

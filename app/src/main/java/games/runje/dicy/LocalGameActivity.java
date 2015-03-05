@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +104,10 @@ public class LocalGameActivity extends Activity
         params.addRule(RelativeLayout.BELOW, R.id.board);
         params.topMargin = 50;
         l.addView(controls, params);
-        setContentView(l);
+
+        ScrollView v = new ScrollView(this);
+        v.addView(l);
+        setContentView(v);
 
     }
 

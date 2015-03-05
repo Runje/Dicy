@@ -35,9 +35,10 @@ public class ConnectionToServer
         gamemaster = gm;
         if (connected)
         {
+            System.out.println("Already Connected");
             return;
         }
-
+        System.out.println("Starting Listen Thread");
         new Thread(new Runnable()
         {
             @Override
@@ -51,6 +52,7 @@ public class ConnectionToServer
 
     private static void connectAndListen()
     {
+        System.out.println("Connect and listen");
         try
         {
             s = new Socket(ipaddress, port);
@@ -60,6 +62,7 @@ public class ConnectionToServer
         catch (IOException e)
         {
             connected = false;
+            System.out.println("Not Connected");
             e.printStackTrace();
         }
 
@@ -111,10 +114,10 @@ public class ConnectionToServer
             OutputStreamWriter osw = new OutputStreamWriter(os);
             BufferedWriter bw = new BufferedWriter(osw);
 
-            String sendMessageToClient = msg + "\n";
-            bw.write(sendMessageToClient);
+            String sendMessageToFirst = msg + "\n";
+            bw.write(sendMessageToFirst);
             bw.flush();
-            System.out.println("Message sent to the server : " + sendMessageToClient);
+            System.out.println("Message sent to the server : " + sendMessageToFirst);
         } catch (Exception exception) {
             exception.printStackTrace();
         }*/

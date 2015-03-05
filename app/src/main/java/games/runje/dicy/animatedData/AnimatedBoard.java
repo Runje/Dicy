@@ -438,6 +438,28 @@ public class AnimatedBoard extends Board
         }
     }
 
+    public void disableSwitchListener()
+    {
+        for (int row = 0; row < this.rows; row++)
+        {
+            for (int column = 0; column < this.columns; column++)
+            {
+                this.animatedBoard.get(row).get(column).getTouchListener().setDisabled(true);
+            }
+        }
+    }
+
+    public void enableSwitchListener()
+    {
+        for (int row = 0; row < this.rows; row++)
+        {
+            for (int column = 0; column < this.columns; column++)
+            {
+                this.animatedBoard.get(row).get(column).getTouchListener().setDisabled(false);
+            }
+        }
+    }
+
     public void changeElement(Coords position, int newValue)
     {
         super.changeElement(position, newValue);

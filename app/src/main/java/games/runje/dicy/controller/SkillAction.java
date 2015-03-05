@@ -19,7 +19,7 @@ public class SkillAction extends Action
     @Override
     public void execute()
     {
-        gamemaster.executeSkill(skill);
+        gamemaster.executeSkill(skill, gamemaster.getFromId());
     }
 
     @Override

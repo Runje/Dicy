@@ -4,12 +4,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import games.runje.dicy.controller.Action;
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.Direction;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicy.controller.SwitchAction;
+import games.runje.dicymodel.communication.messages.SkillMessage;
+import games.runje.dicymodel.communication.messages.SwitchMessage;
 import games.runje.dicymodel.data.Coords;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 16.10.2014.
@@ -19,11 +21,22 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
     protected Coords position;
     private boolean switchEnabled = true;
     private AnimatedGamemaster gamemaster;
+    private boolean disabled = false;
 
     public AnimatedBoardElementTL(Coords position, AnimatedGamemaster gm)
     {
         this.gamemaster = gm;
         this.position = position;
+    }
+
+    public boolean isDisabled()
+    {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled)
+    {
+        this.disabled = disabled;
     }
 
     public void setPosition(Coords position)
@@ -42,6 +55,11 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent)
     {
+        if (disabled)
+        {
+            return false;
+        }
+
         if (switchEnabled)
         {
             return switchOnTouch(view, motionEvent);
@@ -58,6 +76,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
         {
             case (MotionEvent.ACTION_UP):
                 gamemaster.select(position);
+                gamemaster.sendMessageToServer(new SkillMessage(Skill.Change, position));
                 break;
 
 
@@ -124,8 +143,9 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                     return true;
                 }
 
-                Action a = new SwitchAction(position, direction, true, gamemaster);
+                SwitchAction a = new SwitchAction(position, direction, true, gamemaster);
                 gamemaster.performAction(a);
+                gamemaster.sendMessageToServer(new SwitchMessage(a.getFirst(), a.getSecond()));
                 Logger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown);
                 Toast t = Toast.makeText(view.getContext(), direction.toString() + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown, Toast.LENGTH_LONG);
                 //t.show();

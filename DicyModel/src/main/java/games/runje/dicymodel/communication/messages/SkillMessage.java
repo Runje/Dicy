@@ -25,6 +25,7 @@ public class SkillMessage extends Message
     {
         this.contentLength = length - headerLength;
         this.skill = MessageConverter.byteToString(buffer, MessageConverter.skillLength);
+        System.out.println("Pos in Skill: " + pos);
         this.pos = MessageConverter.byteToCoords(buffer);
     }
 
@@ -33,6 +34,11 @@ public class SkillMessage extends Message
         this.contentLength = MessageConverter.coordsLength + MessageConverter.skillLength;
         this.skill = skillName;
         this.pos = position;
+    }
+
+    public void setPos(Coords pos)
+    {
+        this.pos = pos;
     }
 
     @Override
@@ -47,7 +53,7 @@ public class SkillMessage extends Message
         Skill s = gamemaster.getGame().getPlayingPlayer().getSkill(skill);
         s.setPos(pos);
         System.out.println("Pos: " + pos);
-        gamemaster.executeSkill(s);
+        gamemaster.executeSkill(s, fromId);
     }
 
     public byte[] contentToByte()

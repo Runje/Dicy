@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.communication.messages.FindOpponentMessage;
 import games.runje.dicymodel.communication.messages.GravityMessage;
+import games.runje.dicymodel.communication.messages.IdentifyMessage;
 import games.runje.dicymodel.communication.messages.Message;
 import games.runje.dicymodel.communication.messages.NextMessage;
 import games.runje.dicymodel.communication.messages.RecreateBoardMessage;
@@ -22,28 +23,44 @@ public class MessageParser
         String name = MessageConverter.byteToString(buffer, MessageConverter.nameLength);
         long fromId = buffer.getLong();
         long toId = buffer.getLong();
+
         System.out.println("Parsing Message " + name + ", from " + fromId + " to " + toId);
+
+        Message msg = null;
         switch (name)
         {
             case StartGameMessage.Name:
-                return new StartGameMessage(buffer, length);
+                msg = new StartGameMessage(buffer, length);
+                break;
             case SwitchMessage.Name:
-                return new SwitchMessage(buffer, length);
+                msg = new SwitchMessage(buffer, length);
+                break;
             case RecreateElementsMessage.Name:
-                return new RecreateElementsMessage(buffer, length);
+                msg = new RecreateElementsMessage(buffer, length);
+                break;
             case RecreateBoardMessage.Name:
-                return new RecreateBoardMessage(buffer, length);
+                msg = new RecreateBoardMessage(buffer, length);
+                break;
             case NextMessage.Name:
-                return new NextMessage(buffer, length);
+                msg = new NextMessage(buffer, length);
+                break;
             case SkillMessage.Name:
-                return new SkillMessage(buffer, length);
+                msg = new SkillMessage(buffer, length);
+                break;
             case GravityMessage.Name:
-                return new GravityMessage(buffer, length);
+                msg = new GravityMessage(buffer, length);
+                break;
             case FindOpponentMessage.Name:
-                return new FindOpponentMessage(buffer, length);
+                msg = new FindOpponentMessage(buffer, length);
+                break;
+            case IdentifyMessage.Name:
+                msg = new IdentifyMessage(buffer, length);
+                break;
 
         }
 
-        return null;
+        msg.setToId(toId);
+        msg.setFromId(fromId);
+        return msg;
     }
 }

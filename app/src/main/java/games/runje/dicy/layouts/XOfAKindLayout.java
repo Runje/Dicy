@@ -14,6 +14,14 @@ public class XOfAKindLayout extends DicesLayout
     public XOfAKindLayout(Context context, int length, int size, int maxLength)
     {
         super(context, length, size, maxLength);
+        value = new Random().nextInt(6) + 1;
+        init();
+    }
+
+    public XOfAKindLayout(Context context, int length, int size, int maxLength, int value)
+    {
+        super(context, length, size, maxLength);
+        this.value = value;
         init();
     }
 
