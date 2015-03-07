@@ -1,6 +1,8 @@
 package games.runje.dicy.controller;
 
 import android.app.Activity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -43,15 +45,18 @@ public class AnimatedGamemaster extends Gamemaster
     protected int animationsWillStart = 0;
     protected Controls controls;
     protected boolean locked = false;
+    private ViewGroup scrollView;
 
-    protected AnimatedGamemaster(LocalGame game, Board b, Rules r, Activity a)
+    protected AnimatedGamemaster(LocalGame game, Board b, Rules r, Activity a, ViewGroup sv)
     {
         this.game = game;
         this.activity = a;
+        this.scrollView = sv;
         this.board = new AnimatedBoard(b, a, this);
         this.rules = r;
         this.controls = new LocalGameControls(activity, game, (AnimatedBoard) board, this);
     }
+
 
     protected AnimatedGamemaster()
     {
@@ -84,7 +89,7 @@ public class AnimatedGamemaster extends Gamemaster
         update();*/
     }
 
-    public static void createLocalGame(Activity activity, List<String> players, int length, Rules rules, List<Strategy> s)
+    public static void createLocalGame(Activity activity, List<String> players, int length, Rules rules, List<Strategy> s, ViewGroup sv)
     {
         Board b = Board.createBoardNoPoints(5, 5, rules);
         b.setGravity(Gravity.Down);
@@ -100,7 +105,7 @@ public class AnimatedGamemaster extends Gamemaster
         LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * length, playerList, 0);
 
 
-        animatedInstance = new AnimatedGamemaster(game, b, rules, activity);
+        animatedInstance = new AnimatedGamemaster(game, b, rules, activity, sv);
         for (Player p : game.getPlayers())
         {
             if (p.isAi())
@@ -458,5 +463,10 @@ public class AnimatedGamemaster extends Gamemaster
         }
 
         controls.update();
+    }
+
+    public ViewGroup getScrollView()
+    {
+        return scrollView;
     }
 }

@@ -39,7 +39,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
     private OnlineGamemaster(LocalGame game, Board b, Rules r, Activity a)
     {
-        super(game, b, r, a);
+        super(game, b, r, a, null);
     }
 
     public OnlineGamemaster(Activity activity, long id)

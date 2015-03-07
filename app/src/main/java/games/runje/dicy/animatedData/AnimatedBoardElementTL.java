@@ -2,6 +2,7 @@ package games.runje.dicy.animatedData;
 
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
@@ -22,10 +23,12 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
     private boolean switchEnabled = true;
     private AnimatedGamemaster gamemaster;
     private boolean disabled = false;
+    private ViewGroup scrollView;
 
     public AnimatedBoardElementTL(Coords position, AnimatedGamemaster gm)
     {
         this.gamemaster = gm;
+        this.scrollView = gm.getScrollView();
         this.position = position;
     }
 
@@ -60,6 +63,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
             return false;
         }
 
+        scrollView.requestDisallowInterceptTouchEvent(true);
         if (switchEnabled)
         {
             return switchOnTouch(view, motionEvent);

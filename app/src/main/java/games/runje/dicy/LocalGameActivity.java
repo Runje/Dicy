@@ -91,7 +91,8 @@ public class LocalGameActivity extends Activity
         rules.initStraightPoints(4);
         RelativeLayout l = new RelativeLayout(this);
         // TODO: create local game here
-        AnimatedGamemaster.createLocalGame(this, p, f, rules, s);
+        ScrollView v = new ScrollView(this);
+        AnimatedGamemaster.createLocalGame(this, p, f, rules, s,v);
         AnimatedBoard board = (AnimatedBoard) AnimatedGamemaster.getInstance().getBoard();
         RelativeLayout b = board.getGameLayout();
         RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
@@ -105,7 +106,6 @@ public class LocalGameActivity extends Activity
         params.topMargin = 50;
         l.addView(controls, params);
 
-        ScrollView v = new ScrollView(this);
         v.addView(l);
         setContentView(v);
 
