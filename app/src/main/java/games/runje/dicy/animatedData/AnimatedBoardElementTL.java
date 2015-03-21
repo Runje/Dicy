@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.Direction;
+import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicy.controller.SwitchAction;
 import games.runje.dicymodel.communication.messages.SkillMessage;
@@ -19,16 +20,22 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class AnimatedBoardElementTL implements View.OnTouchListener
 {
+    private final GamemasterAnimated gmAnimated;
+    private final String LogKey = "AnimatedBoardElementTL";
     protected Coords position;
     private boolean switchEnabled = true;
     private AnimatedGamemaster gamemaster;
     private boolean disabled = false;
     private ViewGroup scrollView;
 
-    public AnimatedBoardElementTL(Coords position, AnimatedGamemaster gm)
+    public AnimatedBoardElementTL(Coords position, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
     {
         this.gamemaster = gm;
-        this.scrollView = gm.getScrollView();
+        this.gmAnimated = gmAnimated;
+        if (gamemaster != null)
+        {
+            this.scrollView = gm.getScrollView();
+        }
         this.position = position;
     }
 
@@ -63,7 +70,11 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
             return false;
         }
 
-        scrollView.requestDisallowInterceptTouchEvent(true);
+        if (scrollView != null)
+        {
+            scrollView.requestDisallowInterceptTouchEvent(true);
+        }
+
         if (switchEnabled)
         {
             return switchOnTouch(view, motionEvent);
@@ -148,8 +159,15 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                 }
 
                 SwitchAction a = new SwitchAction(position, direction, true, gamemaster);
-                gamemaster.performAction(a);
-                gamemaster.sendMessageToServer(new SwitchMessage(a.getFirst(), a.getSecond()));
+                if (gamemaster != null)
+                {
+                    gamemaster.performAction(a);
+                    gamemaster.sendMessageToServer(new SwitchMessage(a.getFirst(), a.getSecond()));
+                }
+                else
+                {
+                    gmAnimated.switchElements(a.getFirst(), a.getSecond());
+                }
                 Logger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown);
                 Toast t = Toast.makeText(view.getContext(), direction.toString() + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown, Toast.LENGTH_LONG);
                 //t.show();

@@ -20,7 +20,11 @@ import java.util.List;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controller.Logger;
+import games.runje.dicymodel.AbstractGamemaster;
+import games.runje.dicymodel.GameControls;
+import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
@@ -28,22 +32,24 @@ import games.runje.dicymodel.game.LocalGame;
 /**
  * Created by Thomas on 02.01.2015.
  */
-public class Controls extends RelativeLayout
+public class Controls extends RelativeLayout implements GameControls
 {
     protected final Activity activity;
     protected final AnimatedGamemaster gamemaster;
+    protected GamemasterAnimated gmAnimated;
+    protected AnimatedBoard board;
     LocalGame game;
     List<TextView> playersView = new ArrayList<>();
     private List<TextView> strikesView = new ArrayList<>();
     private String LogKey = "Controls";
-    private AnimatedBoard board;
 
 
     //TODO: controls as member
-    public Controls(Activity context, AnimatedBoard b, AnimatedGamemaster gm)
+    public Controls(Activity context, AnimatedBoard b, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
     {
         super(context);
         this.gamemaster = gm;
+        this.gmAnimated = gmAnimated;
         this.activity = context;
         this.board = b;
 
@@ -211,10 +217,10 @@ public class Controls extends RelativeLayout
         ImageView arrowRight = new ImageView(getContext());
         ImageView arrowUp = new ImageView(getContext());
         ImageView arrowDown = new ImageView(getContext());
-        arrowLeft.setOnClickListener(new GravityListener(Gravity.Left, gamemaster));
-        arrowRight.setOnClickListener(new GravityListener(Gravity.Right, gamemaster));
-        arrowUp.setOnClickListener(new GravityListener(Gravity.Up, gamemaster));
-        arrowDown.setOnClickListener(new GravityListener(Gravity.Down, gamemaster));
+        arrowLeft.setOnClickListener(new GravityListener(Gravity.Left, gamemaster, this, board));
+        arrowRight.setOnClickListener(new GravityListener(Gravity.Right, gamemaster, this, board));
+        arrowUp.setOnClickListener(new GravityListener(Gravity.Up, gamemaster, this, board));
+        arrowDown.setOnClickListener(new GravityListener(Gravity.Down, gamemaster, this, board));
         arrowLeft.setImageResource(arrow);
         arrowLeft.setColorFilter(Color.BLUE);
         arrowLeft.setId(R.id.arrowLeft);
@@ -311,6 +317,20 @@ public class Controls extends RelativeLayout
         return l;
     }
 
+    @Override
+    public void setEnabledControls(boolean enabled)
+    {
+        Logger.logInfo(LogKey, "Set EnabledControls: " + enabled);
+        if (enabled)
+        {
+            enable();
+        }
+        else
+        {
+            disable();
+        }
+    }
+
     public void update()
     {
         updateDiagonal();
@@ -319,6 +339,19 @@ public class Controls extends RelativeLayout
         updateGravity();
         updatePoints();
         enable();
+    }
+
+    @Override
+    public void setGamemaster(AbstractGamemaster gamemaster)
+    {
+        // TODO:
+        this.gmAnimated = (GamemasterAnimated) gamemaster;
+    }
+
+    @Override
+    public void setAnimatedBoard(Board board)
+    {
+        this.board = (AnimatedBoard) board;
     }
 
     private void updateXOfAKind()
@@ -372,6 +405,7 @@ public class Controls extends RelativeLayout
     {
         if (game.isGameOver())
         {
+            Logger.logInfo(LogKey, "Game Over");
             return;
         }
 

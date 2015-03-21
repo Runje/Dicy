@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.PointElement;
 
@@ -18,33 +19,55 @@ import games.runje.dicymodel.data.PointElement;
 public class PointsAnimation implements Animation.AnimationListener
 {
     private final ArrayList<PointElement> elements;
+    private final GamemasterAnimated gmAnimated;
     private ArrayList<TextView> tvs;
     private AnimatedGamemaster gamemaster;
 
-    public PointsAnimation(ArrayList<PointElement> elements, AnimatedGamemaster gm)
+    public PointsAnimation(ArrayList<PointElement> elements, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
     {
         this.elements = elements;
         this.gamemaster = gm;
+        this.gmAnimated = gmAnimated;
         this.tvs = new ArrayList<>();
     }
 
     @Override
     public void onAnimationStart(Animation animation)
     {
-        ((AnimatedBoard) gamemaster.getBoard()).highlightElements(elements);
+        AnimatedBoard board = null;
+        if (gamemaster != null)
+        {
+            board = ((AnimatedBoard) gamemaster.getBoard());
+        }
+        else
+        {
+            board = gmAnimated.getAnimatedBoard();
+        }
+
+        board.highlightElements(elements);
+
     }
 
     @Override
     public void onAnimationEnd(Animation animation)
     {
-        AnimatedBoard board = ((AnimatedBoard) gamemaster.getBoard());
-        ArrayList<Coords> coords = Coords.pointElementsToCoords(elements);
-
-        for (Coords c : coords)
+        AnimatedBoard board = null;
+        if (gamemaster != null)
         {
-            board.getAnimatedElement(c).remove();
-            board.getAnimatedElement(c).setValue(0);
+            board = ((AnimatedBoard) gamemaster.getBoard());
+            ArrayList<Coords> coords = Coords.pointElementsToCoords(elements);
+
+            for (Coords c : coords)
+            {
+                board.getAnimatedElement(c).remove();
+                board.getAnimatedElement(c).setValue(0);
+            }
         }
+        else
+        {
+            board = gmAnimated.getAnimatedBoard();
+        }
+
 
         // Delete Points
         for (TextView tv : tvs)
@@ -52,8 +75,15 @@ public class PointsAnimation implements Animation.AnimationListener
             ((RelativeLayout) tv.getParent()).removeView(tv);
         }
 
-        gamemaster.anmiationEnded();
-        gamemaster.updaterAfterPoints();
+        if (gamemaster != null)
+        {
+            gamemaster.anmiationEnded();
+            gamemaster.updaterAfterPoints();
+        }
+        else
+        {
+            gmAnimated.endPointAnimation();
+        }
     }
 
     @Override
@@ -64,8 +94,16 @@ public class PointsAnimation implements Animation.AnimationListener
 
     public void start()
     {
-        gamemaster.startAnimation();
-        AnimatedBoard board = ((AnimatedBoard) gamemaster.getBoard());
+        AnimatedBoard board = null;
+        if (gamemaster != null)
+        {
+            gamemaster.startAnimation();
+            board = ((AnimatedBoard) gamemaster.getBoard());
+        }
+        else
+        {
+            board = gmAnimated.getAnimatedBoard();
+        }
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0,
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);

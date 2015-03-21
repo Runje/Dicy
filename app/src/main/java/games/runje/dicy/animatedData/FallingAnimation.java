@@ -3,49 +3,33 @@ package games.runje.dicy.animatedData;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import games.runje.dicy.controller.AnimatedGamemaster;
-import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.data.Coords;
 
 /**
  * Created by Thomas on 28.10.2014.
  */
-public class FallAnimation implements Animation.AnimationListener
+public class FallingAnimation implements DicyAnimation
 {
     private final AnimatedBoardElement element;
     private final Coords to;
-    private final AnimatedGamemaster gamemaster;
-    private GamemasterAnimated gmAnimated;
-    private String LogKey = "FallAnimation";
-    private boolean update;
+    private AnimationHandler animationHandler;
+    private AnimatedBoard board;
+    private String LogKey = "FallingAnimation";
 
-    public FallAnimation(AnimatedBoardElement element, Coords to, boolean update, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
+    public FallingAnimation(AnimatedBoardElement element, Coords to, AnimatedBoard board, AnimationHandler animationHandler)
     {
-        this.gamemaster = gm;
         this.element = element;
         this.to = to;
-        this.update = update;
-        this.gmAnimated = gmAnimated;
+        this.board = board;
+        this.animationHandler = animationHandler;
+
+        // statt gamemaster reicht animated board
     }
 
-    public FallAnimation(AnimatedBoardElement element, Coords to, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
-    {
-        this(element, to, true, gm, gmAnimated);
-    }
 
     public void start()
     {
-        AnimatedBoard board = null;
-        if (gamemaster != null)
-        {
-            board = (AnimatedBoard) gamemaster.getBoard();
-        }
-        else
-        {
-            board = gmAnimated.getAnimatedBoard();
-        }
-
         float dx = board.getGameLayout().CoordsToX(to) - element.getX();
         float dy = board.getGameLayout().CoordsToY(to) - element.getY();
 
@@ -70,15 +54,6 @@ public class FallAnimation implements Animation.AnimationListener
     {
         element.clearAnimation();
         // set new position
-        AnimatedBoard board = null;
-        if (gamemaster != null)
-        {
-            board = (AnimatedBoard) gamemaster.getBoard();
-        }
-        else
-        {
-            board = gmAnimated.getAnimatedBoard();
-        }
         AnimatedBoardElement toElement = board.getAnimatedElement(to);
         board.setAnimatedElement(to, element);
 
@@ -88,23 +63,8 @@ public class FallAnimation implements Animation.AnimationListener
 
         Logger.logDebug(LogKey, "End from To: " + this.to + " ex: " + element.getX() + ", ey: " + element.getY());
 
-        if (gamemaster != null)
-        {
+        animationHandler.endAnimation();
 
-            gamemaster.anmiationEnded();
-            if (update)
-            {
-                gamemaster.updateAfterFall();
-            }
-            else
-            {
-                gamemaster.getControls().enable();
-            }
-        }
-        else
-        {
-            gmAnimated.endRecreateAnimation();
-        }
 
     }
 

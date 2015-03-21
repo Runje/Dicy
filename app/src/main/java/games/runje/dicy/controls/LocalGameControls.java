@@ -15,9 +15,12 @@ import java.util.List;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controller.SkillAction;
 import games.runje.dicy.layouts.PointList;
+import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.communication.messages.SkillMessage;
+import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Orientation;
 import games.runje.dicymodel.data.PointElement;
 import games.runje.dicymodel.data.PointType;
@@ -30,14 +33,12 @@ import games.runje.dicymodel.skills.Skill;
 public class LocalGameControls extends Controls
 {
 
-    public LocalGameControls(Activity context, LocalGame g, AnimatedBoard board, AnimatedGamemaster gm)
+    public LocalGameControls(Activity context, LocalGame g, AnimatedBoard board, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
     {
-        super(context, board, gm);
+        super(context, board, gm, gmAnimated);
         this.game = g;
         addView(points());
-        RelativeLayout.LayoutParams pA = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pA.addRule(RelativeLayout.RIGHT_OF, R.id.points);
-        addView(gravityArrows(), pA);
+
 
         RelativeLayout.LayoutParams pL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pL.addRule(RelativeLayout.BELOW, R.id.points);
@@ -61,6 +62,15 @@ public class LocalGameControls extends Controls
         addView(pointList(), pP);
     }
 
+    @Override
+    public void setAnimatedBoard(Board board)
+    {
+        super.setAnimatedBoard(board);
+        RelativeLayout.LayoutParams pA = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pA.addRule(RelativeLayout.RIGHT_OF, R.id.points);
+        addView(gravityArrows(), pA);
+    }
+
     private View Help()
     {
         Button b = new Button(getContext());
@@ -70,8 +80,15 @@ public class LocalGameControls extends Controls
             @Override
             public void onClick(View view)
             {
-                gamemaster.performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Help), gamemaster));
-                gamemaster.sendMessageToServer(new SkillMessage(Skill.Help));
+                if (gamemaster != null)
+                {
+                    gamemaster.performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Help), gamemaster));
+                    gamemaster.sendMessageToServer(new SkillMessage(Skill.Help));
+                }
+                else
+                {
+                    // TODO
+                }
             }
         });
         b.setId(R.id.helpButton);
@@ -87,7 +104,14 @@ public class LocalGameControls extends Controls
             @Override
             public void onClick(View view)
             {
-                gamemaster.performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Change), gamemaster));
+                if (gamemaster != null)
+                {
+                    gamemaster.performAction(new SkillAction(game.getPlayingPlayer().getSkill(Skill.Change), gamemaster));
+                }
+                else
+                {
+                    // TODO
+                }
             }
         });
         b.setId(R.id.changeButton);
@@ -147,7 +171,14 @@ public class LocalGameControls extends Controls
             @Override
             public void onClick(View view)
             {
-                gamemaster.next();
+                if (gamemaster != null)
+                {
+                    gamemaster.next();
+                }
+                else
+                {
+                    gmAnimated.next();
+                }
             }
         });
 
@@ -156,6 +187,7 @@ public class LocalGameControls extends Controls
 
     public View pointList()
     {
+
         Button b = new Button(getContext());
         b.setId(R.id.pointList);
         b.setText("PointList");
@@ -167,15 +199,25 @@ public class LocalGameControls extends Controls
                 // 1. Instantiate an AlertDialog.Builder with its constructor
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
+                Rules rules = null;
+                if (gamemaster != null)
+                {
+                    rules = gamemaster.getRules();
+                }
+                else
+                {
+                    rules = gmAnimated.getRules();
+                }
+
                 List<PointElement> elements = new ArrayList<PointElement>();
                 for (int i = 3; i < 6; i++)
                 {
                     for (int j = 1; j < 7; j++)
                     {
-                        elements.add(new PointElement(PointType.XOfAKind, i, j, null, Orientation.Down, gamemaster.getRules().getPoints(i, j, PointType.XOfAKind)));
+                        elements.add(new PointElement(PointType.XOfAKind, i, j, null, Orientation.Down, rules.getPoints(i, j, PointType.XOfAKind)));
                     }
 
-                    elements.add(new PointElement(PointType.Straight, i, 1, null, Orientation.Down, gamemaster.getRules().getPoints(i, 1, PointType.Straight)));
+                    elements.add(new PointElement(PointType.Straight, i, 1, null, Orientation.Down, rules.getPoints(i, 1, PointType.Straight)));
 
                 }
                 // 2. Chain together various setter methods to set the dialog characteristics
@@ -262,7 +304,16 @@ public class LocalGameControls extends Controls
             return;
         }
 
-        AnimatedBoard b = (AnimatedBoard) gamemaster.getBoard();
+        AnimatedBoard b = null;
+        if (gamemaster != null)
+        {
+            b = (AnimatedBoard) gamemaster.getBoard();
+        }
+        else
+        {
+            b = gmAnimated.getAnimatedBoard();
+        }
+
         b.enableSwitchListener();
         enableNext();
         enableGravity();
@@ -296,7 +347,15 @@ public class LocalGameControls extends Controls
 
     public void disable()
     {
-        AnimatedBoard b = (AnimatedBoard) gamemaster.getBoard();
+        AnimatedBoard b = null;
+        if (gamemaster != null)
+        {
+            b = (AnimatedBoard) gamemaster.getBoard();
+        }
+        else
+        {
+            b = gmAnimated.getAnimatedBoard();
+        }
         b.disableSwitchListener();
         disableNext();
         disableGravity();

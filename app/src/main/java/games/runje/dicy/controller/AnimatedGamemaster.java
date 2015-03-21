@@ -1,7 +1,6 @@
 package games.runje.dicy.controller;
 
 import android.app.Activity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -12,6 +11,7 @@ import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
 import games.runje.dicy.animatedData.FallAnimation;
+import games.runje.dicy.animatedData.PointsAnimation;
 import games.runje.dicy.controls.Controls;
 import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicymodel.Gamemaster;
@@ -52,9 +52,9 @@ public class AnimatedGamemaster extends Gamemaster
         this.game = game;
         this.activity = a;
         this.scrollView = sv;
-        this.board = new AnimatedBoard(b, a, this);
+        this.board = new AnimatedBoard(b, a, this, null);
         this.rules = r;
-        this.controls = new LocalGameControls(activity, game, (AnimatedBoard) board, this);
+        this.controls = new LocalGameControls(activity, game, (AnimatedBoard) board, this, null);
     }
 
 
@@ -186,6 +186,7 @@ public class AnimatedGamemaster extends Gamemaster
 
         controls.update();
         board.deleteElements(elements);
+        new PointsAnimation(elements, this, null).start();
         locked = false;
     }
 
@@ -296,7 +297,7 @@ public class AnimatedGamemaster extends Gamemaster
                     // recreate board
                     Logger.logInfo(LogKey, "No more moves possible");
                     Activity a = ((AnimatedBoard) board).getActivity();
-                    this.board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a, this);
+                    this.board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a, this, null);
                     AnimatedBoard board = (AnimatedBoard) getBoard();
                     RelativeLayout b = board.getGameLayout();
                     b.setId(R.id.board);
@@ -458,7 +459,7 @@ public class AnimatedGamemaster extends Gamemaster
                 Coords pos = new Coords(i, j);
                 AnimatedBoardElement aE = board.getAnimatedElement(pos);
                 startAnimation();
-                new FallAnimation(aE, pos, false, this).start();
+                new FallAnimation(aE, pos, false, this, null).start();
             }
         }
 

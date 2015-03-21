@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicy.animatedData.PointsAnimation;
 import games.runje.dicy.controls.Controls;
 import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicymodel.Rules;
@@ -78,9 +79,9 @@ public class OnlineGamemaster extends AnimatedGamemaster
     {
         this.game = game;
         this.rules = new Rules();
-        AnimatedBoard b = new AnimatedBoard(board, activity, this);
+        AnimatedBoard b = new AnimatedBoard(board, activity, this, null);
         b.setGravity(Gravity.Down);
-        Controls controls = new LocalGameControls(activity, game, b, this);
+        Controls controls = new LocalGameControls(activity, game, b, this, null);
         setBoard(b);
         setControls(controls);
 
@@ -185,6 +186,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
         game.addPointElements(elements, board);
         board.deleteElements(elements);
+        new PointsAnimation(elements, this, null).start();
 
         controls.update();
 

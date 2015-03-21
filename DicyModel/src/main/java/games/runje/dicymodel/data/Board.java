@@ -296,6 +296,27 @@ public class Board
         return elements;
     }
 
+    public ArrayList<BoardElement> getRecreateElements()
+    {
+        ArrayList<BoardElement> elements = new ArrayList<>();
+        for (ArrayList<BoardElement> row : this.board)
+        {
+            for (BoardElement element : row)
+            {
+                if (element instanceof NoElement)
+                {
+                    Coords pos = element.getPosition();
+                    BoardElement newElement = new Dice(pos);
+                    elements.add(newElement);
+                }
+            }
+        }
+
+        return elements;
+    }
+
+
+
     /**
      * recreates the given elements
      *
@@ -552,5 +573,17 @@ public class Board
     public void changeElement(Coords position, int newValue)
     {
         getElement(position).setValue(newValue);
+    }
+
+    public void recreateBoard()
+    {
+        for (ArrayList<BoardElement> row : this.board)
+        {
+            for (BoardElement element : row)
+            {
+                // TODO: make method shuffle or somethin
+                element.setValue(new Dice().getValue());
+            }
+        }
     }
 }

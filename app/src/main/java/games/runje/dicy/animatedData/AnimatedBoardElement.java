@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import games.runje.dicy.R;
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
@@ -25,13 +26,13 @@ public class AnimatedBoardElement extends ImageView
     private Coords position;
 
 
-    public AnimatedBoardElement(Context context, BoardElement element, AnimatedGamemaster gm)
+    public AnimatedBoardElement(Context context, BoardElement element, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
     {
         super(context);
         this.value = element.getValue();
         setImageResource(ElementToImageResource(element));
         this.position = element.getPosition();
-        this.touchListener = new AnimatedBoardElementTL(this.position, gm);
+        this.touchListener = new AnimatedBoardElementTL(this.position, gm, gmAnimated);
         this.setOnTouchListener(this.touchListener);
     }
 

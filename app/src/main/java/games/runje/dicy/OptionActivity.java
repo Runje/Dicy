@@ -40,22 +40,27 @@ public class OptionActivity extends Activity
     public static final String DiagonalIntent = "Diagonal";
     public static final String StraightIntent = "Straight";
     public static final String XOfAKindIntent = "XOfAKind";
+    public static final String StrategyIntent = "Strategy";
     final static int MaxPlayers = 4;
     private EditText[] editPlayers = new EditText[MaxPlayers];
     private CheckBox[] playingCb = new CheckBox[MaxPlayers];
+    private Spinner[] strategySpinner = new Spinner[MaxPlayers];
     private Spinner lengthSpinner;
     private String LogKey = "Options";
     private CheckBox diagonal;
     private StraightLayout straight;
     private XOfAKindLayout xOfAKind;
-    private Spinner[] strategySpinner = new Spinner[MaxPlayers];
-    public static final String StrategyIntent = "Strategy";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        // TODO: this causes to add the views again, but i want to use saved state!
         super.onCreate(savedInstanceState);
 
+        if (savedInstanceState != null)
+        {
+            return;
+        }
 
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -16,7 +16,7 @@ public class ArenaControls extends Controls
 {
     public ArenaControls(Activity context, LocalGame g, AnimatedBoard b, AnimatedGamemaster gm)
     {
-        super(context, b, gm);
+        super(context, b, gm, null);
         this.game = g;
         addView(diagonalCheck());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

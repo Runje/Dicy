@@ -1,17 +1,22 @@
 package games.runje.dicy;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.GamemasterAnimated;
+import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicy.util.SystemUiHider;
+import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.data.Board;
+import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.LocalGame;
 
 
 /**
@@ -22,174 +27,48 @@ import games.runje.dicy.util.SystemUiHider;
  */
 public class GameActivity extends Activity
 {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
-
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener()
-    {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent)
-        {
-            if (AUTO_HIDE)
-            {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
-        }
-    };
-    /**
-     * If set, will toggle the system UI visibility upon interaction. Otherwise,
-     * will show the system UI visibility upon interaction.
-     */
-    private static final boolean TOGGLE_ON_CLICK = true;
-    /**
-     * The flags to pass to {@link SystemUiHider#getInstance}.
-     */
-    private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
-    Handler mHideHandler = new Handler();
-    Runnable mHideRunnable = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            mSystemUiHider.hide();
-        }
-    };
-    /**
-     * The instance of the {@link SystemUiHider} for this activity.
-     */
-    private SystemUiHider mSystemUiHider;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_game);
-
-        final View controlsView = findViewById(R.id.fullscreen_content_controls);
-        final View contentView = findViewById(R.id.fullscreen_content);
-
-        // Set up an instance of SystemUiHider to control the system UI for
-        // this activity.
-        mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);
-        mSystemUiHider.setup();
-        mSystemUiHider
-                .setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener()
-                {
-                    // Cached values.
-                    int mControlsHeight;
-                    int mShortAnimTime;
-
-                    @Override
-                    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-                    public void onVisibilityChange(boolean visible)
-                    {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
-                        {
-                            // If the ViewPropertyAnimator API is available
-                            // (Honeycomb MR2 and later), use it to animate the
-                            // in-layout UI controls at the bottom of the
-                            // screen.
-                            if (mControlsHeight == 0)
-                            {
-                                mControlsHeight = controlsView.getHeight();
-                            }
-                            if (mShortAnimTime == 0)
-                            {
-                                mShortAnimTime = getResources().getInteger(
-                                        android.R.integer.config_shortAnimTime);
-                            }
-                            controlsView.animate()
-                                    .translationY(visible ? 0 : mControlsHeight)
-                                    .setDuration(mShortAnimTime);
-                        }
-                        else
-                        {
-                            // If the ViewPropertyAnimator APIs aren't
-                            // available, simply show or hide the in-layout UI
-                            // controls.
-                            controlsView.setVisibility(visible ? View.VISIBLE : View.GONE);
-                        }
-
-                        if (visible && AUTO_HIDE)
-                        {
-                            // Schedule a hide().
-                            delayedHide(AUTO_HIDE_DELAY_MILLIS);
-                        }
-                    }
-                });
-
-        // Set up the user interaction to manually show or hide the system UI.
-        contentView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if (TOGGLE_ON_CLICK)
-                {
-                    mSystemUiHider.toggle();
-                }
-                else
-                {
-                    mSystemUiHider.show();
-                }
-            }
-        });
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
-        this.getActionBar().hide();
-    }
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
+        Intent intent = getIntent();
+        List<String> players = new ArrayList<>();
+        players.add("Thomas");
+        players.add("Milena");
+        List<Player> playerList = new ArrayList<>();
+        for (int i = 0; i < players.size(); i++)
+        {
+            String name = players.get(i);
+            Strategy strategy = null;
+            playerList.add(new Player(name, strategy, 77));
+        }
 
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
+        // TODO: gamemaster
+        Rules rules = new Rules();
+        LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * 5, playerList, 0);
+        Board bb = Board.createBoardNoPoints(5, 5, rules);
+        LocalGameControls controls = new LocalGameControls(this, game, null, null, null);
+        GamemasterAnimated gmAnimated = new GamemasterAnimated(bb, rules, this, controls, game);
+
+        //RelativeLayout l = gmAnimated.getAnimatedBoard().getGameLayout();
+        boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
+
         RelativeLayout l = new RelativeLayout(this);
-        AnimatedGamemaster.createAnimatedGame(this);
-        AnimatedBoard board = (AnimatedBoard) AnimatedGamemaster.getInstance().getBoard();
+        // TODO: create local game here
+        AnimatedBoard board = gmAnimated.getAnimatedBoard();
         RelativeLayout b = board.getGameLayout();
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) b.getLayoutParams();
-        p.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
+        pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
         b.setId(R.id.board);
-        l.addView(b, p);
+        l.addView(b, pB);
 
-        RelativeLayout controls = AnimatedGamemaster.getInstance().getControls();
+        RelativeLayout c = (RelativeLayout) gmAnimated.getControls();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.BELOW, R.id.board);
         params.topMargin = 50;
-        l.addView(controls, params);
+        l.addView(c, params);
+
         setContentView(l);
     }
 
-    /**
-     * Schedules a call to hide() in [delay] milliseconds, canceling any
-     * previously scheduled calls.
-     */
-    private void delayedHide(int delayMillis)
-    {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
 }
