@@ -19,7 +19,7 @@
 
         <Button
             android:id="@+id/button"
-            android:layout_width="125dp"
+            android:layout_width="115dp"
             android:layout_height="115dp"
             android:layout_gravity="center"
             android:onClick="clickTestarena"
@@ -28,7 +28,7 @@
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="125dp"
+            android:layout_width="115dp"
             android:layout_height="115dp"
             android:layout_gravity="left|center_vertical"
             android:onClick="clickHighscore"
@@ -37,7 +37,7 @@
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="125dp"
+            android:layout_width="115dp"
             android:layout_height="115dp"
             android:layout_gravity="right|center_vertical"
             android:onClick="clickOnlineGame"

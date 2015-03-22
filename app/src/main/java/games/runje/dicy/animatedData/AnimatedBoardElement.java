@@ -47,9 +47,11 @@ public class AnimatedBoardElement extends ImageView
         {
             case 1:
                 return R.drawable.one;
+                //return R.drawable.dicy_one;
 
             case 2:
                 return R.drawable.two;
+                //return R.drawable.dicy_two;
 
             case 3:
                 return R.drawable.three;
