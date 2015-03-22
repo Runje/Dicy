@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 
 public class StartActivity extends Activity
@@ -34,5 +37,14 @@ public class StartActivity extends Activity
     {
         Intent intent = new Intent(this, OptionActivity.class);
         startActivity(intent);
+    }
+
+    public void clickChip(View v)
+    {
+        // load the animation
+        Animation animFadein = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+        ImageView iv = (ImageView) findViewById(R.id.dicyChip);
+
+        iv.startAnimation(animFadein);
     }
 }

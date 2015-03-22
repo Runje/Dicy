@@ -14,7 +14,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        >
 
         <Button
             android:id="@+id/button"
@@ -39,6 +40,15 @@
             android:layout_gravity="right|center_vertical"
             android:onClick="clickOnlineGame"
             android:text="Online Game"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dicyChip"
+            android:layout_gravity="center_horizontal|top"
+            android:src="@drawable/dicychip"
+            android:clickable="true"
+            android:onClick="clickChip"/>
     </FrameLayout>
 
 </FrameLayout>
