@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 
 public class StartActivity extends Activity
@@ -41,10 +40,32 @@ public class StartActivity extends Activity
 
     public void clickChip(View v)
     {
-        // load the animation
-        Animation animFadein = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-        ImageView iv = (ImageView) findViewById(R.id.dicyChip);
+        Animation animation = null;
+        switch (v.getId())
+        {
+            case R.id.dicyChip:
+                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+                break;
+            case R.id.dicychip2:
+                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
+                break;
+            case R.id.dicychip3:
+                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce);
+                break;
+            case R.id.dicychip4:
+                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
+                break;
+            case R.id.dicychip5:
+                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slideup);
+                break;
+            case R.id.dicychip6:
+                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoomin);
+                break;
 
-        iv.startAnimation(animFadein);
+
+        }
+
+
+        v.startAnimation(animation);
     }
 }

@@ -42,13 +42,58 @@
             android:text="Online Game"/>
 
         <ImageView
+            android:id="@+id/dicyChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/dicyChip"
             android:layout_gravity="center_horizontal|top"
-            android:src="@drawable/dicychip"
             android:clickable="true"
-            android:onClick="clickChip"/>
+            android:onClick="clickChip"
+            android:src="@drawable/dicychip"/>
+
+        <ImageView
+            android:id="@+id/dicychip3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:clickable="true"
+            android:onClick="clickChip"
+            android:src="@drawable/dicychip"/>
+
+        <ImageView
+            android:id="@+id/dicychip2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:clickable="true"
+            android:onClick="clickChip"
+            android:src="@drawable/dicychip"/>
+
+        <ImageView
+            android:id="@+id/dicychip4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
+            android:clickable="true"
+            android:onClick="clickChip"
+            android:src="@drawable/dicychip"/>
+
+        <ImageView
+            android:id="@+id/dicychip5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:clickable="true"
+            android:onClick="clickChip"
+            android:src="@drawable/dicychip"/>
+
+        <ImageView
+            android:id="@+id/dicychip6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:clickable="true"
+            android:onClick="clickChip"
+            android:src="@drawable/dicychip"/>
     </FrameLayout>
 
 </FrameLayout>
