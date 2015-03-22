@@ -26,4 +26,5 @@
     <item name="helpButton" type="id"/>
     <item name="changeButton" type="id"/>
     <item name="pointList" type="id"/>
+    <item name="dicychip6" type="id"/>
 </resources>

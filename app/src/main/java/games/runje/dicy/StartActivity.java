@@ -50,10 +50,10 @@ public class StartActivity extends Activity
                 animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
                 break;
             case R.id.dicychip3:
-                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce);
+                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
                 break;
             case R.id.dicychip4:
-                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
+                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce);
                 break;
             case R.id.dicychip5:
                 animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slideup);

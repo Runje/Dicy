@@ -19,27 +19,30 @@
 
         <Button
             android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="125dp"
+            android:layout_height="115dp"
             android:layout_gravity="center"
             android:onClick="clickTestarena"
-            android:text="Testarena"/>
+            android:text="Test"
+            style="@style/chipbutton"/>
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="125dp"
+            android:layout_height="115dp"
             android:layout_gravity="left|center_vertical"
             android:onClick="clickHighscore"
-            android:text="Local Game"/>
+            android:text="Play"
+            style="@style/chipbutton"/>
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="125dp"
+            android:layout_height="115dp"
             android:layout_gravity="right|center_vertical"
             android:onClick="clickOnlineGame"
-            android:text="Online Game"/>
+            android:text="Online"
+            style="@style/chipbutton"/>
 
         <ImageView
             android:id="@+id/dicyChip"
@@ -87,13 +90,14 @@
             android:src="@drawable/dicychip"/>
 
         <ImageView
-            android:id="@+id/dicychip6"
+            android:id="@+id/dicyChip6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
             android:clickable="true"
             android:onClick="clickChip"
             android:src="@drawable/dicychip"/>
+
     </FrameLayout>
 
 </FrameLayout>
