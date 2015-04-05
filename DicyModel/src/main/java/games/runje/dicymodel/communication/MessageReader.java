@@ -4,18 +4,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import games.runje.dicymodel.Logger;
+
 /**
  * Created by Thomas on 17.02.2015.
  */
 public class MessageReader
 {
 
+    private static String LogKey = "MessageReader";
+
     public static int readMessage(InputStream is, ByteBuffer buffer) throws IOException
     {
         read(is, buffer, 0, 4);
 
         int length = buffer.getInt();
-        System.out.println("totalLength: " + length);
+        Logger.logInfo(LogKey, "totalLength: " + length);
 
         read(is, buffer, 4, length - 4);
 
@@ -31,7 +35,7 @@ public class MessageReader
             int bytesRead = is.read(buffer.array(), offset + readSoFar, length - readSoFar);
             if (bytesRead <= 0)
             {
-                System.out.println("No more bytes could be read");
+                Logger.logInfo(LogKey, "No more bytes could be read");
                 throw new IOException();
             }
 

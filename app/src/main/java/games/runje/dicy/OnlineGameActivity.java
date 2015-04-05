@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.Random;
 
-import games.runje.dicy.controller.Logger;
+import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.OnlineGamemaster;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.communication.ConnectionToServer;
@@ -50,7 +50,7 @@ public class OnlineGameActivity extends Activity
         super.onPostCreate(savedInstanceState);
 
         TextView status = (TextView) findViewById(R.id.StatusClient);
-        Logger.logInfo(LogKey, "Connecting...");
+        AnimatedLogger.logInfo(LogKey, "Connecting...");
         EditText editId = (EditText) findViewById(R.id.idEditText);
         int id = Integer.parseInt(editId.getText().toString());
         ConnectionToServer.connect(new OnlineGamemaster(this, id));

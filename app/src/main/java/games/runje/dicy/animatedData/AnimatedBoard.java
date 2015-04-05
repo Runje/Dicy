@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicy.controller.Logger;
-import games.runje.dicy.layouts.GameLayout;
+import games.runje.dicy.layouts.BoardLayout;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
@@ -34,7 +34,7 @@ public class AnimatedBoard extends Board
 
     private ArrayList<ArrayList<AnimatedBoardElement>> animatedBoard;
 
-    private GameLayout gameLayout;
+    private BoardLayout gameLayout;
     private AnimatedGamemaster gamemaster;
 
     public AnimatedBoard(int rows, int columns, Activity activity, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
@@ -85,7 +85,7 @@ public class AnimatedBoard extends Board
             ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(b, rules);
             if (BoardChecker.getAll(b, rules).size() == 0 && moves.size() > 0)
             {
-                Logger.logInfo(LogKey, "Possible Moves: " + moves);
+                AnimatedLogger.logInfo(LogKey, "Possible Moves: " + moves);
                 return b;
             }
         }
@@ -114,10 +114,10 @@ public class AnimatedBoard extends Board
         }
 
         // TODO: heightWeight
-        this.gameLayout = new GameLayout(this, 0.5);
+        this.gameLayout = new BoardLayout(this, 0.5);
     }
 
-    public GameLayout getGameLayout()
+    public BoardLayout getBoardLayout()
     {
         return this.gameLayout;
     }
@@ -136,7 +136,6 @@ public class AnimatedBoard extends Board
             for (int column = 0; column < this.columns; column++)
             {
                 Coords pos = new Coords(row, column);
-                getElement(pos).setValue(getElement(pos).getValue());
                 getAnimatedElement(pos).setValue(getElement(pos).getValue());
             }
         }
@@ -144,7 +143,7 @@ public class AnimatedBoard extends Board
 
     public boolean switchElements(Coords first, Coords second, boolean switchBackPossible)
     {
-        Logger.logDebug(LogKey, "Animated Switch, first: " + first + ", second: " + second + ", Board: " + this.board + "\n" + this.animatedBoard);
+        AnimatedLogger.logDebug(LogKey, "Animated Switch, first: " + first + ", second: " + second + ", Board: " + this.board + "\n" + this.animatedBoard);
         Rules rules = null;
         if (gamemaster != null)
         {
@@ -214,7 +213,7 @@ public class AnimatedBoard extends Board
 
                 if (highlightCoords.contains(pos))
                 {
-                    Logger.logDebug(LogKey, "Setting highlight for " + pos);
+                    AnimatedLogger.logDebug(LogKey, "Setting highlight for " + pos);
                     element.setHighlight(true);
                 }
                 else
@@ -233,7 +232,7 @@ public class AnimatedBoard extends Board
     public ArrayList<BoardElement> recreateElements()
     {
         ArrayList<BoardElement> elements = super.recreateElements();
-        Logger.logInfo(LogKey, "Recreating elements: " + elements);
+        AnimatedLogger.logInfo(LogKey, "Recreating elements: " + elements);
         recreateElements(elements);
         return elements;
     }
@@ -285,7 +284,7 @@ public class AnimatedBoard extends Board
             animatedElement.setX(x);
             animatedElement.setY(y);
             gameLayout.addView(animatedElement, params);
-            Logger.logDebug(LogKey, "Pos: " + pos + ". X: " + params.leftMargin + " Y: " + params.topMargin);
+            AnimatedLogger.logDebug(LogKey, "Pos: " + pos + ". X: " + params.leftMargin + " Y: " + params.topMargin);
             new FallAnimation(animatedElement, pos, gamemaster, gmAnimated).start();
             if (gamemaster != null)
             {
@@ -337,7 +336,7 @@ public class AnimatedBoard extends Board
             animatedElement.setX(x);
             animatedElement.setY(y);
             gameLayout.addView(animatedElement, params);
-            Logger.logDebug(LogKey, "Pos: " + pos + ". X: " + params.leftMargin + " Y: " + params.topMargin);
+            AnimatedLogger.logDebug(LogKey, "Pos: " + pos + ". X: " + params.leftMargin + " Y: " + params.topMargin);
             animationHandler.addAnimation(new FallingAnimation(animatedElement, pos, this, animationHandler));
 
         }
@@ -459,7 +458,7 @@ public class AnimatedBoard extends Board
         boolean result = board.equals(animatedBoard);
         if (!result)
         {
-            Logger.logError(LogKey, this.toString());
+            AnimatedLogger.logError(LogKey, this.toString());
         }
 
         return result;
@@ -473,7 +472,7 @@ public class AnimatedBoard extends Board
     public ArrayList<BoardElement> moveElementsFromGravity()
     {
         ArrayList<BoardElement> elements = this.determineFallingElements();
-        Logger.logInfo(LogKey, "Falling elements: " + elements);
+        AnimatedLogger.logInfo(LogKey, "Falling elements: " + elements);
         for (BoardElement element : elements)
         {
             Coords pos = element.getPosition();
@@ -490,7 +489,7 @@ public class AnimatedBoard extends Board
     public ArrayList<BoardElement> moveElementsFromGravity(AnimationHandler animationHandler)
     {
         ArrayList<BoardElement> elements = this.determineFallingElements();
-        Logger.logInfo(LogKey, "Falling elements: " + elements);
+        AnimatedLogger.logInfo(LogKey, "Falling elements: " + elements);
         for (BoardElement element : elements)
         {
             Coords pos = element.getPosition();
@@ -552,7 +551,7 @@ public class AnimatedBoard extends Board
         }
     }
 
-    public void disableSwitchListener()
+    public void disable()
     {
         for (int row = 0; row < this.rows; row++)
         {
@@ -563,7 +562,7 @@ public class AnimatedBoard extends Board
         }
     }
 
-    public void enableSwitchListener()
+    public void enable()
     {
         for (int row = 0; row < this.rows; row++)
         {
@@ -608,5 +607,10 @@ public class AnimatedBoard extends Board
                 getAnimatedElement(pos).setValue(board.getElement(pos).getValue());
             }
         }
+    }
+
+    public GamemasterAnimated getGamemaster()
+    {
+        return gmAnimated;
     }
 }

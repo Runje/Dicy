@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,12 +19,13 @@ import java.util.List;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicy.controller.Logger;
+import games.runje.dicy.layouts.BoardLayout;
+import games.runje.dicy.layouts.PlayerLayout;
 import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.GameControls;
 import games.runje.dicymodel.data.Board;
-import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
 
@@ -38,11 +38,12 @@ public class Controls extends RelativeLayout implements GameControls
     protected final AnimatedGamemaster gamemaster;
     protected GamemasterAnimated gmAnimated;
     protected AnimatedBoard board;
+    protected List<PlayerLayout> playerLayouts = new ArrayList<>();
+    protected boolean enabled;
     LocalGame game;
     List<TextView> playersView = new ArrayList<>();
     private List<TextView> strikesView = new ArrayList<>();
     private String LogKey = "Controls";
-
 
     //TODO: controls as member
     public Controls(Activity context, AnimatedBoard b, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
@@ -72,9 +73,14 @@ public class Controls extends RelativeLayout implements GameControls
         return b;
     }
 
+    public List<PlayerLayout> getPlayerLayouts()
+    {
+        return playerLayouts;
+    }
+
     public View playerPoints()
     {
-        RelativeLayout l = new RelativeLayout(getContext());
+        /*RelativeLayout l = new RelativeLayout(getContext());
 
         List<Player> players = game.getPlayers();
         int lastId = -1;
@@ -122,7 +128,18 @@ public class Controls extends RelativeLayout implements GameControls
         }
 
         l.setId(R.id.playersPoints);
-        return l;
+        return l;*/
+
+        RelativeLayout l = new RelativeLayout(getContext());
+        List<Player> players = game.getPlayers();
+        PlayerLayout pl = new PlayerLayout(getContext(), players.get(0), R.drawable.blueyellowchip, gmAnimated, R.id.player1);
+        this.playerLayouts.add(pl);
+
+        PlayerLayout pl2 = new PlayerLayout(getContext(), players.get(1), R.drawable.bluewhitechip, gmAnimated, R.id.player2);
+        this.playerLayouts.add(pl2);
+
+
+        return null;
     }
 
     View diagonalCheck()
@@ -207,60 +224,6 @@ public class Controls extends RelativeLayout implements GameControls
         return l;
     }
 
-    View gravityArrows()
-    {
-        int arrow = R.drawable.arrow2;
-        int length = 100;
-        RelativeLayout l = new RelativeLayout(getContext());
-
-        ImageView arrowLeft = new ImageView(getContext());
-        ImageView arrowRight = new ImageView(getContext());
-        ImageView arrowUp = new ImageView(getContext());
-        ImageView arrowDown = new ImageView(getContext());
-        arrowLeft.setOnClickListener(new GravityListener(Gravity.Left, gamemaster, this, board));
-        arrowRight.setOnClickListener(new GravityListener(Gravity.Right, gamemaster, this, board));
-        arrowUp.setOnClickListener(new GravityListener(Gravity.Up, gamemaster, this, board));
-        arrowDown.setOnClickListener(new GravityListener(Gravity.Down, gamemaster, this, board));
-        arrowLeft.setImageResource(arrow);
-        arrowLeft.setColorFilter(Color.BLUE);
-        arrowLeft.setId(R.id.arrowLeft);
-        arrowLeft.setRotation(180);
-
-        RelativeLayout.LayoutParams paramsLeft = new RelativeLayout.LayoutParams(length, length);
-        paramsLeft.leftMargin = 0;
-        paramsLeft.topMargin = length;
-        l.addView(arrowLeft, paramsLeft);
-
-        arrowUp.setImageResource(arrow);
-        arrowUp.setColorFilter(Color.BLUE);
-        arrowUp.setId(R.id.arrowUp);
-        arrowUp.setRotation(270);
-
-        RelativeLayout.LayoutParams paramsUp = new RelativeLayout.LayoutParams(length, length);
-        paramsUp.leftMargin = length;
-        paramsUp.topMargin = 0;
-        l.addView(arrowUp, paramsUp);
-
-        arrowRight.setImageResource(arrow);
-        arrowRight.setColorFilter(Color.BLUE);
-        arrowRight.setId(R.id.arrowRight);
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(length, length);
-        params.leftMargin = 2 * length;
-        params.topMargin = length;
-        l.addView(arrowRight, params);
-
-        arrowDown.setImageResource(arrow);
-        arrowDown.setColorFilter(Color.BLUE);
-        arrowDown.setRotation(90);
-        arrowDown.setId(R.id.arrowDown);
-        RelativeLayout.LayoutParams paramsDown = new RelativeLayout.LayoutParams(length, length);
-        paramsDown.leftMargin = length;
-        paramsDown.topMargin = 2 * length;
-        l.addView(arrowDown, paramsDown);
-
-        return l;
-    }
 
     View minXOfAKind()
     {
@@ -318,17 +281,25 @@ public class Controls extends RelativeLayout implements GameControls
     }
 
     @Override
-    public void setEnabledControls(boolean enabled)
+    public void setEnabledControls(boolean enabledControls)
     {
-        Logger.logInfo(LogKey, "Set EnabledControls: " + enabled);
-        if (enabled)
+        AnimatedLogger.logInfo(LogKey, "Set EnabledControls: " + enabledControls);
+        if (enabledControls)
         {
+            enabled = true;
             enable();
         }
         else
         {
+            enabled = false;
             disable();
         }
+    }
+
+    @Override
+    public boolean areControlsEnabled()
+    {
+        return enabled;
     }
 
     public void update()
@@ -352,6 +323,12 @@ public class Controls extends RelativeLayout implements GameControls
     public void setAnimatedBoard(Board board)
     {
         this.board = (AnimatedBoard) board;
+    }
+
+    @Override
+    public void startGame()
+    {
+        gmAnimated.startGame();
     }
 
     private void updateXOfAKind()
@@ -391,28 +368,25 @@ public class Controls extends RelativeLayout implements GameControls
 
     protected void disableGravity()
     {
-        ImageView leftArrow = (ImageView) findViewById(R.id.arrowLeft);
-        leftArrow.setEnabled(false);
-        ImageView rightArrow = (ImageView) findViewById(R.id.arrowRight);
-        rightArrow.setEnabled(false);
-        ImageView upArrow = (ImageView) findViewById(R.id.arrowUp);
-        upArrow.setEnabled(false);
-        ImageView downArrow = (ImageView) findViewById(R.id.arrowDown);
-        downArrow.setEnabled(false);
+        BoardLayout l = board.getBoardLayout();
+        l.getAboveBorder().setEnabled(false);
+        l.getBelowBorder().setEnabled(false);
+        l.getLeftBorder().setEnabled(false);
+        l.getRightBorder().setEnabled(false);
     }
 
     public void enable()
     {
         if (game.isGameOver())
         {
-            Logger.logInfo(LogKey, "Game Over");
+            AnimatedLogger.logInfo(LogKey, "Game Over");
             return;
         }
 
         if (game.hasAIPlayerTurn())
         {
             disable();
-            Logger.logInfo(LogKey, "Disabling controls for " + game.getPlayingPlayer().getName() + ":" + game.getPlayingPlayer().getId());
+            AnimatedLogger.logInfo(LogKey, "Disabling controls for " + game.getPlayingPlayer().getName() + ":" + game.getPlayingPlayer().getId());
             return;
         }
 
@@ -432,14 +406,13 @@ public class Controls extends RelativeLayout implements GameControls
 
     protected void enableGravity()
     {
-        ImageView leftArrow = (ImageView) findViewById(R.id.arrowLeft);
-        leftArrow.setEnabled(true);
-        ImageView rightArrow = (ImageView) findViewById(R.id.arrowRight);
-        rightArrow.setEnabled(true);
-        ImageView upArrow = (ImageView) findViewById(R.id.arrowUp);
-        upArrow.setEnabled(true);
-        ImageView downArrow = (ImageView) findViewById(R.id.arrowDown);
-        downArrow.setEnabled(true);
+        BoardLayout l = board.getBoardLayout();
+        l.getAboveBorder().setEnabled(true);
+        l.getBelowBorder().setEnabled(true);
+        l.getLeftBorder().setEnabled(true);
+        l.getRightBorder().setEnabled(true);
+
+
     }
 
     public void updatePoints()
@@ -450,9 +423,9 @@ public class Controls extends RelativeLayout implements GameControls
     public void updatePlayers()
     {
         List<Player> players = game.getPlayers();
-        for (int i = 0; i < playersView.size(); i++)
+        for (int i = 0; i < players.size(); i++)
         {
-            playersView.get(i).setText(players.get(i).getName() + ": " + Integer.toString(players.get(i).getPoints()));
+            /*playersView.get(i).setText(players.get(i).getName() + ": " + Integer.toString(players.get(i).getPoints()));
             if (i == game.getTurn())
             {
                 playersView.get(i).setTextColor(Color.RED);
@@ -462,7 +435,9 @@ public class Controls extends RelativeLayout implements GameControls
                 playersView.get(i).setTextColor(Color.GRAY);
             }
 
-            strikesView.get(i).setText(strikesToString(players.get(i).getStrikes()));
+            strikesView.get(i).setText(strikesToString(players.get(i).getStrikes()));*/
+            playerLayouts.get(i).updatePlayer(players.get(i), i == game.getTurn(), game);
+
         }
     }
 
@@ -488,28 +463,26 @@ public class Controls extends RelativeLayout implements GameControls
 
     public void updateGravity()
     {
-        ImageView leftArrow = (ImageView) findViewById(R.id.arrowLeft);
-        leftArrow.setColorFilter(Color.BLUE);
-        ImageView rightArrow = (ImageView) findViewById(R.id.arrowRight);
-        rightArrow.setColorFilter(Color.BLUE);
-        ImageView upArrow = (ImageView) findViewById(R.id.arrowUp);
-        upArrow.setColorFilter(Color.BLUE);
-        ImageView downArrow = (ImageView) findViewById(R.id.arrowDown);
-        downArrow.setColorFilter(Color.BLUE);
-
+        BoardLayout l = board.getBoardLayout();
+        int brown = Color.parseColor("#795548");
+        l.getAboveBorder().setBackgroundColor(brown);
+        l.getBelowBorder().setBackgroundColor(brown);
+        l.getLeftBorder().setBackgroundColor(brown);
+        l.getRightBorder().setBackgroundColor(brown);
+        int yellow = Color.YELLOW;
         switch (board.getGravity())
         {
             case Up:
-                upArrow.setColorFilter(Color.RED);
+                l.getAboveBorder().setBackgroundColor(yellow);
                 break;
             case Down:
-                downArrow.setColorFilter(Color.RED);
+                l.getBelowBorder().setBackgroundColor(yellow);
                 break;
             case Right:
-                rightArrow.setColorFilter(Color.RED);
+                l.getRightBorder().setBackgroundColor(yellow);
                 break;
             case Left:
-                leftArrow.setColorFilter(Color.RED);
+                l.getLeftBorder().setBackgroundColor(yellow);
                 break;
         }
     }

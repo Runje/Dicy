@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Board;
@@ -32,11 +33,13 @@ public class LocalGame extends Game
     private int pointsLimit;
     private String winner;
     private boolean cancelled = false;
+    private int length;
 
-    public LocalGame(int p, int pLimit, int gameLimit)
+    public LocalGame(int p, int pLimit, int length)
     {
         pointsLimit = pLimit;
-        gameEndPoints = gameLimit;
+        this.length = length;
+        this.gameEndPoints = length * pointsLimit;
         players = new ArrayList<>();
         for (int i = 0; i < p; i++)
         {
@@ -48,10 +51,11 @@ public class LocalGame extends Game
         turn = lastLeadingPlayer;
     }
 
-    public LocalGame(int pointLimit, int gameLimit, List<Player> playerList, int startingPlayer)
+    public LocalGame(int pointLimit, int length, List<Player> playerList, int startingPlayer)
     {
         pointsLimit = pointLimit;
-        gameEndPoints = gameLimit;
+        this.length = length;
+        gameEndPoints = pointLimit * length;
 
         this.players = playerList;
 
@@ -69,9 +73,21 @@ public class LocalGame extends Game
         turn = startingPlayer;
     }
 
+    public void setLength(int length)
+    {
+        this.length = length;
+
+    }
+
     public int getGameEndPoints()
     {
         return gameEndPoints;
+    }
+
+    public void setGameEndPoints(int gameEndPoints)
+    {
+        this.gameEndPoints = gameEndPoints;
+
     }
 
     @Override
@@ -241,11 +257,11 @@ public class LocalGame extends Game
         if (maxPoints >= gameEndPoints && index == turn)
         {
             lastLeadingPlayer = index;
-            System.out.println("New Suddendeath Leader: " + getPlayingPlayer().getName());
+            Logger.logInfo(LogKey, "New Suddendeath Leader: " + getPlayingPlayer().getName());
         }
         else if (maxPoints < gameEndPoints)
         {
-            System.out.println("Maxpoints: " + maxPoints + ", index " + index);
+            Logger.logInfo(LogKey, "Maxpoints: " + maxPoints + ", index " + index);
             lastLeadingPlayer = -1;
         }
     }
@@ -274,6 +290,12 @@ public class LocalGame extends Game
         return pointsLimit;
     }
 
+    public void setPointsLimit(int pointsLimit)
+    {
+        this.pointsLimit = pointsLimit;
+        this.gameEndPoints = length * pointsLimit;
+    }
+
     public String getWinner()
     {
         return winner;
@@ -282,5 +304,19 @@ public class LocalGame extends Game
     public int getLastLeadingPlayer()
     {
         return lastLeadingPlayer;
+    }
+
+    public boolean areMostPoints(int points)
+    {
+        for (int i = 0; i < players.size(); i++)
+        {
+            Player player = players.get(i);
+            if (player.getPoints() > points)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

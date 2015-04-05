@@ -3,9 +3,11 @@ package games.runje.dicy.controls;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,9 +17,12 @@ import java.util.List;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controller.SkillAction;
+import games.runje.dicy.layouts.PlayerLayout;
 import games.runje.dicy.layouts.PointList;
+import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.communication.messages.SkillMessage;
 import games.runje.dicymodel.data.Board;
@@ -33,44 +38,73 @@ import games.runje.dicymodel.skills.Skill;
 public class LocalGameControls extends Controls
 {
 
+    private RelativeLayout points;
+    private TextView pointLimit;
+    private Button next;
+    private Button help;
+    private Button change;
+    private TextView limit;
+    private TextView movePoints;
+    private TextView currentPoints;
+    private String LogKey = "LocalGameControls";
+    private boolean started = false;
+    private Button pointList;
+
     public LocalGameControls(Activity context, LocalGame g, AnimatedBoard board, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
     {
         super(context, board, gm, gmAnimated);
         this.game = g;
-        addView(points());
+        //pointLimit();
+        Next();
+        Help();
+        Change();
+        pointList();
 
+    }
 
-        RelativeLayout.LayoutParams pL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pL.addRule(RelativeLayout.BELOW, R.id.points);
-        addView(pointLimit(), pL);
+    public Button getPointList()
+    {
+        return pointList;
+    }
 
-        RelativeLayout.LayoutParams pN = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pN.addRule(RelativeLayout.BELOW, R.id.pointLimit);
-        addView(Next(), pN);
+    public Button getNext()
+    {
+        return next;
+    }
 
-        RelativeLayout.LayoutParams pH = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pH.addRule(RelativeLayout.BELOW, R.id.next);
-        addView(Help(), pH);
+    public Button getHelp()
+    {
+        return help;
+    }
 
-        RelativeLayout.LayoutParams pC = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pC.addRule(RelativeLayout.BELOW, R.id.helpButton);
-        addView(Change(), pC);
+    public Button getChange()
+    {
+        return change;
+    }
 
-        RelativeLayout.LayoutParams pP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pP.addRule(RelativeLayout.RIGHT_OF, R.id.helpButton);
-        pP.addRule(RelativeLayout.ALIGN_BASELINE, R.id.helpButton);
-        addView(pointList(), pP);
+    public TextView getPointLimit()
+    {
+        return pointLimit;
+    }
+
+    public RelativeLayout getPoints()
+    {
+        return points;
     }
 
     @Override
     public void setAnimatedBoard(Board board)
     {
         super.setAnimatedBoard(board);
-        RelativeLayout.LayoutParams pA = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pA.addRule(RelativeLayout.RIGHT_OF, R.id.points);
-        addView(gravityArrows(), pA);
     }
 
+    @Override
+    public void setGamemaster(AbstractGamemaster gamemaster)
+    {
+        // TODO:
+        this.gmAnimated = (GamemasterAnimated) gamemaster;
+        points();
+    }
     private View Help()
     {
         Button b = new Button(getContext());
@@ -92,6 +126,7 @@ public class LocalGameControls extends Controls
             }
         });
         b.setId(R.id.helpButton);
+        this.help = b;
         return b;
     }
 
@@ -115,14 +150,15 @@ public class LocalGameControls extends Controls
             }
         });
         b.setId(R.id.changeButton);
+        this.change = b;
         return b;
     }
 
     private View pointLimit()
     {
-        TextView limit = new TextView(getContext());
+        TextView limit = (TextView) activity.findViewById(R.id.goal_text);
         limit.setText("Limit: " + game.getPointsLimit());
-        limit.setId(R.id.pointLimit);
+        this.pointLimit = limit;
         return limit;
     }
 
@@ -131,41 +167,77 @@ public class LocalGameControls extends Controls
     {
 
         RelativeLayout l = new RelativeLayout(getContext());
-        l.addView(playerPoints());
-        TextView current = new TextView(getContext());
-        current.setText("Current Points: 0");
+        //l.addView(playerPoints());
+        playerPoints();
+        TextView current = (TextView) activity.findViewById(R.id.currentPoints);
+        ;
+        current.setText("0");
         current.setId(R.id.currentPointsText);
 
-        TextView movePointsText = new TextView(getContext());
-        movePointsText.setText("Switch Points: 0");
+        TextView movePointsText = (TextView) activity.findViewById(R.id.switchPointsText);
+        ;
+        movePointsText.setText("0\\" + game.getPointsLimit());
         movePointsText.setId(R.id.switchPointsText);
 
+        ImageView switchImage = new ImageView(getContext());
+        switchImage.setImageResource(R.drawable.dice3d);
+        switchImage.setId(View.generateViewId());
+
+        ImageView currentImage = new ImageView(getContext());
+        currentImage.setImageResource(R.drawable.dicychip);
+        currentImage.setId(View.generateViewId());
+
+        ImageView raceflag = new ImageView(getContext());
+        raceflag.setImageResource(R.drawable.raceflag2);
+        raceflag.setId(View.generateViewId());
+
         TextView goal = new TextView(getContext());
-        goal.setText("Goal: " + game.getGameEndPoints());
+        goal.setText("??");
+        goal.setTextColor(Color.parseColor(PlayerLayout.HtmlGreen));
+        goal.setTextSize(15);
+        goal.setId(R.id.gameEndpoints);
 
 
         RelativeLayout.LayoutParams pC = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pC.addRule(RelativeLayout.BELOW, R.id.playersPoints);
+        pC.addRule(RelativeLayout.RIGHT_OF, currentImage.getId());
+        pC.leftMargin = 10;
 
         RelativeLayout.LayoutParams pM = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pM.addRule(RelativeLayout.BELOW, R.id.currentPointsText);
+        pM.addRule(RelativeLayout.RIGHT_OF, switchImage.getId());
+        pM.leftMargin = 10;
+        pM.topMargin = 20;
 
         RelativeLayout.LayoutParams pG = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         pG.addRule(RelativeLayout.BELOW, R.id.switchPointsText);
+        pG.addRule(RelativeLayout.RIGHT_OF, raceflag.getId());
+        pG.leftMargin = 10;
+        pG.topMargin = 20;
+
+        RelativeLayout.LayoutParams pI = new RelativeLayout.LayoutParams(50, 50);
+        pI.addRule(RelativeLayout.BELOW, R.id.switchPointsText);
+        pI.topMargin = 20;
+
+        RelativeLayout.LayoutParams pS = new RelativeLayout.LayoutParams(50, 50);
+        pS.addRule(RelativeLayout.BELOW, R.id.currentPointsText);
+        pS.topMargin = 20;
+
+        RelativeLayout.LayoutParams pD = new RelativeLayout.LayoutParams(50, 50);
+        //pD.topMargin = 20;
+        //pD.addRule(RelativeLayout.BELOW, R.id.currentPointsText);
 
 
-        l.addView(movePointsText, pM);
-        l.addView(current, pC);
-        l.addView(goal, pG);
-        l.setId(R.id.points);
+        this.points = l;
+        this.currentPoints = current;
+        this.movePoints = movePointsText;
+        this.limit = (TextView) activity.findViewById(R.id.goal_text);
         return l;
     }
 
     public View Next()
     {
-        Button b = new Button(getContext());
-        b.setId(R.id.next);
-        b.setText("Next");
+        Button b = (Button) activity.findViewById(R.id.next_button);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -182,6 +254,7 @@ public class LocalGameControls extends Controls
             }
         });
 
+        this.next = b;
         return b;
     }
 
@@ -237,9 +310,10 @@ public class LocalGameControls extends Controls
                 dialog.show();
             }
         });
-
+        this.pointList = b;
         return b;
     }
+
 
     public void update()
     {
@@ -253,17 +327,11 @@ public class LocalGameControls extends Controls
 
     private void updateSkills()
     {
-        Button c = (Button) findViewById(R.id.helpButton);
-        Skill skill = game.getPlayingPlayer().getSkill(Skill.Help);
-        int max = skill.getMaxLoad();
-        int v = skill.getCurrentLoad();
-        c.setText(Skill.Help + " " + v + "/" + max);
-
-        Button cB = (Button) findViewById(R.id.changeButton);
-        skill = game.getPlayingPlayer().getSkill(Skill.Change);
-        max = skill.getMaxLoad();
-        v = skill.getCurrentLoad();
-        cB.setText(Skill.Change + " " + v + "/" + max);
+        AnimatedLogger.logDebug(LogKey, "Updating Skills");
+        for (PlayerLayout l : playerLayouts)
+        {
+            l.updateSkills();
+        }
     }
 
     private void gameOver()
@@ -272,8 +340,11 @@ public class LocalGameControls extends Controls
         {
             disable();
             FinishedDialog d = new FinishedDialog();
+            d.setContext(activity);
             d.setName(game.getWinner());
+            AnimatedLogger.logInfo(LogKey, "Before show");
             d.show(activity.getFragmentManager(), "Game is finished");
+            AnimatedLogger.logInfo(LogKey, "After show");
         }
     }
 
@@ -281,13 +352,36 @@ public class LocalGameControls extends Controls
     {
         updatePlayers();
 
+        this.currentPoints.setText("" + Integer.toString(game.getMovePoints()));
 
-        TextView c = (TextView) findViewById(R.id.currentPointsText);
-        c.setText("Current Points: " + Integer.toString(game.getMovePoints()));
+        int pointsLimit = game.getPointsLimit();
+        Rules rules = gmAnimated.getRules();
+        String sLimit = Integer.toString(pointsLimit);
+        if (!started)
+        {
+            if (!rules.isPointLimitSetManually())
+            {
+                sLimit = "??";
+            }
+            else
+            {
+                this.limit.setText("" + game.getGameEndPoints());
+                started = true;
+                setEnabledControls(true);
+            }
+        }
 
-        TextView m = (TextView) findViewById(R.id.switchPointsText);
-        m.setText("Switch Points: " + Integer.toString(game.getSwitchPoints()));
+        this.movePoints.setText("" + Integer.toString(game.getSwitchPoints()) + "\\" + sLimit);
 
+
+        if (game.getSwitchPoints() > game.getPointsLimit())
+        {
+            movePoints.setTextColor(Color.parseColor(PlayerLayout.HtmlBlue));
+        }
+        else
+        {
+            movePoints.setTextColor(Color.RED);
+        }
     }
 
 
@@ -300,6 +394,7 @@ public class LocalGameControls extends Controls
 
         if (game.hasAIPlayerTurn())
         {
+            AnimatedLogger.logInfo(LogKey, "Disabling Controls because AI Player has turn");
             disable();
             return;
         }
@@ -314,35 +409,48 @@ public class LocalGameControls extends Controls
             b = gmAnimated.getAnimatedBoard();
         }
 
-        b.enableSwitchListener();
+        b.enable();
         enableNext();
         enableGravity();
         enableHelp();
         enableChange();
+        enableSkills();
+    }
+
+    private void enableSkills()
+    {
+        // TODO
+        for (PlayerLayout l : this.playerLayouts)
+        {
+            if (game.hasTurn(l.getPlayer()))
+            {
+                l.setEnabled(true);
+            }
+            else
+            {
+                l.setEnabled(false);
+            }
+        }
     }
 
     private void enableChange()
     {
-        Button c = (Button) findViewById(R.id.changeButton);
-        c.setEnabled(true);
+        this.change.setEnabled(true);
     }
 
     private void disableChange()
     {
-        Button c = (Button) findViewById(R.id.changeButton);
-        c.setEnabled(false);
+        this.change.setEnabled(false);
     }
 
     private void enableHelp()
     {
-        Button c = (Button) findViewById(R.id.helpButton);
-        c.setEnabled(true);
+        this.help.setEnabled(true);
     }
 
     private void disableHelp()
     {
-        Button c = (Button) findViewById(R.id.helpButton);
-        c.setEnabled(false);
+        this.help.setEnabled(false);
     }
 
     public void disable()
@@ -356,23 +464,30 @@ public class LocalGameControls extends Controls
         {
             b = gmAnimated.getAnimatedBoard();
         }
-        b.disableSwitchListener();
+        b.disable();
         disableNext();
         disableGravity();
         disableHelp();
         disableChange();
+        disableSkills();
+    }
+
+    private void disableSkills()
+    {
+        for (PlayerLayout l : this.playerLayouts)
+        {
+            l.setEnabled(false);
+        }
     }
 
     private void disableNext()
     {
-        Button c = (Button) findViewById(R.id.next);
-        c.setEnabled(false);
+        this.next.setEnabled(false);
     }
 
     private void enableNext()
     {
-        Button c = (Button) findViewById(R.id.next);
-        c.setEnabled(true);
+        this.next.setEnabled(true);
     }
 
 

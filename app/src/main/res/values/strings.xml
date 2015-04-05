@@ -5,9 +5,11 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">TEST\nCONTENT</string>
     <string name="title_activity_start">Dicy</string>
-    <string name="title_activity_highscore">HighscoreActivity</string>
+    <string name="title_activity_game">Dicy</string>
     <string name="title_activity_option">Options</string>
 
     <string name="title_activity_online_game">OnlineGameActivity</string>
+    <string name="pointlist_button_text">Pointlist</string>
+    <string name="next_button_text">Next</string>
 
 </resources>

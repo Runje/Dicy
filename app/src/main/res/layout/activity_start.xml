@@ -2,7 +2,6 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="@drawable/roulette"
              tools:context="games.runje.dicy.StartActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -11,92 +10,199 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         >
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="115dp"
-            android:layout_height="115dp"
-            android:layout_gravity="center"
-            android:onClick="clickTestarena"
-            android:text="Test"
-            style="@style/chipbutton"/>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="115dp"
-            android:layout_height="115dp"
-            android:layout_gravity="left|center_vertical"
-            android:onClick="clickHighscore"
-            android:text="Play"
-            style="@style/chipbutton"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:layout_gravity="top"
+                android:layout_weight="3"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="115dp"
-            android:layout_height="115dp"
-            android:layout_gravity="right|center_vertical"
-            android:onClick="clickOnlineGame"
-            android:text="Online"
-            style="@style/chipbutton"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left|top"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
 
-        <ImageView
-            android:id="@+id/dicyChip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|top"
-            android:clickable="true"
-            android:onClick="clickChip"
-            android:src="@drawable/dicychip"/>
+                    <ImageView
+                        android:id="@+id/dicychip2"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:onClick="clickChip"
+                        android:src="@drawable/dicychip"/>
 
-        <ImageView
-            android:id="@+id/dicychip3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|top"
-            android:clickable="true"
-            android:onClick="clickChip"
-            android:src="@drawable/dicychip"/>
+                </FrameLayout>
 
-        <ImageView
-            android:id="@+id/dicychip2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|top"
-            android:clickable="true"
-            android:onClick="clickChip"
-            android:src="@drawable/dicychip"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|top"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
 
-        <ImageView
-            android:id="@+id/dicychip4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|bottom"
-            android:clickable="true"
-            android:onClick="clickChip"
-            android:src="@drawable/dicychip"/>
+                    <ImageView
+                        android:id="@+id/dicyChip"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:onClick="clickChip"
+                        android:src="@drawable/dicychip"
+                        android:visibility="visible"/>
 
-        <ImageView
-            android:id="@+id/dicychip5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:clickable="true"
-            android:onClick="clickChip"
-            android:src="@drawable/dicychip"/>
+                </FrameLayout>
 
-        <ImageView
-            android:id="@+id/dicyChip6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:clickable="true"
-            android:onClick="clickChip"
-            android:src="@drawable/dicychip"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|top"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
+
+                    <ImageView
+                        android:id="@+id/dicychip3"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:onClick="clickChip"
+                        android:src="@drawable/dicychip"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_gravity="left|center_vertical"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
+
+                    <Button
+                        android:id="@+id/button2"
+                        style="@style/chipbutton"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:onClick="clickHighscore"
+                        android:text="Play"/>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
+
+                    <Button
+                        android:id="@+id/button"
+                        style="@style/chipbutton"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:onClick="clickTestarena"
+                        android:text="Test"/>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
+
+                    <Button
+                        android:id="@+id/button3"
+                        style="@style/chipbutton"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:onClick="clickOnlineGame"
+                        android:text="Online"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_weight="3"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|bottom"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
+
+                    <ImageView
+                        android:id="@+id/dicychip4"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:onClick="clickChip"
+                        android:src="@drawable/dicychip"/>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
+
+                    <ImageView
+                        android:id="@+id/dicychip5"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:onClick="clickChip"
+                        android:src="@drawable/dicychip"/>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left|bottom"
+                    android:layout_weight="1"
+                    android:background="@drawable/dicy_square">
+
+                    <ImageView
+                        android:id="@+id/dicychip6"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:onClick="clickChip"
+                        android:src="@drawable/dicychip"/>
+
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
 
     </FrameLayout>
 

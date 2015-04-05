@@ -3,6 +3,7 @@ package games.runje.dicymodel.communication.messages;
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Board;
 
@@ -12,6 +13,7 @@ import games.runje.dicymodel.data.Board;
 public class RecreateBoardMessage extends Message
 {
     public static final String Name = "RecreateBoardMessage";
+    private String LogKey = Name;
     Board board;
 
     public RecreateBoardMessage(Board board)
@@ -46,7 +48,7 @@ public class RecreateBoardMessage extends Message
     @Override
     public void execute(Gamemaster gamemaster)
     {
-        System.out.println("RecreateBoardMessage is executed");
+        Logger.logInfo(LogKey, "RecreateBoardMessage is executed");
         gamemaster.recreateBoard(board);
     }
 }

@@ -11,6 +11,7 @@ import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.PointsAnimation;
 import games.runje.dicy.controls.Controls;
 import games.runje.dicy.controls.LocalGameControls;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.communication.ConnectionToServer;
@@ -56,7 +57,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
     public void startGame(Board board, Rules rules, LocalGame game)
     {
-        System.out.println("Starting Game from OnlineGamemaster");
+        Logger.logInfo(LogKey, "Starting Game from OnlineGamemaster");
         this.board = board;
         this.rules = rules;
         createOnlineGame(game);
@@ -91,7 +92,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
         // TODO: create local game here
         AnimatedBoard animatedBoard = (AnimatedBoard) this.board;
         animatedBoard.setGravity(Gravity.Down);
-        RelativeLayout bL = animatedBoard.getGameLayout();
+        RelativeLayout bL = animatedBoard.getBoardLayout();
         RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) bL.getLayoutParams();
         pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
         bL.setId(R.id.board);
@@ -143,7 +144,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
     {
         if (isAnimationIsRunning())
         {
-            Logger.logInfo(LogKey, "updateAfterFall although animation is running");
+            AnimatedLogger.logInfo(LogKey, "updateAfterFall although animation is running");
             return;
         }
 
@@ -156,7 +157,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
         locked = false;
         if (elements.size() == 0)
         {
-            Logger.logInfo(LogKey, "Move ends");
+            AnimatedLogger.logInfo(LogKey, "Move ends");
             // end move
             game.endSwitch();
 
@@ -197,7 +198,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
     public void next()
     {
         locked = true;
-        Logger.logInfo(LogKey, "Next");
+        AnimatedLogger.logInfo(LogKey, "Next");
         super.next();
         sendMessageToServer(new NextMessage());
         locked = false;
@@ -220,7 +221,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
     public void receiveMessage(final ByteBuffer buffer, final int length)
     {
-        Logger.logInfo(LogKey, "receiveMessage");
+        AnimatedLogger.logInfo(LogKey, "receiveMessage");
         if (activity == null)
         {
             super.receiveMessage(buffer, length);
@@ -255,7 +256,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
     public void recreateBoard(Board board)
     {
-        Logger.logInfo(LogKey, "Recreating Board");
+        AnimatedLogger.logInfo(LogKey, "Recreating Board");
         ((AnimatedBoard) this.board).updateBoard(board);
     }
 }

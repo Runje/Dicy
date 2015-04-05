@@ -1,14 +1,22 @@
 package games.runje.dicy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.animatedData.AnimatedBoard;
+import games.runje.dicy.animatedData.animatedSkills.AnimatedSkill;
+import games.runje.dicy.controller.CalcPointLimit;
 import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicy.util.SystemUiHider;
@@ -17,6 +25,7 @@ import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.Skill;
 
 
 /**
@@ -28,47 +37,95 @@ import games.runje.dicymodel.game.LocalGame;
 public class GameActivity extends Activity
 {
     @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.game);
+    }
+
+    @Override
     protected void onPostCreate(Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
-        Intent intent = getIntent();
-        List<String> players = new ArrayList<>();
-        players.add("Thomas");
-        players.add("Milena");
-        List<Player> playerList = new ArrayList<>();
-        for (int i = 0; i < players.size(); i++)
+
+
+        View mainView = (View) findViewById(R.id.board);
+        mainView.post(new Runnable()
         {
-            String name = players.get(i);
-            Strategy strategy = null;
-            playerList.add(new Player(name, strategy, 77));
-        }
+            @Override
+            public void run()
+            {
+                Intent intent = getIntent();
+                List<String> players = new ArrayList<>();
+                players.add("Thomas");
+                players.add("Milena");
+                List<Player> playerList = new ArrayList<>();
+                for (int i = 0; i < players.size(); i++)
+                {
+                    String name = players.get(i);
+                    Strategy strategy = null;
+                    playerList.add(new Player(name, strategy, 77));
+                }
 
-        // TODO: gamemaster
-        Rules rules = new Rules();
-        LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * 5, playerList, 0);
-        Board bb = Board.createBoardNoPoints(5, 5, rules);
-        LocalGameControls controls = new LocalGameControls(this, game, null, null, null);
-        GamemasterAnimated gmAnimated = new GamemasterAnimated(bb, rules, this, controls, game);
+                // TODO: gamemaster
+                Rules rules = new Rules();
+                LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * 5, playerList, 0);
+                for (Player player : game.getPlayers())
+                {
+                    List<Skill> animatedSkills = new ArrayList<>();
+                    for (Skill skill : player.getSkills())
+                    {
+                        animatedSkills.add(AnimatedSkill.create(skill));
+                    }
 
-        //RelativeLayout l = gmAnimated.getAnimatedBoard().getGameLayout();
-        boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
+                    player.setSkills(animatedSkills);
+                }
+                Board bb = Board.createBoardNoPoints(5, 5, rules);
+                LocalGameControls controls = new LocalGameControls(GameActivity.this, game, null, null, null);
+                new CalcPointLimit(bb, rules, controls, game).execute();
+                GamemasterAnimated gmAnimated = new GamemasterAnimated(bb, rules, GameActivity.this, controls, game);
 
-        RelativeLayout l = new RelativeLayout(this);
-        // TODO: create local game here
-        AnimatedBoard board = gmAnimated.getAnimatedBoard();
-        RelativeLayout b = board.getGameLayout();
-        RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
-        pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        b.setId(R.id.board);
-        l.addView(b, pB);
+                //RelativeLayout l = gmAnimated.getAnimatedBoard().getBoardLayout();
+                boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
 
-        RelativeLayout c = (RelativeLayout) gmAnimated.getControls();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, R.id.board);
-        params.topMargin = 50;
-        l.addView(c, params);
+                RelativeLayout l = new RelativeLayout(GameActivity.this);
+                // TODO: create local game here
+                AnimatedBoard board = gmAnimated.getAnimatedBoard();
+                RelativeLayout b = board.getBoardLayout();
+                RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
+                pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+                //b.setId(R.id.board);
+                //l.addView(b, pB);
 
-        setContentView(l);
+        /*LocalGameControls controlsView = (LocalGameControls) gmAnimated.getControls();
+        RelativeLayout left = new RelativeLayout(this);
+
+        RelativeLayout.LayoutParams nextParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        nextParams.topMargin = 20;
+        View next = controlsView.getNext();
+        next.setId(View.generateViewId());
+        left.addView(next, nextParams);
+
+        RelativeLayout.LayoutParams pointListParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        pointListParams.addRule(RelativeLayout.RIGHT_OF, next.getId());
+        pointListParams.topMargin = 20;
+        pointListParams.leftMargin = 20;
+        left.addView(controlsView.getPointList(), pointListParams);
+
+        GameLayout gameLayout = new GameLayout(this, gmAnimated.getAnimatedBoard().getBoardLayout(), left, controlsView.getPoints(), controlsView.getPlayerLayouts().get(0), controlsView.getPlayerLayouts().get(1));
+        //setContentView(gameLayout);*/
+
+                LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
+                boardContainer.addView(b, ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            }
+        });
+
     }
 
 }

@@ -9,9 +9,13 @@ public interface GameControls
 {
     public void setEnabledControls(boolean enabled);
 
+    public boolean areControlsEnabled();
+
     public void update();
 
     void setGamemaster(AbstractGamemaster gamemaster);
 
     void setAnimatedBoard(Board board);
+
+    void startGame();
 }

@@ -3,6 +3,7 @@ package games.runje.dicymodel.communication.messages;
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Gravity;
 
@@ -14,6 +15,7 @@ public class GravityMessage extends Message
     public static final String Name = "GravityMessage";
 
     private Gravity gravity;
+    private String LogKey = "GravityMessage";
 
     public GravityMessage(Gravity g)
     {
@@ -43,7 +45,7 @@ public class GravityMessage extends Message
     {
         ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         byte[] bytes = MessageConverter.stringToByte(gravity.toString());
-        System.out.println("contentlength: " + contentLength + ", bytesLength: " + bytes.length + ", gravity: " + gravity);
+        Logger.logInfo(LogKey, "contentlength: " + contentLength + ", bytesLength: " + bytes.length + ", gravity: " + gravity);
         buffer.put(bytes);
         MessageConverter.fillBufferWithZero(buffer, MessageConverter.gravityLength - bytes.length);
         return buffer.array();

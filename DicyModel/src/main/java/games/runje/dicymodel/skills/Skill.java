@@ -1,5 +1,7 @@
 package games.runje.dicymodel.skills;
 
+import games.runje.dicymodel.AbstractGamemaster;
+import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -9,15 +11,16 @@ public class Skill
 {
     public static final String Help = "Help";
     public static final String Change = "Change";
+    protected int imageId;
     private int loadValue;
     private int maxLoad;
     private int currentLoad;
     private String name;
     private Coords pos;
 
-    public void setPos(Coords pos)
+    public Skill(Skill skill)
     {
-        this.pos = pos;
+        this(skill.getLoadValue(), skill.getMaxLoad(), skill.getName());
     }
 
     public Skill(int value, int max, String name)
@@ -45,13 +48,12 @@ public class Skill
         return maxLoad <= currentLoad;
     }
 
-
     public String getName()
     {
         return name;
     }
 
-    public void execute()
+    public void pay()
     {
         currentLoad -= maxLoad;
 
@@ -74,5 +76,36 @@ public class Skill
     public Coords getPos()
     {
         return pos;
+    }
+
+    public void setPos(Coords pos)
+    {
+        this.pos = pos;
+    }
+
+    public void startWaiting(Board board, AbstractGamemaster gm)
+    {
+        gm.endWait(null);
+    }
+
+    public void execute(Board board, AbstractGamemaster gm)
+    {
+        pay();
+        startExecute(board, gm);
+    }
+
+    protected void startExecute(Board board, AbstractGamemaster gm)
+    {
+        gm.endExecute();
+    }
+
+    public int getImageId()
+    {
+        return imageId;
+    }
+
+    public void setImageId(int imageId)
+    {
+        this.imageId = imageId;
     }
 }

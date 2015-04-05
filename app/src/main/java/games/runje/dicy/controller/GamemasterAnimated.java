@@ -9,6 +9,7 @@ import games.runje.dicy.animatedData.AnimationHandler;
 import games.runje.dicy.animatedData.PointsAnimation;
 import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.GameControls;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
@@ -22,15 +23,19 @@ public class GamemasterAnimated extends AbstractGamemaster
 {
     private final String LogKey = "GamemasterAnimated";
     AnimatedBoard animatedBoard;
+    private Activity activity;
 
     public GamemasterAnimated(Board board, Rules rules, Activity activity, GameControls controls, LocalGame game)
     {
         super(board, rules, controls, game);
+        this.activity = activity;
         animatedBoard = new AnimatedBoard(board, activity, null, this);
         this.board = animatedBoard;
         this.controls = controls;
         controls.setGamemaster(this);
         controls.setAnimatedBoard(animatedBoard);
+        // start game when point calculation are ready
+        controls.setEnabledControls(false);
         controls.update();
     }
 
@@ -43,15 +48,27 @@ public class GamemasterAnimated extends AbstractGamemaster
     @Override
     protected void startSwitchAnimation(Coords first, Coords second)
     {
-        System.out.println("Start Animation Switching elements");
-        animatedBoard.switchElements(first, second, true);
+        Logger.logInfo(LogKey, "Start Animation Switching elements");
+
+        //check if possible
+        if (!(second.row < 0 || second.row >= board.getNumberOfRows() ||
+                second.column < 0 || second.column >= board.getNumberOfColumns()))
+        {
+            animatedBoard.switchElements(first, second, true);
+        }
+        else
+        {
+            //endSwitchAnimation();
+        }
+
+
 
     }
 
     @Override
     protected void startPointAnimation(ArrayList<PointElement> elements)
     {
-        System.out.println("Start Point animated Animation");
+        Logger.logInfo(LogKey, "Start Point animated Animation");
         new PointsAnimation(elements, null, this).start();
     }
 
@@ -78,12 +95,12 @@ public class GamemasterAnimated extends AbstractGamemaster
             @Override
             public void run()
             {
-                //endFallAnimation();
+                endFallAnimation();
             }
         });
 
         animatedBoard.moveElementsFromGravity(animationHandler);
-        endFallAnimation();
+        //endFallAnimation();
     }
 
     @Override
@@ -102,4 +119,8 @@ public class GamemasterAnimated extends AbstractGamemaster
     }
 
 
+    public Activity getActivity()
+    {
+        return activity;
+    }
 }

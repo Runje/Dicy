@@ -111,7 +111,7 @@ public class AnimatedGamemaster extends Gamemaster
             if (p.isAi())
             {
                 // TODO: gamemaster
-                new AIController(p, activity, AnimatedGamemaster.getInstance());
+                new AIController(p, activity, AnimatedGamemaster.getInstance(), null);
             }
         }
         AnimatedGamemaster.getInstance().update();
@@ -153,7 +153,7 @@ public class AnimatedGamemaster extends Gamemaster
         }
         else
         {
-            Logger.logInfo(LogKey, action + " not possible");
+            AnimatedLogger.logInfo(LogKey, action + " not possible");
         }
     }
 
@@ -253,7 +253,7 @@ public class AnimatedGamemaster extends Gamemaster
         /*Activity a = ((AnimatedBoard) board).getActivity();
         board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a);
         AnimatedBoard board = (AnimatedBoard) getBoard();
-        RelativeLayout b = board.getGameLayout();
+        RelativeLayout b = board.getBoardLayout();
         b.setId(R.id.board);
         RelativeLayout l = new RelativeLayout(a);
         l.addView(b);
@@ -295,11 +295,11 @@ public class AnimatedGamemaster extends Gamemaster
                 if (moves.size() == 0)
                 {
                     // recreate board
-                    Logger.logInfo(LogKey, "No more moves possible");
+                    AnimatedLogger.logInfo(LogKey, "No more moves possible");
                     Activity a = ((AnimatedBoard) board).getActivity();
                     this.board = new AnimatedBoard(board.getNumberOfRows(), board.getNumberOfColumns(), a, this, null);
                     AnimatedBoard board = (AnimatedBoard) getBoard();
-                    RelativeLayout b = board.getGameLayout();
+                    RelativeLayout b = board.getBoardLayout();
                     b.setId(R.id.board);
                     RelativeLayout l = new RelativeLayout(a);
                     l.addView(b);
@@ -329,7 +329,7 @@ public class AnimatedGamemaster extends Gamemaster
     public void next()
     {
         locked = true;
-        Logger.logInfo(LogKey, "Next");
+        AnimatedLogger.logInfo(LogKey, "Next");
         game.moveEnds();
         controls.enable();
 
@@ -358,14 +358,14 @@ public class AnimatedGamemaster extends Gamemaster
                 {
                     Move move = BoardChecker.getPossiblePointMoves(board, rules).get(0);
                     ((AnimatedBoard) board).highlightElements(move);
-                    s.execute();
+                    s.pay();
                 }
                 else
                 {
                     // TODO: Show dialog
                     Move move = BoardChecker.getPossiblePointMoves(board, rules).get(0);
                     ((AnimatedBoard) board).highlightElements(move);
-                    s.execute();
+                    s.pay();
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
 
@@ -375,25 +375,25 @@ public class AnimatedGamemaster extends Gamemaster
                 if (s.isExecutable())
                 {
                     // TODO: Build Skill Executor
-                    s.execute();
+                    s.pay();
                 }
                 else
                 {
                     // TODO: Show dialog
-                    s.execute();
+                    s.pay();
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
 
                 if (fromId == this.fromId)
                 {
-                    Logger.logInfo(LogKey, "Change from self");
+                    AnimatedLogger.logInfo(LogKey, "Change from self");
                     controls.disable();
-                    ((AnimatedBoard) board).enableSwitchListener();
+                    ((AnimatedBoard) board).enable();
                     waitForDiceToGetTouched(s);
                 }
                 else
                 {
-                    Logger.logInfo(LogKey, "Change from other");
+                    AnimatedLogger.logInfo(LogKey, "Change from other");
                     select(s.getPos());
                 }
 
@@ -438,16 +438,16 @@ public class AnimatedGamemaster extends Gamemaster
         {
 
             case Up:
-                board.getGameLayout().setYOffset(0);
+                board.getBoardLayout().setYOffset(0);
                 break;
             case Down:
-                board.getGameLayout().setYOffset(1);
+                board.getBoardLayout().setYOffset(1);
                 break;
             case Right:
-                board.getGameLayout().setXOffset(1);
+                board.getBoardLayout().setXOffset(1);
                 break;
             case Left:
-                board.getGameLayout().setXOffset(0);
+                board.getBoardLayout().setXOffset(0);
                 break;
         }
 

@@ -10,8 +10,8 @@ import android.widget.RelativeLayout;
 
 import games.runje.dicy.R;
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 
@@ -47,11 +47,11 @@ public class AnimatedBoardElement extends ImageView
         {
             case 1:
                 return R.drawable.one;
-                //return R.drawable.dicy_one;
+            //return R.drawable.dicy_one;
 
             case 2:
                 return R.drawable.two;
-                //return R.drawable.dicy_two;
+            //return R.drawable.dicy_two;
 
             case 3:
                 return R.drawable.three;
@@ -143,7 +143,7 @@ public class AnimatedBoardElement extends ImageView
      */
     public void remove()
     {
-        Logger.logInfo(LogKey, "Removing from View: " + this.getPosition() + ". Value = " + this.getValue() + ". NULL: " + (this.getParent() == null));
+        AnimatedLogger.logInfo(LogKey, "Removing from View: " + this.getPosition() + ". Value = " + this.getValue() + ". NULL: " + (this.getParent() == null));
         // Attention: dependent from the parents layout
         ((RelativeLayout) this.getParent()).removeView(this);
     }

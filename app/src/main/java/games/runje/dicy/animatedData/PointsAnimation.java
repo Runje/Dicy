@@ -119,11 +119,11 @@ public class PointsAnimation implements Animation.AnimationListener
             tv.setTextSize(40);
             tv.setTextColor(Color.BLUE);
             Coords pos = pe.getCoords()[0];
-            float x = board.getGameLayout().CoordsToX(pos);
-            float y = board.getGameLayout().CoordsToY(pos);
+            float x = board.getBoardLayout().CoordsToX(pos);
+            float y = board.getBoardLayout().CoordsToY(pos);
             tv.setX(x);
             tv.setY(y);
-            board.getGameLayout().addView(tv);
+            board.getBoardLayout().addView(tv);
             tvs.add(tv);
         }
     }

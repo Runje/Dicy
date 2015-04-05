@@ -1,95 +1,88 @@
 package games.runje.dicy.layouts;
 
-import android.graphics.Color;
+import android.app.Activity;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicy.animatedData.AnimatedBoardElement;
-import games.runje.dicymodel.data.Coords;
+import games.runje.dicy.R;
 
 /**
- * Created by thomas on 25.01.15.
+ * Created by Thomas on 23.03.2015.
  */
-public class GameLayout extends RelativeLayout
+public class GameLayout extends FrameLayout
 {
-    AnimatedBoard board;
-    int diceSize;
-    private int XOffset = 1;
-    private int YOffset = 1;
+    private BoardLayout board;
+    private View leftPanel;
+    private RelativeLayout rightPanel;
+    private View playerAbove;
+    private View playerBelow;
 
-    public GameLayout(AnimatedBoard b, double heightWeight)
+    public GameLayout(Activity activity, BoardLayout board, View left, RelativeLayout right, View above, View below)
     {
-        super(b.getActivity());
+        super(activity);
+        RelativeLayout rl = new RelativeLayout(activity);
+        this.board = board;
+        this.leftPanel = left;
 
-        this.board = b;
+        this.rightPanel = right;
+        this.playerAbove = above;
+        this.playerBelow = below;
+
+        board.setId(View.generateViewId());
+        leftPanel.setId(View.generateViewId());
+        rightPanel.setId(View.generateViewId());
+        playerAbove.setId(View.generateViewId());
+        playerBelow.setId(View.generateViewId());
+
         DisplayMetrics dm = new DisplayMetrics();
-        board.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
         int screenWidth = dm.widthPixels;
         int screenHeight = dm.heightPixels;
 
-        diceSize = screenWidth / (board.getNumberOfColumns() + 1);
-        // min(halfHeight, diceSize)
-        int halfHeight = (int) (heightWeight * screenHeight / (board.getNumberOfRows() + 1));
-        diceSize = Math.min(diceSize, halfHeight);
-        createAbsoluteLayout();
-        this.setBackgroundColor(Color.BLUE);
+
+        //board.setMaxWidth(2/3.0 * screenWidth);
+
+        RelativeLayout.LayoutParams boardParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        boardParams.addRule(RelativeLayout.BELOW, left.getId());
+        boardParams.topMargin = 20;
+        //boardParams.addRule(RelativeLayout.RIGHT_OF, leftPanel.getId());
+
+        RelativeLayout.LayoutParams leftParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        //leftParams.addRule(RelativeLayout.BELOW, playerAbove.getId());
+
+        RelativeLayout.LayoutParams rightParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        rightParams.addRule(RelativeLayout.ABOVE, board.getId());
+        rightParams.addRule(RelativeLayout.RIGHT_OF, left.getId());
+        rightParams.leftMargin = 200;
+        rightParams.bottomMargin = 20;
+
+        RelativeLayout.LayoutParams aboveParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        aboveParams.addRule(RelativeLayout.RIGHT_OF, playerBelow.getId());
+        aboveParams.addRule(RelativeLayout.BELOW, board.getId());
+        aboveParams.leftMargin = 20;
+        aboveParams.topMargin = 20;
+
+        RelativeLayout.LayoutParams belowParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        belowParams.addRule(RelativeLayout.BELOW, board.getId());
+        belowParams.topMargin = 20;
+
+
+        rl.addView(board, boardParams);
+        rl.addView(leftPanel, leftParams);
+        rl.addView(rightPanel, rightParams);
+        rl.addView(playerAbove, aboveParams);
+        rl.addView(playerBelow, belowParams);
+
+        addView(rl, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        setId(R.id.points);
     }
 
-    public int getYOffset()
+    public BoardLayout getBoard()
     {
-        return YOffset;
+        return board;
     }
 
-    public void setYOffset(int YOffset)
-    {
-        this.YOffset = YOffset;
 
-    }
-
-    public int getXOffset()
-    {
-        return XOffset;
-    }
-
-    public void setXOffset(int XOffset)
-    {
-        this.XOffset = XOffset;
-    }
-
-    public int getDiceSize()
-    {
-        return diceSize;
-    }
-
-    private void createAbsoluteLayout()
-    {
-
-        RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(diceSize * (board.getNumberOfRows() + 1), diceSize * (board.getNumberOfColumns() + 1));
-        this.setLayoutParams(tableParams);
-
-        for (int row = 0; row < board.getNumberOfRows(); row++)
-        {
-            for (int column = 0; column < board.getNumberOfColumns(); column++)
-            {
-                AnimatedBoardElement iv = board.getAnimatedElement(new Coords(row, column));
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(diceSize, diceSize);
-                params.leftMargin = CoordsToX(iv.getPosition());
-                params.topMargin = CoordsToY(iv.getPosition());
-                this.addView(iv, params);
-            }
-        }
-    }
-
-    public int CoordsToX(Coords pos)
-    {
-        //offset + 1 to have one column on the left for fall down
-        return getDiceSize() * (pos.column + XOffset);
-    }
-
-    public int CoordsToY(Coords pos)
-    {
-        // offset + 1 to have one row on top for fall down
-        return getDiceSize() * (pos.row + YOffset);
-    }
 }

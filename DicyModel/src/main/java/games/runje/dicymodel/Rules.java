@@ -11,6 +11,7 @@ public class Rules
      * The maximum totalLength of one row/column.
      */
     public final static int maxLengthOfRow = 10;
+    private boolean pointLimitSetManually;
     /**
      * Points can be achieved diagonally.
      */
@@ -31,17 +32,14 @@ public class Rules
      * The points for a straight. The index is the totalLength of the straight.
      */
     private int[] straightPoints;
-
     /**
      * The points for a Full House. The index is the value of the three of a kind.
      */
     private int[] fullHousePoints;
-
     /**
      * Points for x of a kind. The first index is the X, the second index is the value of the dice.
      */
     private int[][] xOfAKindPoints;
-
     /**
      * The minimum following dices for a straight.
      */
@@ -66,7 +64,18 @@ public class Rules
         this.initFullHousePoints(0);
         this.initXOfAKindPoints(this.minXOfAKind, this.maxLengthOfRow, 1, 2);
         // TODO: Calculate
-        this.pointLimit = 65;
+        this.pointLimit = 35;
+        this.pointLimitSetManually = false;
+    }
+
+    public boolean isPointLimitSetManually()
+    {
+        return pointLimitSetManually;
+    }
+
+    public void setPointLimitSetManually(boolean pointLimitSetManually)
+    {
+        this.pointLimitSetManually = pointLimitSetManually;
     }
 
     /**

@@ -6,7 +6,7 @@ import android.widget.RelativeLayout;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.AnimatedGamemaster;
-import games.runje.dicy.controller.Logger;
+import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicymodel.game.LocalGame;
 
 /**
@@ -37,14 +37,11 @@ public class ArenaControls extends Controls
         pR.addRule(RelativeLayout.ALIGN_BASELINE, R.id.playersPoints);
         addView(restart(), pR);
 
-        RelativeLayout.LayoutParams pA = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pA.addRule(RelativeLayout.BELOW, R.id.playersPoints);
-        addView(gravityArrows(), pA);
     }
 
     public void updatePlayers()
     {
-        Logger.logInfo("Arena", "Update: " + Integer.toString(game.getSwitchPoints() + game.getMovePoints() + game.getPlayers().get(0).getPoints()));
+        AnimatedLogger.logInfo("Arena", "Update: " + Integer.toString(game.getSwitchPoints() + game.getMovePoints() + game.getPlayers().get(0).getPoints()));
         playersView.get(0).setText("Points: " + Integer.toString(game.getSwitchPoints() + game.getMovePoints()));
     }
 }

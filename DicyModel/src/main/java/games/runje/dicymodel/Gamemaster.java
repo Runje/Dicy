@@ -39,6 +39,7 @@ public class Gamemaster
     private Rules rules;
     private Socket firstSocket;
     private long toSecondId;
+    private String LogKey = "Gamemaster";
 
     public Gamemaster()
     {
@@ -76,7 +77,7 @@ public class Gamemaster
 
     public void receiveMessage(final ByteBuffer buffer, final int length)
     {
-        System.out.println("ReceiveMessage in Gamemaster");
+        Logger.logInfo(LogKey, "ReceiveMessage in Gamemaster");
         Message msg = MessageParser.parse(buffer, length);
         msg.execute(this);
     }
@@ -84,7 +85,7 @@ public class Gamemaster
     public void startGame(Board board, Rules rules, LocalGame game)
     {
         // TODO: move to animatedGamemaster?
-        System.out.println("Starting Game from Gamemaster");
+        Logger.logInfo(LogKey, "Starting Game from Gamemaster");
     }
 
 
@@ -136,12 +137,12 @@ public class Gamemaster
         ArrayList<BoardElement> elements = board.recreateElements();
         RecreateElementsMessage msg = new RecreateElementsMessage(elements);
         sendMessageToBoth(msg);
-        System.out.println("Send recreating elements: " + msg.toString());
-        System.out.println("Board after recreating elements: " + board.toString());
+        Logger.logInfo(LogKey, "Send recreating elements: " + msg.toString());
+        Logger.logInfo(LogKey, "Board after recreating elements: " + board.toString());
 
         if (elements.size() == 0)
         {
-            System.out.println("End Switch");
+            Logger.logInfo(LogKey, "End Switch");
             // end move
             game.endSwitch();
 
@@ -151,7 +152,7 @@ public class Gamemaster
             if (moves.size() == 0)
             {
                 // TODO: recreate board
-                System.out.println("Recreating board");
+                Logger.logInfo(LogKey, "Recreating board");
                 board = Board.createBoardNoPoints(board.getNumberOfRows(), board.getNumberOfColumns(), rules);
                 sendMessageToBoth(new RecreateBoardMessage(board));
 
@@ -183,11 +184,11 @@ public class Gamemaster
             case Skill.Help:
                 if (s.isExecutable())
                 {
-                    s.execute();
+                    s.pay();
                 }
                 else
                 {
-                    s.execute();
+                    s.pay();
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
                 break;
@@ -195,11 +196,11 @@ public class Gamemaster
             case Skill.Change:
                 if (s.isExecutable())
                 {
-                    s.execute();
+                    s.pay();
                 }
                 else
                 {
-                    s.execute();
+                    s.pay();
                     game.getPlayingPlayer().setPoints(game.getPlayingPlayer().getPoints() - game.getPointsLimit());
                 }
 
@@ -234,7 +235,7 @@ public class Gamemaster
         {
             message.setFromId(Message.ServerId);
             message.setToId(id);
-            System.out.println("Sending " + message.getName() + " from " + message.getFromId() + " to " + message.getToId());
+            Logger.logInfo(LogKey, "Sending " + message.getName() + " from " + message.getFromId() + " to " + message.getToId());
             s.getOutputStream().write(message.toByte());
         }
         catch (IOException e)
@@ -255,13 +256,13 @@ public class Gamemaster
 
     public void recreateBoard(Board board)
     {
-        System.out.println("Recreating Board");
+        Logger.logInfo(LogKey, "Recreating Board");
         this.board = board;
     }
 
     public void next(long id)
     {
-        System.out.println("Next");
+        Logger.logInfo(LogKey, "Next");
         sendMessageToOther(new NextMessage(), id);
         game.moveEnds();
     }

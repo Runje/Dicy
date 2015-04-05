@@ -51,16 +51,16 @@ public class GravityListener implements View.OnClickListener
         {
 
             case Up:
-                board.getGameLayout().setYOffset(0);
+                board.getBoardLayout().setYOffset(0);
                 break;
             case Down:
-                board.getGameLayout().setYOffset(1);
+                board.getBoardLayout().setYOffset(1);
                 break;
             case Right:
-                board.getGameLayout().setXOffset(1);
+                board.getBoardLayout().setXOffset(1);
                 break;
             case Left:
-                board.getGameLayout().setXOffset(0);
+                board.getBoardLayout().setXOffset(0);
                 break;
         }
 

@@ -141,4 +141,14 @@ public class Player
     {
         skills.add(skill);
     }
+
+    public List<Skill> getSkills()
+    {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills)
+    {
+        this.skills = skills;
+    }
 }

@@ -3,20 +3,30 @@ package games.runje.dicy;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicy.controller.AnimatedGamemaster;
-import games.runje.dicy.controller.Logger;
+import games.runje.dicy.animatedData.animatedSkills.AnimatedSkill;
+import games.runje.dicy.controller.AIController;
+import games.runje.dicy.controller.AnimatedLogger;
+import games.runje.dicy.controller.CalcPointLimit;
+import games.runje.dicy.controller.GamemasterAnimated;
+import games.runje.dicy.controls.LocalGameControls;
+import games.runje.dicy.layouts.GameLayout;
 import games.runje.dicy.util.SystemUiHider;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.data.Board;
+import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.Skill;
 
 
 /**
@@ -30,6 +40,7 @@ public class LocalGameActivity extends Activity
 
 
     private String LogKey = "LocalGameActivity";
+    private GamemasterAnimated gmAnimated;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
@@ -41,6 +52,8 @@ public class LocalGameActivity extends Activity
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        Logger.setInstance(new AnimatedLogger());
+        Logger.logInfo(LogKey, "On Post Create");
         Intent intent = getIntent();
         boolean[] playing = intent.getBooleanArrayExtra(OptionActivity.PlayingIntent);
         String[] players = intent.getStringArrayExtra(OptionActivity.PlayerIntent);
@@ -51,7 +64,7 @@ public class LocalGameActivity extends Activity
             if (playing[i])
             {
                 p.add(players[i]);
-                Logger.logInfo("LocalGameActivity", "adding " + players[i]);
+                AnimatedLogger.logInfo("LocalGameActivity", "adding " + players[i]);
             }
         }
 
@@ -63,7 +76,7 @@ public class LocalGameActivity extends Activity
             if (playing[i])
             {
                 s.add(Strategy.makeStrategy(strategies[i]));
-                Logger.logInfo("LocalGameActivity", "adding " + strategies[i]);
+                AnimatedLogger.logInfo("LocalGameActivity", "adding " + strategies[i]);
             }
         }
 
@@ -89,32 +102,68 @@ public class LocalGameActivity extends Activity
         rules.setMinStraight(intent.getIntExtra(OptionActivity.StraightIntent, 7));
         rules.setMinXOfAKind(intent.getIntExtra(OptionActivity.XOfAKindIntent, 11));
         rules.initStraightPoints(4);
-        RelativeLayout l = new RelativeLayout(this);
-        // TODO: create local game here
-        ScrollView v = new ScrollView(this);
-        AnimatedGamemaster.createLocalGame(this, p, f, rules, s,v);
-        AnimatedBoard board = (AnimatedBoard) AnimatedGamemaster.getInstance().getBoard();
-        RelativeLayout b = board.getGameLayout();
-        RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
-        pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        b.setId(R.id.board);
-        l.addView(b, pB);
 
-        RelativeLayout controls = AnimatedGamemaster.getInstance().getControls();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, R.id.board);
-        params.topMargin = 50;
-        l.addView(controls, params);
+        Board bb = Board.createBoardNoPoints(5, 5, rules);
 
-        v.addView(l);
-        setContentView(v);
+        List<Player> playerList = new ArrayList<>();
+        for (int i = 0; i < p.size(); i++)
+        {
+            String name = p.get(i);
+            Strategy strategy = s.get(i);
+            playerList.add(new Player(name, strategy, 77));
+        }
+
+        LocalGame game = new LocalGame(rules.getPointLimit(), f, playerList, 0);
+        for (Player player : game.getPlayers())
+        {
+            List<Skill> animatedSkills = new ArrayList<>();
+            for (Skill skill : player.getSkills())
+            {
+                animatedSkills.add(AnimatedSkill.create(skill));
+            }
+
+            player.setSkills(animatedSkills);
+        }
+
+
+        // TODO: gamemaster
+        LocalGameControls controls = new LocalGameControls(this, game, null, null, null);
+        new CalcPointLimit(bb, rules, controls, game).execute();
+
+        this.gmAnimated = new GamemasterAnimated(bb, rules, this, controls, game);
+        LocalGameControls controlsView = (LocalGameControls) gmAnimated.getControls();
+        RelativeLayout left = new RelativeLayout(this);
+
+        RelativeLayout.LayoutParams nextParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        nextParams.topMargin = 20;
+        View next = controlsView.getNext();
+        next.setId(View.generateViewId());
+        left.addView(next, nextParams);
+
+        RelativeLayout.LayoutParams pointListParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        pointListParams.addRule(RelativeLayout.RIGHT_OF, next.getId());
+        pointListParams.topMargin = 20;
+        pointListParams.leftMargin = 20;
+        left.addView(controlsView.getPointList(), pointListParams);
+
+        GameLayout gameLayout = new GameLayout(this, gmAnimated.getAnimatedBoard().getBoardLayout(), left, controlsView.getPoints(), controlsView.getPlayerLayouts().get(0), controlsView.getPlayerLayouts().get(1));
+        setContentView(gameLayout);
+        // start AI
+        for (Player pl : game.getPlayers())
+        {
+            if (pl.isAi())
+            {
+                // TODO: gamemaster
+                new AIController(pl, this, null, gmAnimated);
+            }
+        }
 
     }
 
     @Override
     public void onBackPressed()
     {
-        AnimatedGamemaster.getInstance().getGame().cancel();
+        gmAnimated.getGame().cancel();
         super.onBackPressed();
     }
 

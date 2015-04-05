@@ -2,6 +2,7 @@ package games.runje.dicymodel.communication;
 
 import java.nio.ByteBuffer;
 
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.messages.FindOpponentMessage;
 import games.runje.dicymodel.communication.messages.GravityMessage;
 import games.runje.dicymodel.communication.messages.IdentifyMessage;
@@ -18,13 +19,15 @@ import games.runje.dicymodel.communication.messages.SwitchMessage;
  */
 public class MessageParser
 {
+    private static String LogKey = "MessageParser";
+
     public static Message parse(ByteBuffer buffer, int length)
     {
         String name = MessageConverter.byteToString(buffer, MessageConverter.nameLength);
         long fromId = buffer.getLong();
         long toId = buffer.getLong();
 
-        System.out.println("Parsing Message " + name + ", from " + fromId + " to " + toId);
+        Logger.logInfo(LogKey, "Parsing Message " + name + ", from " + fromId + " to " + toId);
 
         Message msg = null;
         switch (name)

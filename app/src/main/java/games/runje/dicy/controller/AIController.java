@@ -14,12 +14,14 @@ public class AIController
 {
     private final Player player;
     private final Activity activity;
+    private GamemasterAnimated gmAnimated;
     private String LogKey = "AIController";
     private AnimatedGamemaster gamemaster;
 
-    public AIController(Player p, Activity a, AnimatedGamemaster gm)
+    public AIController(Player p, Activity a, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
     {
         gamemaster = gm;
+        this.gmAnimated = gmAnimated;
         player = p;
         activity = a;
         start();
@@ -32,6 +34,7 @@ public class AIController
             @Override
             public void run()
             {
+                AnimatedLogger.logInfo(LogKey, "Starting AIController for " + player);
                 while (true)
                 {
                     try
@@ -45,12 +48,14 @@ public class AIController
                         break;
                     }
 
-                    Game game = AnimatedGamemaster.getInstance().getGame();
+                    Game game = gmAnimated.getGame();
                     if (game.isFinishedOrCancelled())
                     {
                         break;
                     }
-                    if (game.hasTurn(player) && !AnimatedGamemaster.getInstance().isAnimationIsRunning())
+
+                    //Logger.logDebug(LogKey, "Checking, turn: " + game.hasTurn(player) + ", controls enabled: " + gmAnimated.areControlsEnabled());
+                    if (game.hasTurn(player) && gmAnimated.areControlsEnabled())
                     {
                         LocalGame l = (LocalGame) game;
 
@@ -68,13 +73,13 @@ public class AIController
                         }
                         else
                         {
-                            Logger.logInfo(LogKey, "Next");
+                            AnimatedLogger.logInfo(LogKey, "Next");
                             activity.runOnUiThread(new Runnable()
                             {
                                 @Override
                                 public void run()
                                 {
-                                    AnimatedGamemaster.getInstance().next();
+                                    gmAnimated.next();
                                 }
                             });
 
@@ -87,10 +92,11 @@ public class AIController
 
     private void makeMove()
     {
-        Logger.logInfo(LogKey, "Making a move");
-        Move m = player.getStrategy().getNextMove(AnimatedGamemaster.getInstance().getRules(), gamemaster.getBoard());
-        Action a = new SwitchAction(m.getFirst(), m.getSecond(), true, gamemaster);
-        AnimatedGamemaster.getInstance().performAction(a);
+        AnimatedLogger.logInfo(LogKey, "Making a move");
+        Move m = player.getStrategy().getNextMove(gmAnimated.getRules(), gmAnimated.getAnimatedBoard());
+        //Action a = new SwitchAction(m.getFirst(), m.getSecond(), true, gamemaster);
+        //AnimatedGamemaster.getInstance().performAction(a);
+        gmAnimated.switchElements(m.getFirst(), m.getSecond());
     }
 
 

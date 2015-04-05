@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.controller.Logger;
+import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.layouts.XOfAKindLayout;
 import games.runje.dicy.util.SystemUiHider;
@@ -220,7 +220,7 @@ public class OptionActivity extends Activity
                     {
                         numberPlayers++;
                     }
-                    Logger.logInfo("Options", i + " playing: " + playing[i]);
+                    AnimatedLogger.logInfo("Options", i + " playing: " + playing[i]);
                 }
 
                 if (numberPlayers == 0)
@@ -234,14 +234,14 @@ public class OptionActivity extends Activity
                 for (int i = 0; i < MaxPlayers; i++)
                 {
                     players[i] = editPlayers[i].getText().toString();
-                    Logger.logInfo("Options", players[i]);
+                    AnimatedLogger.logInfo("Options", players[i]);
                 }
 
                 String[] strategies = new String[MaxPlayers];
                 for (int i = 0; i < MaxPlayers; i++)
                 {
                     strategies[i] = strategySpinner[i].getSelectedItem().toString();
-                    Logger.logInfo("Options", strategies[i]);
+                    AnimatedLogger.logInfo("Options", strategies[i]);
                 }
                 intent.putExtra(StrategyIntent, strategies);
 

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-
+import android.widget.Toast;
 
 public class StartActivity extends Activity
 {
@@ -29,12 +29,13 @@ public class StartActivity extends Activity
     public void clickOnlineGame(View v)
     {
         Intent intent = new Intent(this, OnlineGameActivity.class);
-        startActivity(intent);
+        //startActivity(intent);
+        Toast.makeText(this, "Playing online is not implemented yet", Toast.LENGTH_LONG).show();
     }
 
     public void clickHighscore(View v)
     {
-        Intent intent = new Intent(this, OptionActivity.class);
+        Intent intent = new Intent(this, NewOptionActivity.class);
         startActivity(intent);
     }
 
@@ -67,5 +68,6 @@ public class StartActivity extends Activity
 
 
         v.startAnimation(animation);
+
     }
 }

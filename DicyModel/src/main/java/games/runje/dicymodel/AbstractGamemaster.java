@@ -10,6 +10,7 @@ import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.PointElement;
 import games.runje.dicymodel.game.GameState;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 09.03.2015.
@@ -22,8 +23,10 @@ public abstract class AbstractGamemaster
     protected Move lastMove;
     protected GameControls controls;
     protected LocalGame game;
+    protected Skill activeSkill;
 
     protected ArrayList<BoardElement> recreateElements;
+    private String LogKey = "AbstractGamemaster";
 
     protected AbstractGamemaster(Board board, Rules rules, GameControls controls, LocalGame game)
     {
@@ -35,14 +38,33 @@ public abstract class AbstractGamemaster
 
     public void switchElements(Coords first, Coords second)
     {
-        System.out.println("Switching elements");
+        controls.setEnabledControls(false);
+        Logger.logInfo(LogKey, "Switching elements");
         this.lastMove = new Move(first, second);
         startSwitchAnimation(first, second);
     }
 
+    public void executeSkill(Skill s)
+    {
+        this.activeSkill = s;
+        stateTransition(GameState.Wait);
+        s.startWaiting(board, this);
+    }
+
+    public void endWait(Coords pos)
+    {
+        activeSkill.setPos(pos);
+        activeSkill.execute(board, this);
+    }
+
+    public void endExecuteAnimation()
+    {
+        stateTransition(GameState.Normal);
+    }
+
     protected void startSwitchAnimation(Coords first, Coords second)
     {
-        System.out.println("Start Switching elements");
+        Logger.logInfo(LogKey, "Start Switching elements");
         board.switchElements(first, second);
         endSwitchAnimation();
     }
@@ -54,17 +76,18 @@ public abstract class AbstractGamemaster
 
     public void stateTransition(GameState state)
     {
-        System.out.println("State Transition to " + state.toString());
+        Logger.logInfo(LogKey, "State Transition to " + state.toString());
         GameState oldState = this.state;
         this.state = state;
-        this.controls.setEnabledControls(this.state == GameState.Normal);
+
+        // disable controls
+        this.controls.setEnabledControls(false);
         switch (state)
         {
             case Normal:
+                getGame().setStrikePossible(true);
                 break;
             case Switched:
-
-
                 ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
                 int points = Utilities.getPointsFrom(elements);
                 game.addPointElements(elements, board);
@@ -104,12 +127,29 @@ public abstract class AbstractGamemaster
                 }
                 break;
             case Wait:
+                getGame().setStrikePossible(false);
+                board.enable();
                 break;
             case Executed:
+                ArrayList<PointElement> pointElements = BoardChecker.getAll(board, rules);
+                int Executedpoints = Utilities.getPointsFrom(pointElements);
+                game.addPointElements(pointElements, board);
+                if (Executedpoints == 0)
+                {
+                    stateTransition(GameState.Normal);
+                }
+                else
+                {
+                    startPointAnimation(pointElements);
+                }
                 break;
         }
 
-
+        // enable
+        if (this.state == GameState.Normal)
+        {
+            this.controls.setEnabledControls(true);
+        }
         this.controls.update();
 
     }
@@ -118,7 +158,7 @@ public abstract class AbstractGamemaster
     {
         if (BoardChecker.getPossiblePointMoves(board, rules).size() == 0)
         {
-            System.out.println("Recreating Board");
+            Logger.logInfo(LogKey, "Recreating Board");
             startRecreateBoardAnimation();
         }
         else
@@ -129,7 +169,9 @@ public abstract class AbstractGamemaster
 
     private void startRecreateBoardAnimation()
     {
+        Logger.logInfo(LogKey, "Old board: " + board.toString());
         board.recreateBoard();
+        Logger.logInfo(LogKey, "New board: " + board.toString());
         endRecreateBoardAnimation();
     }
 
@@ -179,7 +221,7 @@ public abstract class AbstractGamemaster
 
     protected void startPointAnimation(ArrayList<PointElement> elements)
     {
-        System.out.println("Start Point animated Animation");
+        Logger.logInfo(LogKey, "Start Point animated Animation");
         endPointAnimation();
     }
 
@@ -209,11 +251,32 @@ public abstract class AbstractGamemaster
     public void next()
     {
         game.moveEnds();
+        controls.setEnabledControls(true);
         controls.update();
     }
 
     public GameControls getControls()
     {
         return controls;
+    }
+
+    public LocalGame getGame()
+    {
+        return game;
+    }
+
+    public boolean areControlsEnabled()
+    {
+        return this.controls.areControlsEnabled();
+    }
+
+    public void endExecute()
+    {
+        stateTransition(GameState.Executed);
+    }
+
+    public void startGame()
+    {
+
     }
 }

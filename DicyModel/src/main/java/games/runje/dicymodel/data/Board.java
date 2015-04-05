@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.boardChecker.BoardChecker;
@@ -26,6 +27,7 @@ public class Board
      */
     protected int columns;
     protected Gravity gravity;
+    private String LogKey = "Board";
 
     /**
      * Initializes an empty Board.
@@ -316,7 +318,6 @@ public class Board
     }
 
 
-
     /**
      * recreates the given elements
      *
@@ -327,7 +328,7 @@ public class Board
         for (BoardElement element : elements)
         {
             setElement(element.getPosition(), element);
-            System.out.println("Setting element with value " + element.getValue() + " at " + element.getPosition());
+            Logger.logInfo(LogKey, "Setting element with value " + element.getValue() + " at " + element.getPosition());
         }
     }
 
@@ -585,5 +586,15 @@ public class Board
                 element.setValue(new Dice().getValue());
             }
         }
+    }
+
+    public void disable()
+    {
+        // for animated board
+    }
+
+    public void enable()
+    {
+        // for animated board
     }
 }

@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.messages.Message;
 
 /**
@@ -24,6 +25,7 @@ public class ConnectionToServer
     private static Socket s;
     private static boolean connected = false;
     private static Gamemaster gamemaster;
+    private static String LogKey = "ConnectionToServer";
 
     public static boolean isConnected()
     {
@@ -35,10 +37,10 @@ public class ConnectionToServer
         gamemaster = gm;
         if (connected)
         {
-            System.out.println("Already Connected");
+            Logger.logInfo(LogKey, "Already Connected");
             return;
         }
-        System.out.println("Starting Listen Thread");
+        Logger.logInfo(LogKey, "Starting Listen Thread");
         new Thread(new Runnable()
         {
             @Override
@@ -52,17 +54,17 @@ public class ConnectionToServer
 
     private static void connectAndListen()
     {
-        System.out.println("Connect and listen");
+        Logger.logInfo(LogKey, "Connect and listen");
         try
         {
             s = new Socket(ipaddress, port);
             connected = true;
-            System.out.println("Connected");
+            Logger.logInfo(LogKey, "Connected");
         }
         catch (IOException e)
         {
             connected = false;
-            System.out.println("Not Connected");
+            Logger.logInfo(LogKey, "Not Connected");
             e.printStackTrace();
         }
 
@@ -82,7 +84,7 @@ public class ConnectionToServer
         catch (Exception exception)
         {
             exception.printStackTrace();
-            System.out.println("Stop listening");
+            Logger.logInfo(LogKey, "Stop listening");
             connected = false;
         }
 
@@ -98,7 +100,7 @@ public class ConnectionToServer
         try
         {
             s.getOutputStream().write(bytes);
-            System.out.println("Sent messsage: " + message.getName() + ", totalLength: " + bytes.length);
+            Logger.logInfo(LogKey, "Sent messsage: " + message.getName() + ", totalLength: " + bytes.length);
         }
         catch (IOException e)
         {
@@ -117,7 +119,7 @@ public class ConnectionToServer
             String sendMessageToFirst = msg + "\n";
             bw.write(sendMessageToFirst);
             bw.flush();
-            System.out.println("Message sent to the server : " + sendMessageToFirst);
+            Logger.logInfo(LogKey, "Message sent to the server : " + sendMessageToFirst);
         } catch (Exception exception) {
             exception.printStackTrace();
         }*/

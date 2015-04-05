@@ -27,4 +27,9 @@
     <item name="changeButton" type="id"/>
     <item name="pointList" type="id"/>
     <item name="dicychip6" type="id"/>
+    <item name="gameEndpoints" type="id"/>
+    <item name="borderAbove" type="id"/>
+    <item name="borderBelow" type="id"/>
+    <item name="borderLeft" type="id"/>
+    <item name="borderRight" type="id"/>
 </resources>

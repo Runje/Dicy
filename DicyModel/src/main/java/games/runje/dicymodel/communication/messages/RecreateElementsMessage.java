@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.BoardElement;
 
@@ -13,6 +14,7 @@ import games.runje.dicymodel.data.BoardElement;
 public class RecreateElementsMessage extends Message
 {
     public static final String Name = "RecreateMessage";
+    private final String LogKey = Name;
     private ArrayList<BoardElement> elements;
 
     public RecreateElementsMessage(ArrayList<BoardElement> e)
@@ -32,7 +34,7 @@ public class RecreateElementsMessage extends Message
             elements.add(MessageConverter.byteToBoardElement(buffer));
         }
 
-        System.out.println("RecreateMessage Elements: " + elements);
+        Logger.logInfo(LogKey, "RecreateMessage Elements: " + elements);
     }
 
     @Override

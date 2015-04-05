@@ -3,6 +3,7 @@ package games.runje.dicymodel.communication.messages;
 import java.nio.ByteBuffer;
 
 import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.skills.Skill;
@@ -13,6 +14,7 @@ import games.runje.dicymodel.skills.Skill;
 public class SkillMessage extends Message
 {
     public static final String Name = "SkillMessage";
+    private final String LogKey = Name;
     private String skill;
     private Coords pos;
 
@@ -25,7 +27,7 @@ public class SkillMessage extends Message
     {
         this.contentLength = length - headerLength;
         this.skill = MessageConverter.byteToString(buffer, MessageConverter.skillLength);
-        System.out.println("Pos in Skill: " + pos);
+        Logger.logInfo(LogKey, "Pos in Skill: " + pos);
         this.pos = MessageConverter.byteToCoords(buffer);
     }
 
@@ -52,7 +54,7 @@ public class SkillMessage extends Message
     {
         Skill s = gamemaster.getGame().getPlayingPlayer().getSkill(skill);
         s.setPos(pos);
-        System.out.println("Pos: " + pos);
+        Logger.logInfo(LogKey, "Pos: " + pos);
         gamemaster.executeSkill(s, fromId);
     }
 

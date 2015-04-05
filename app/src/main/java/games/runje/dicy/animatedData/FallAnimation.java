@@ -4,8 +4,8 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
+import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicy.controller.Logger;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -46,8 +46,8 @@ public class FallAnimation implements Animation.AnimationListener
             board = gmAnimated.getAnimatedBoard();
         }
 
-        float dx = board.getGameLayout().CoordsToX(to) - element.getX();
-        float dy = board.getGameLayout().CoordsToY(to) - element.getY();
+        float dx = board.getBoardLayout().CoordsToX(to) - element.getX();
+        float dy = board.getBoardLayout().CoordsToY(to) - element.getY();
 
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, dx,
@@ -55,14 +55,14 @@ public class FallAnimation implements Animation.AnimationListener
         animation.setDuration(1000);
         animation.setAnimationListener(this);
         element.startAnimation(animation);
-        Logger.logDebug(LogKey, "dx: " + dx + ", dy: " + dy + ", from: " + element);
-        Logger.logDebug(LogKey, "Start from To: " + this.to + " ex: " + element.getX() + ", ey: " + element.getY() + ", from: " + element);
+        AnimatedLogger.logDebug(LogKey, "dx: " + dx + ", dy: " + dy + ", from: " + element);
+        AnimatedLogger.logDebug(LogKey, "Start from To: " + this.to + " ex: " + element.getX() + ", ey: " + element.getY() + ", from: " + element);
     }
 
     @Override
     public void onAnimationStart(Animation animation)
     {
-        Logger.logInfo(LogKey, "Starting Fall Animation for pos: " + element.getPosition() + ". To: " + this.to);
+        AnimatedLogger.logInfo(LogKey, "Starting Fall Animation for pos: " + element.getPosition() + ". To: " + this.to);
     }
 
     @Override
@@ -83,10 +83,10 @@ public class FallAnimation implements Animation.AnimationListener
         board.setAnimatedElement(to, element);
 
         element.setPosition(to);
-        element.setX(board.getGameLayout().CoordsToX(to));
-        element.setY(board.getGameLayout().CoordsToY(to));
+        element.setX(board.getBoardLayout().CoordsToX(to));
+        element.setY(board.getBoardLayout().CoordsToY(to));
 
-        Logger.logDebug(LogKey, "End from To: " + this.to + " ex: " + element.getX() + ", ey: " + element.getY());
+        AnimatedLogger.logDebug(LogKey, "End from To: " + this.to + " ex: " + element.getX() + ", ey: " + element.getY());
 
         if (gamemaster != null)
         {
