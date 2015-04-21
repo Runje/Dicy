@@ -204,7 +204,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                 }
                 else
                 {
-                    gmAnimated.switchElements(a.getFirst(), a.getSecond());
+                    gmAnimated.switchElementsFromUser(a.getFirst(), a.getSecond());
                 }
                 AnimatedLogger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy);
                 Toast t = Toast.makeText(view.getContext(), direction.toString() + ", dx = " + dx + ", dy = " + dy, Toast.LENGTH_LONG);

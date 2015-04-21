@@ -2,7 +2,8 @@ package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
-import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.ClientGamemaster;
+import games.runje.dicymodel.HostGamemaster;
 import games.runje.dicymodel.communication.MessageConverter;
 
 /**
@@ -42,7 +43,15 @@ public abstract class Message
 
     protected abstract byte[] contentToByte();
 
-    public abstract void execute(Gamemaster gamemaster);
+    public void executeAtHost(HostGamemaster gamemaster)
+    {
+
+    }
+
+    public void executeAtClient(ClientGamemaster gamemaster)
+    {
+
+    }
 
     public byte[] toByte()
     {

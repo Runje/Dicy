@@ -31,6 +31,6 @@ public class AnimatedHelpSkill extends HelpSkill
     {
         Move move = BoardChecker.getPossiblePointMoves(board, gm.getRules()).get(0);
         ((AnimatedBoard) board).highlightElements(move);
-        gm.endExecute();
+        gm.endExecuteSkill();
     }
 }

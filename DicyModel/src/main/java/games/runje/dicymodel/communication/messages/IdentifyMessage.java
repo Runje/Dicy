@@ -2,8 +2,6 @@ package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
-import games.runje.dicymodel.Gamemaster;
-
 /**
  * Created by Thomas on 26.02.2015.
  */
@@ -27,11 +25,11 @@ public class IdentifyMessage extends Message
         return Name;
     }
 
-    @Override
-    public void execute(Gamemaster gamemaster)
+/*    @Override
+    public void execute(CommunicationGamemaster gamemaster)
     {
-        gamemaster.next(fromId);
-    }
+        //gamemaster.next(fromId);
+    }*/
 
     public byte[] contentToByte()
     {

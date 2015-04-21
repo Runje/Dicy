@@ -35,6 +35,8 @@ public class getAllTests
                         1, 1, 2,
                         1, 2, 1},
                 expectedElements, rules);
+
+
     }
 
     private void pointsHelper(int[] board, ArrayList<PointElement> expectedElements, Rules rules)

@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.ClientGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.messages.Message;
 
@@ -24,17 +24,19 @@ public class ConnectionToServer
     private static boolean firstTime = true;
     private static Socket s;
     private static boolean connected = false;
-    private static Gamemaster gamemaster;
+    private static ClientGamemaster gamemaster;
     private static String LogKey = "ConnectionToServer";
+    private static long fromId;
 
     public static boolean isConnected()
     {
         return connected;
     }
 
-    public static void connect(Gamemaster gm)
+    public static void connect(ClientGamemaster gm, int id)
     {
         gamemaster = gm;
+        fromId = id;
         if (connected)
         {
             Logger.logInfo(LogKey, "Already Connected");
@@ -92,7 +94,7 @@ public class ConnectionToServer
 
     }
 
-    public static void sendMessage(Message message, long fromId)
+    public static void sendMessage(Message message)
     {
         message.setFromId(fromId);
         message.setToId(Message.ServerId);

@@ -24,68 +24,6 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="192dp"
-                android:layout_gravity="top"
-                android:layout_weight="3"
-                android:orientation="horizontal">
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="left|top"
-                    android:layout_weight="1"
-                    android:background="@drawable/dicy_square">
-
-                    <ImageView
-                        android:id="@+id/dicychip2"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:onClick="clickChip"
-                        android:src="@drawable/dicychip"/>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal|top"
-                    android:layout_weight="1"
-                    android:background="@drawable/dicy_square">
-
-                    <ImageView
-                        android:id="@+id/dicyChip"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:onClick="clickChip"
-                        android:src="@drawable/dicychip"
-                        android:visibility="visible"/>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right|top"
-                    android:layout_weight="1"
-                    android:background="@drawable/dicy_square">
-
-                    <ImageView
-                        android:id="@+id/dicychip3"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:onClick="clickChip"
-                        android:src="@drawable/dicychip"/>
-                </FrameLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="230dp"
                 android:layout_gravity="left|center_vertical"
                 android:layout_weight="1"
@@ -143,65 +81,6 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_weight="3"
-                android:orientation="horizontal">
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right|bottom"
-                    android:layout_weight="1"
-                    android:background="@drawable/dicy_square">
-
-                    <ImageView
-                        android:id="@+id/dicychip4"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:onClick="clickChip"
-                        android:src="@drawable/dicychip"/>
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_weight="1"
-                    android:background="@drawable/dicy_square">
-
-                    <ImageView
-                        android:id="@+id/dicychip5"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:onClick="clickChip"
-                        android:src="@drawable/dicychip"/>
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="left|bottom"
-                    android:layout_weight="1"
-                    android:background="@drawable/dicy_square">
-
-                    <ImageView
-                        android:id="@+id/dicychip6"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:onClick="clickChip"
-                        android:src="@drawable/dicychip"/>
-
-                </FrameLayout>
-            </LinearLayout>
         </LinearLayout>
 
     </FrameLayout>

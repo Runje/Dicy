@@ -11,6 +11,8 @@ import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
+import games.runje.dicymodel.skills.ChangeSkill;
+import games.runje.dicymodel.skills.HelpSkill;
 import games.runje.dicymodel.skills.Skill;
 
 /**
@@ -62,8 +64,8 @@ public class LocalGame extends Game
         for (int i = 0; i < playerList.size(); i++)
         {
             Player p = playerList.get(i);
-            p.addSkill(new Skill(1, 6, Skill.Help));
-            p.addSkill(new Skill(6, 6, Skill.Change));
+            p.addSkill(new HelpSkill(1, 6, Skill.Help));
+            p.addSkill(new ChangeSkill(6, 6, Skill.Change));
             //Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
 

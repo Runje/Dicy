@@ -36,7 +36,7 @@ public class AnimatedChangeSkill extends Skill
         board.changeElement(getPos(), newValue);
         AnimatedBoard b = (AnimatedBoard) board;
         b.changeToSwitchListener();
-        gm.endExecute();
+        gm.endExecuteSkill();
     }
 
 

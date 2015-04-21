@@ -209,6 +209,8 @@ public class PlayerLayout extends RelativeLayout
             skills.add(sl);
             // TODO: make 2 classes for each skill (normal skill and animated skill) with waitMethod and pay method
         }
+
+        containers[2].setVisibility(View.GONE);
         return layout;
     }
 }

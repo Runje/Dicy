@@ -10,9 +10,6 @@ import android.widget.RelativeLayout;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
-import games.runje.dicy.animatedData.AnimationHandler;
-import games.runje.dicy.animatedData.FallingAnimation;
-import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
@@ -195,7 +192,28 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
     @Override
     public void onClick(View view)
     {
-        AnimatedLogger.logInfo("BoardLayout", "Clicking");
+        Gravity newGravity = null;
+        switch (view.getId())
+        {
+            case (R.id.borderAbove):
+                newGravity = Gravity.Up;
+                break;
+            case (R.id.borderBelow):
+                newGravity = Gravity.Down;
+                break;
+            case (R.id.borderLeft):
+                newGravity = Gravity.Left;
+                break;
+            case (R.id.borderRight):
+                newGravity = Gravity.Right;
+                break;
+        }
+
+        board.getGamemaster().changeGravityFromUser(newGravity);
+    }
+
+    public void updateGravity(Gravity gravity)
+    {
         int brown = Color.parseColor("#795548");
         above.setBackgroundColor(brown);
         below.setBackgroundColor(brown);
@@ -203,70 +221,26 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
         right.setBackgroundColor(brown);
 
         int yellow = Color.YELLOW;
-        switch (view.getId())
-        {
-            case (R.id.borderAbove):
-                above.setBackgroundColor(yellow);
-                AnimatedLogger.logInfo("BoardLayout", "Clicking above");
-                board.setGravity(Gravity.Up);
-                break;
-            case (R.id.borderBelow):
-                board.setGravity(Gravity.Down);
-                AnimatedLogger.logInfo("BoardLayout", "Clicking below");
-                below.setBackgroundColor(yellow);
-                break;
-            case (R.id.borderLeft):
-                board.setGravity(Gravity.Left);
-                AnimatedLogger.logInfo("BoardLayout", "Clicking left");
-                left.setBackgroundColor(yellow);
-                break;
-            case (R.id.borderRight):
-                board.setGravity(Gravity.Right);
-                AnimatedLogger.logInfo("BoardLayout", "Clicking right");
 
-                right.setBackgroundColor(yellow);
-                break;
-
-        }
-
-        switch (board.getGravity())
+        switch (gravity)
         {
 
             case Up:
                 board.getBoardLayout().setYOffset(0);
+                above.setBackgroundColor(yellow);
                 break;
             case Down:
                 board.getBoardLayout().setYOffset(1);
+                below.setBackgroundColor(yellow);
                 break;
             case Right:
                 board.getBoardLayout().setXOffset(1);
+                right.setBackgroundColor(yellow);
                 break;
             case Left:
                 board.getBoardLayout().setXOffset(0);
+                left.setBackgroundColor(yellow);
                 break;
         }
-
-        board.getGamemaster().getControls().setEnabledControls(false);
-        AnimationHandler animationHandler = new AnimationHandler(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                board.getGamemaster().getControls().setEnabledControls(true);
-            }
-        });
-
-        for (int i = 0; i < board.getNumberOfRows(); i++)
-        {
-            for (int j = 0; j < board.getNumberOfColumns(); j++)
-            {
-                Coords pos = new Coords(i, j);
-                AnimatedBoardElement aE = board.getAnimatedElement(pos);
-
-                animationHandler.addAnimation(new FallingAnimation(aE, pos, board, animationHandler));
-            }
-        }
-
-        animationHandler.start();
     }
 }

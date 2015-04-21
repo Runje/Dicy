@@ -10,12 +10,14 @@ import android.widget.TextView;
 
 import java.util.Random;
 
+import games.runje.dicy.controller.AnimatedClientGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
-import games.runje.dicy.controller.OnlineGamemaster;
 import games.runje.dicy.util.SystemUiHider;
+import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.communication.ConnectionToServer;
 import games.runje.dicymodel.communication.messages.FindOpponentMessage;
 import games.runje.dicymodel.communication.messages.IdentifyMessage;
+import games.runje.dicymodel.data.Board;
 
 
 /**
@@ -53,17 +55,15 @@ public class OnlineGameActivity extends Activity
         AnimatedLogger.logInfo(LogKey, "Connecting...");
         EditText editId = (EditText) findViewById(R.id.idEditText);
         int id = Integer.parseInt(editId.getText().toString());
-        ConnectionToServer.connect(new OnlineGamemaster(this, id));
+        AnimatedClientGamemaster gm = new AnimatedClientGamemaster(new Board(5), new Rules(), this, null, null);
+        ConnectionToServer.connect(gm, id);
 
     }
 
     public void clickFindOpponent(View v)
     {
-        EditText editId = (EditText) findViewById(R.id.idEditText);
-        int id = Integer.parseInt(editId.getText().toString());
-
-        ConnectionToServer.sendMessage(new IdentifyMessage(), id);
-        ConnectionToServer.sendMessage(new FindOpponentMessage(), id);
+        ConnectionToServer.sendMessage(new IdentifyMessage());
+        ConnectionToServer.sendMessage(new FindOpponentMessage());
 
     }
 

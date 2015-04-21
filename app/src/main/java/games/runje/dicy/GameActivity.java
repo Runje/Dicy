@@ -91,7 +91,6 @@ public class GameActivity extends Activity
                 new CalcPointLimit(bb, rules, controls, game).execute();
                 GamemasterAnimated gmAnimated = new GamemasterAnimated(bb, rules, GameActivity.this, controls, game);
 
-                //RelativeLayout l = gmAnimated.getAnimatedBoard().getBoardLayout();
                 boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
 
                 RelativeLayout l = new RelativeLayout(GameActivity.this);
@@ -100,26 +99,6 @@ public class GameActivity extends Activity
                 RelativeLayout b = board.getBoardLayout();
                 RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
                 pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-                //b.setId(R.id.board);
-                //l.addView(b, pB);
-
-        /*LocalGameControls controlsView = (LocalGameControls) gmAnimated.getControls();
-        RelativeLayout left = new RelativeLayout(this);
-
-        RelativeLayout.LayoutParams nextParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        nextParams.topMargin = 20;
-        View next = controlsView.getNext();
-        next.setId(View.generateViewId());
-        left.addView(next, nextParams);
-
-        RelativeLayout.LayoutParams pointListParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        pointListParams.addRule(RelativeLayout.RIGHT_OF, next.getId());
-        pointListParams.topMargin = 20;
-        pointListParams.leftMargin = 20;
-        left.addView(controlsView.getPointList(), pointListParams);
-
-        GameLayout gameLayout = new GameLayout(this, gmAnimated.getAnimatedBoard().getBoardLayout(), left, controlsView.getPoints(), controlsView.getPlayerLayouts().get(0), controlsView.getPlayerLayouts().get(1));
-        //setContentView(gameLayout);*/
 
                 LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
                 boardContainer.addView(b, ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

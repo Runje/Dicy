@@ -3,7 +3,7 @@ package games.runje.dicymodel.communication.messages;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.ClientGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.BoardElement;
@@ -52,9 +52,9 @@ public class RecreateElementsMessage extends Message
     }
 
     @Override
-    public void execute(Gamemaster gamemaster)
+    public void executeAtClient(ClientGamemaster gamemaster)
     {
-        gamemaster.updateAfterFall(elements);
+        gamemaster.startRecreateAnimation(elements);
     }
 
     public byte[] contentToByte()

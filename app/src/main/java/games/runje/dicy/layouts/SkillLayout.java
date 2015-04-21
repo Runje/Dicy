@@ -32,6 +32,7 @@ public class SkillLayout extends LinearLayout
         super(context);
         this.skill = skill;
         this.gm = gm;
+        container.setVisibility(View.VISIBLE);
         this.clickArea = (FrameLayout) container.findViewById(R.id.skill_clickarea);
         this.image = (ImageView) container.findViewById(R.id.skill_image);
         image.setImageResource(skill.getImageId());
@@ -50,7 +51,7 @@ public class SkillLayout extends LinearLayout
             public void onClick(View view)
             {
                 // TODO: final works here?
-                gm.executeSkill(skill);
+                gm.executeSkillFromUser(skill);
             }
         });
 

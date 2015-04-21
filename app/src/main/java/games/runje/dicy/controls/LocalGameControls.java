@@ -23,6 +23,7 @@ import games.runje.dicy.controller.SkillAction;
 import games.runje.dicy.layouts.PlayerLayout;
 import games.runje.dicy.layouts.PointList;
 import games.runje.dicymodel.AbstractGamemaster;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.communication.messages.SkillMessage;
 import games.runje.dicymodel.data.Board;
@@ -170,12 +171,10 @@ public class LocalGameControls extends Controls
         //l.addView(playerPoints());
         playerPoints();
         TextView current = (TextView) activity.findViewById(R.id.currentPoints);
-        ;
         current.setText("0");
         current.setId(R.id.currentPointsText);
 
         TextView movePointsText = (TextView) activity.findViewById(R.id.switchPointsText);
-        ;
         movePointsText.setText("0\\" + game.getPointsLimit());
         movePointsText.setId(R.id.switchPointsText);
 
@@ -249,7 +248,7 @@ public class LocalGameControls extends Controls
                 }
                 else
                 {
-                    gmAnimated.next();
+                    gmAnimated.nextFromUser();
                 }
             }
         });
@@ -366,6 +365,7 @@ public class LocalGameControls extends Controls
             else
             {
                 this.limit.setText("" + game.getGameEndPoints());
+                Logger.logInfo(LogKey, "Goal: " + game.getGameEndPoints());
                 started = true;
                 setEnabledControls(true);
             }

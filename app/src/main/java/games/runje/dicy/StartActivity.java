@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 public class StartActivity extends Activity
 {
@@ -29,8 +26,8 @@ public class StartActivity extends Activity
     public void clickOnlineGame(View v)
     {
         Intent intent = new Intent(this, OnlineGameActivity.class);
-        //startActivity(intent);
-        Toast.makeText(this, "Playing online is not implemented yet", Toast.LENGTH_LONG).show();
+        startActivity(intent);
+        //Toast.makeText(this, "Playing online is not implemented yet", Toast.LENGTH_LONG).show();
     }
 
     public void clickHighscore(View v)
@@ -41,7 +38,7 @@ public class StartActivity extends Activity
 
     public void clickChip(View v)
     {
-        Animation animation = null;
+        /*Animation animation = null;
         switch (v.getId())
         {
             case R.id.dicyChip:
@@ -67,7 +64,7 @@ public class StartActivity extends Activity
         }
 
 
-        v.startAnimation(animation);
+        v.startAnimation(animation);*/
 
     }
 }

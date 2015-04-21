@@ -2,7 +2,8 @@ package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
-import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.ClientGamemaster;
+import games.runje.dicymodel.HostGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Gravity;
@@ -36,9 +37,15 @@ public class GravityMessage extends Message
     }
 
     @Override
-    public void execute(Gamemaster gamemaster)
+    public void executeAtHost(HostGamemaster gamemaster)
     {
         gamemaster.changeGravity(gravity, fromId);
+    }
+
+    @Override
+    public void executeAtClient(ClientGamemaster gamemaster)
+    {
+        gamemaster.changeGravityFromHost(gravity);
     }
 
     public byte[] contentToByte()

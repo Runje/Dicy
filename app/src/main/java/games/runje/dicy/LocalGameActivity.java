@@ -1,5 +1,6 @@
 package games.runje.dicy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,6 @@ import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.CalcPointLimit;
 import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controls.LocalGameControls;
-import games.runje.dicy.layouts.GameLayout;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
@@ -54,109 +54,107 @@ public class LocalGameActivity extends Activity
 
         Logger.setInstance(new AnimatedLogger());
         Logger.logInfo(LogKey, "On Post Create");
-        Intent intent = getIntent();
-        boolean[] playing = intent.getBooleanArrayExtra(OptionActivity.PlayingIntent);
-        String[] players = intent.getStringArrayExtra(OptionActivity.PlayerIntent);
-        List<String> p = new ArrayList<>();
-
-        for (int i = 0; i < OptionActivity.MaxPlayers; i++)
+        setContentView(R.layout.game);
+        View mainView = (View) findViewById(R.id.board);
+        mainView.post(new Runnable()
         {
-            if (playing[i])
+            @Override
+            public void run()
             {
-                p.add(players[i]);
-                AnimatedLogger.logInfo("LocalGameActivity", "adding " + players[i]);
-            }
-        }
+                Intent intent = getIntent();
+                boolean[] playing = intent.getBooleanArrayExtra(OptionActivity.PlayingIntent);
+                String[] players = intent.getStringArrayExtra(OptionActivity.PlayerIntent);
+                List<String> p = new ArrayList<>();
 
-        String[] strategies = intent.getStringArrayExtra(OptionActivity.StrategyIntent);
-        List<Strategy> s = new ArrayList<>();
+                for (int i = 0; i < OptionActivity.MaxPlayers; i++)
+                {
+                    if (playing[i])
+                    {
+                        p.add(players[i]);
+                        AnimatedLogger.logInfo("LocalGameActivity", "adding " + players[i]);
+                    }
+                }
 
-        for (int i = 0; i < OptionActivity.MaxPlayers; i++)
-        {
-            if (playing[i])
-            {
-                s.add(Strategy.makeStrategy(strategies[i]));
-                AnimatedLogger.logInfo("LocalGameActivity", "adding " + strategies[i]);
-            }
-        }
+                String[] strategies = intent.getStringArrayExtra(OptionActivity.StrategyIntent);
+                List<Strategy> s = new ArrayList<>();
 
-        String length = intent.getStringExtra(OptionActivity.LengthIntent);
-        int f = 5;
-        switch (length)
-        {
-            case "Short":
-                f = 5;
-                break;
-            case "Middle":
-                f = 10;
-                break;
-            case "Long":
-                f = 20;
-                break;
-        }
+                for (int i = 0; i < OptionActivity.MaxPlayers; i++)
+                {
+                    if (playing[i])
+                    {
+                        s.add(Strategy.makeStrategy(strategies[i]));
+                        AnimatedLogger.logInfo("LocalGameActivity", "adding " + strategies[i]);
+                    }
+                }
 
-        boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
+                String length = intent.getStringExtra(OptionActivity.LengthIntent);
+                int f = 5;
+                switch (length)
+                {
+                    case "Short":
+                        f = 5;
+                        break;
+                    case "Middle":
+                        f = 10;
+                        break;
+                    case "Long":
+                        f = 20;
+                        break;
+                }
 
-        Rules rules = new Rules();
-        rules.setDiagonalActive(diagonal);
-        rules.setMinStraight(intent.getIntExtra(OptionActivity.StraightIntent, 7));
-        rules.setMinXOfAKind(intent.getIntExtra(OptionActivity.XOfAKindIntent, 11));
-        rules.initStraightPoints(4);
+                boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
 
-        Board bb = Board.createBoardNoPoints(5, 5, rules);
+                Rules rules = new Rules();
+                rules.setDiagonalActive(diagonal);
+                rules.setMinStraight(intent.getIntExtra(OptionActivity.StraightIntent, 7));
+                rules.setMinXOfAKind(intent.getIntExtra(OptionActivity.XOfAKindIntent, 11));
+                rules.initStraightPoints(4);
 
-        List<Player> playerList = new ArrayList<>();
-        for (int i = 0; i < p.size(); i++)
-        {
-            String name = p.get(i);
-            Strategy strategy = s.get(i);
-            playerList.add(new Player(name, strategy, 77));
-        }
+                Board bb = Board.createBoardNoPoints(5, 5, rules);
 
-        LocalGame game = new LocalGame(rules.getPointLimit(), f, playerList, 0);
-        for (Player player : game.getPlayers())
-        {
-            List<Skill> animatedSkills = new ArrayList<>();
-            for (Skill skill : player.getSkills())
-            {
-                animatedSkills.add(AnimatedSkill.create(skill));
-            }
+                List<Player> playerList = new ArrayList<>();
+                for (int i = 0; i < p.size(); i++)
+                {
+                    String name = p.get(i);
+                    Strategy strategy = s.get(i);
+                    playerList.add(new Player(name, strategy, 77));
+                }
 
-            player.setSkills(animatedSkills);
-        }
+                LocalGame game = new LocalGame(rules.getPointLimit(), f, playerList, 0);
+                for (Player player : game.getPlayers())
+                {
+                    List<Skill> animatedSkills = new ArrayList<>();
+                    for (Skill skill : player.getSkills())
+                    {
+                        animatedSkills.add(AnimatedSkill.create(skill));
+                    }
+
+                    player.setSkills(animatedSkills);
+                }
 
 
-        // TODO: gamemaster
-        LocalGameControls controls = new LocalGameControls(this, game, null, null, null);
-        new CalcPointLimit(bb, rules, controls, game).execute();
-
-        this.gmAnimated = new GamemasterAnimated(bb, rules, this, controls, game);
-        LocalGameControls controlsView = (LocalGameControls) gmAnimated.getControls();
-        RelativeLayout left = new RelativeLayout(this);
-
-        RelativeLayout.LayoutParams nextParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        nextParams.topMargin = 20;
-        View next = controlsView.getNext();
-        next.setId(View.generateViewId());
-        left.addView(next, nextParams);
-
-        RelativeLayout.LayoutParams pointListParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        pointListParams.addRule(RelativeLayout.RIGHT_OF, next.getId());
-        pointListParams.topMargin = 20;
-        pointListParams.leftMargin = 20;
-        left.addView(controlsView.getPointList(), pointListParams);
-
-        GameLayout gameLayout = new GameLayout(this, gmAnimated.getAnimatedBoard().getBoardLayout(), left, controlsView.getPoints(), controlsView.getPlayerLayouts().get(0), controlsView.getPlayerLayouts().get(1));
-        setContentView(gameLayout);
-        // start AI
-        for (Player pl : game.getPlayers())
-        {
-            if (pl.isAi())
-            {
                 // TODO: gamemaster
-                new AIController(pl, this, null, gmAnimated);
+                LocalGameControls controls = new LocalGameControls(LocalGameActivity.this, game, null, null, null);
+                new CalcPointLimit(bb, rules, controls, game).execute();
+
+                LocalGameActivity.this.gmAnimated = new GamemasterAnimated(bb, rules, LocalGameActivity.this, controls, game);
+                gmAnimated.init();
+
+                // start AI
+                for (Player pl : game.getPlayers())
+                {
+                    if (pl.isAi())
+                    {
+                        // TODO: gamemaster
+                        new AIController(pl, LocalGameActivity.this, null, gmAnimated);
+                    }
+                }
+
+                LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
+                boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
             }
-        }
+        });
 
     }
 

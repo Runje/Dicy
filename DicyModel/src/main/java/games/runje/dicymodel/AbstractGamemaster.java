@@ -44,7 +44,7 @@ public abstract class AbstractGamemaster
         startSwitchAnimation(first, second);
     }
 
-    public void executeSkill(Skill s)
+    public void executeSkillFromUser(Skill s)
     {
         this.activeSkill = s;
         stateTransition(GameState.Wait);
@@ -53,13 +53,12 @@ public abstract class AbstractGamemaster
 
     public void endWait(Coords pos)
     {
-        activeSkill.setPos(pos);
-        activeSkill.execute(board, this);
-    }
+        if (pos != null)
+        {
+            activeSkill.setPos(pos);
+        }
 
-    public void endExecuteAnimation()
-    {
-        stateTransition(GameState.Normal);
+        activeSkill.execute(board, this);
     }
 
     protected void startSwitchAnimation(Coords first, Coords second)
@@ -85,11 +84,14 @@ public abstract class AbstractGamemaster
         switch (state)
         {
             case Normal:
-                getGame().setStrikePossible(true);
+                transitionToNormal();
+
                 break;
             case Switched:
                 ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
                 int points = Utilities.getPointsFrom(elements);
+                Logger.logInfo(LogKey, "Points after switch: " + points);
+                Logger.logInfo(LogKey, "Board after switch: " + board);
                 game.addPointElements(elements, board);
                 if (points == 0)
                 {
@@ -128,6 +130,7 @@ public abstract class AbstractGamemaster
                 break;
             case Wait:
                 getGame().setStrikePossible(false);
+                // TODO: should handle the skill
                 board.enable();
                 break;
             case Executed:
@@ -154,6 +157,11 @@ public abstract class AbstractGamemaster
 
     }
 
+    protected void transitionToNormal()
+    {
+        getGame().setStrikePossible(true);
+    }
+
     private void startRecreateBoard()
     {
         if (BoardChecker.getPossiblePointMoves(board, rules).size() == 0)
@@ -167,7 +175,7 @@ public abstract class AbstractGamemaster
         }
     }
 
-    private void startRecreateBoardAnimation()
+    protected void startRecreateBoardAnimation()
     {
         Logger.logInfo(LogKey, "Old board: " + board.toString());
         board.recreateBoard();
@@ -175,7 +183,7 @@ public abstract class AbstractGamemaster
         endRecreateBoardAnimation();
     }
 
-    private void endRecreateBoardAnimation()
+    protected void endRecreateBoardAnimation()
     {
         stateTransition(GameState.Normal);
     }
@@ -199,6 +207,7 @@ public abstract class AbstractGamemaster
 
     public void endRecreateAnimation()
     {
+        Logger.logInfo(LogKey, "Board after recreate: " + board);
         stateTransition(GameState.Recreated);
     }
 
@@ -216,6 +225,7 @@ public abstract class AbstractGamemaster
 
     protected void switchback()
     {
+        Logger.logDebug(LogKey, "Switching back");
         startSwitchAnimation(lastMove.getSecond(), lastMove.getFirst());
     }
 
@@ -270,7 +280,7 @@ public abstract class AbstractGamemaster
         return this.controls.areControlsEnabled();
     }
 
-    public void endExecute()
+    public void endExecuteSkill()
     {
         stateTransition(GameState.Executed);
     }
@@ -278,5 +288,14 @@ public abstract class AbstractGamemaster
     public void startGame()
     {
 
+    }
+
+
+    public void startGame(Board board, Rules rules, LocalGame game)
+    {
+        this.board = board;
+        // TODO
+        //this.rules = rules;
+        this.game = game;
     }
 }

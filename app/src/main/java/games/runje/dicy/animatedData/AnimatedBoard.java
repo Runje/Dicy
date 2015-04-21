@@ -596,7 +596,7 @@ public class AnimatedBoard extends Board
         return false;
     }
 
-    public void updateBoard(Board board)
+    public void recreateBoard(Board board)
     {
         for (int row = 0; row < this.rows; row++)
         {

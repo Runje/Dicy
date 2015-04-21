@@ -110,7 +110,7 @@ public class OnlineGamemaster extends AnimatedGamemaster
 
     public void sendMessageToServer(Message message)
     {
-        ConnectionToServer.sendMessage(message, fromId);
+        ConnectionToServer.sendMessage(message);
     }
 
     public void updateAfterFall()
@@ -257,6 +257,6 @@ public class OnlineGamemaster extends AnimatedGamemaster
     public void recreateBoard(Board board)
     {
         AnimatedLogger.logInfo(LogKey, "Recreating Board");
-        ((AnimatedBoard) this.board).updateBoard(board);
+        ((AnimatedBoard) this.board).recreateBoard(board);
     }
 }

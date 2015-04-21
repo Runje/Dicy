@@ -79,7 +79,7 @@ public class Gamemaster
     {
         Logger.logInfo(LogKey, "ReceiveMessage in Gamemaster");
         Message msg = MessageParser.parse(buffer, length);
-        msg.execute(this);
+        //msg.execute(this);
     }
 
     public void startGame(Board board, Rules rules, LocalGame game)

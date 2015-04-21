@@ -2,7 +2,8 @@ package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
-import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.ClientGamemaster;
+import games.runje.dicymodel.HostGamemaster;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Coords;
 
@@ -36,10 +37,18 @@ public class SwitchMessage extends Message
     }
 
     @Override
-    public void execute(Gamemaster gamemaster)
+    public void executeAtHost(HostGamemaster gamemaster)
     {
         // TODO: check if possible
         gamemaster.switchElements(first, second, fromId);
+    }
+
+
+    @Override
+    public void executeAtClient(ClientGamemaster gamemaster)
+    {
+        // TODO: check if possible
+        gamemaster.switchElementsFromHost(first, second);
     }
 
     public byte[] contentToByte()

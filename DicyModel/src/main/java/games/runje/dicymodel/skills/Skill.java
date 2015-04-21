@@ -1,6 +1,7 @@
 package games.runje.dicymodel.skills;
 
 import games.runje.dicymodel.AbstractGamemaster;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 
@@ -12,11 +13,11 @@ public class Skill
     public static final String Help = "Help";
     public static final String Change = "Change";
     protected int imageId;
+    protected Coords pos;
     private int loadValue;
     private int maxLoad;
     private int currentLoad;
     private String name;
-    private Coords pos;
 
     public Skill(Skill skill)
     {
@@ -96,7 +97,8 @@ public class Skill
 
     protected void startExecute(Board board, AbstractGamemaster gm)
     {
-        gm.endExecute();
+        Logger.logInfo("Skill", "start Execute in Base");
+        gm.endExecuteSkill();
     }
 
     public int getImageId()

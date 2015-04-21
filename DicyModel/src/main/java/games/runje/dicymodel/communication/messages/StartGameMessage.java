@@ -2,7 +2,7 @@ package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
-import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.ClientGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.OnlineStrategy;
@@ -17,10 +17,10 @@ import games.runje.dicymodel.game.LocalGame;
 public class StartGameMessage extends Message
 {
     public static final String Name = "StartGameMessage";
-    private String LogKey = Name;
     Board board;
     Rules rules;
     LocalGame game;
+    private String LogKey = Name;
 
     public StartGameMessage(Board board, Rules rules, LocalGame game)
     {
@@ -57,7 +57,7 @@ public class StartGameMessage extends Message
     }
 
     @Override
-    public void execute(Gamemaster gamemaster)
+    public void executeAtClient(ClientGamemaster gamemaster)
     {
         Logger.logInfo(LogKey, "StartGameMessage is executed");
         for (Player p : game.getPlayers())
@@ -66,6 +66,11 @@ public class StartGameMessage extends Message
             {
                 p.setStrategy(new OnlineStrategy());
                 Logger.logInfo(LogKey, p.getId() + " is online player");
+            }
+            else
+            {
+                p.setStrategy(null);
+                Logger.logInfo(LogKey, p.getId() + " is human player");
             }
         }
 

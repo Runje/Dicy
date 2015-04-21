@@ -2,7 +2,8 @@ package games.runje.dicymodel.communication.messages;
 
 import java.nio.ByteBuffer;
 
-import games.runje.dicymodel.Gamemaster;
+import games.runje.dicymodel.ClientGamemaster;
+import games.runje.dicymodel.HostGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Coords;
@@ -27,8 +28,8 @@ public class SkillMessage extends Message
     {
         this.contentLength = length - headerLength;
         this.skill = MessageConverter.byteToString(buffer, MessageConverter.skillLength);
-        Logger.logInfo(LogKey, "Pos in Skill: " + pos);
         this.pos = MessageConverter.byteToCoords(buffer);
+        Logger.logInfo(LogKey, "Pos in Skill: " + pos);
     }
 
     public SkillMessage(String skillName, Coords position)
@@ -36,6 +37,11 @@ public class SkillMessage extends Message
         this.contentLength = MessageConverter.coordsLength + MessageConverter.skillLength;
         this.skill = skillName;
         this.pos = position;
+    }
+
+    public SkillMessage(Skill skill)
+    {
+        this(skill.getName(), skill.getPos());
     }
 
     public void setPos(Coords pos)
@@ -50,12 +56,22 @@ public class SkillMessage extends Message
     }
 
     @Override
-    public void execute(Gamemaster gamemaster)
+    public void executeAtHost(HostGamemaster gamemaster)
     {
         Skill s = gamemaster.getGame().getPlayingPlayer().getSkill(skill);
         s.setPos(pos);
         Logger.logInfo(LogKey, "Pos: " + pos);
         gamemaster.executeSkill(s, fromId);
+    }
+
+    @Override
+    public void executeAtClient(ClientGamemaster gamemaster)
+    {
+        // TODO
+        Skill s = new Skill(1, 1, skill);
+        s.setPos(pos);
+        Logger.logInfo(LogKey, "Pos: " + pos);
+        gamemaster.executeSkillFromHost(s);
     }
 
     public byte[] contentToByte()
@@ -64,6 +80,10 @@ public class SkillMessage extends Message
         buffer.put(MessageConverter.stringToByte(skill));
         // TODO: fill with zeros in new stringToByte(skill, totalLength)
         MessageConverter.fillBufferWithZero(buffer, MessageConverter.skillLength - skill.length());
+        if (pos == null)
+        {
+            pos = new Coords(-1, -1);
+        }
         buffer.put(MessageConverter.coordsToByte(pos));
         return buffer.array();
     }
