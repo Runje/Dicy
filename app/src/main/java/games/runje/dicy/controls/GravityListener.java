@@ -6,9 +6,7 @@ import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
 import games.runje.dicy.animatedData.AnimationHandler;
 import games.runje.dicy.animatedData.FallingAnimation;
-import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicymodel.GameControls;
-import games.runje.dicymodel.communication.messages.GravityMessage;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 
@@ -20,28 +18,18 @@ public class GravityListener implements View.OnClickListener
     Gravity gravity;
     private AnimatedBoard board;
     private GameControls controls;
-    private AnimatedGamemaster gamemaster;
 
-    public GravityListener(Gravity g, AnimatedGamemaster gm, Controls controls, AnimatedBoard board)
+    public GravityListener(Gravity g, Controls controls, AnimatedBoard board)
     {
         this.gravity = g;
         this.controls = controls;
-        this.gamemaster = gm;
         this.board = board;
     }
 
     @Override
     public void onClick(View view)
     {
-        if (gamemaster != null)
-        {
-            gamemaster.updateGravity(this.gravity);
-            gamemaster.sendMessageToServer(new GravityMessage(this.gravity));
-        }
-        else
-        {
-            updateGravity(this.gravity);
-        }
+        updateGravity(this.gravity);
     }
 
     public void updateGravity(Gravity gravity)
@@ -49,7 +37,6 @@ public class GravityListener implements View.OnClickListener
         board.setGravity(gravity);
         switch (gravity)
         {
-
             case Up:
                 board.getBoardLayout().setYOffset(0);
                 break;

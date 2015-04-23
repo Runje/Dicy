@@ -13,7 +13,6 @@ public abstract class Message
 {
     public static final long ServerId = 0;
     protected final int headerLength = MessageConverter.sizeLength + MessageConverter.nameLength + MessageConverter.idLength + MessageConverter.idLength;
-    ;
     protected int contentLength;
     protected String content;
     protected long fromId;

@@ -7,15 +7,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import games.runje.dicy.R;
-import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.Direction;
 import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.controller.SwitchAction;
-import games.runje.dicymodel.communication.messages.SwitchMessage;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -27,23 +24,16 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
     protected Coords position;
     private GamemasterAnimated gmAnimated;
     private boolean switchEnabled = true;
-    private AnimatedGamemaster gamemaster;
     private boolean disabled = false;
-    private ViewGroup scrollView;
     private ImageView arrow;
     private float x1;
     private float y1;
 
-    public AnimatedBoardElementTL(Coords position, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
+    public AnimatedBoardElementTL(Coords position, GamemasterAnimated gmAnimated)
     {
-        this.gamemaster = gm;
         this.gmAnimated = gmAnimated;
         arrow = new ImageView(gmAnimated.getActivity());
         arrow.setImageResource(R.drawable.arrow2);
-        if (gamemaster != null)
-        {
-            this.scrollView = gm.getScrollView();
-        }
         this.position = position;
     }
 
@@ -79,13 +69,6 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
             return false;
         }
 
-        // to prevent from touch again
-        //disabled = true;
-        if (scrollView != null)
-        {
-            scrollView.requestDisallowInterceptTouchEvent(true);
-        }
-
         if (switchEnabled)
         {
             return switchOnTouch(view, motionEvent);
@@ -102,13 +85,10 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
         {
             case (MotionEvent.ACTION_UP):
 
-                //gamemaster.select(position);
-                //gamemaster.sendMessageToServer(new SkillMessage(Skill.Change, position));
                 gmAnimated.endWait(position);
                 break;
-
-
         }
+
         return true;
     }
 
@@ -118,10 +98,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
         float y2 = 0;
         float dx = 0;
         float dy = 0;
-        float offsetX = 65f;
-        float offsetY = 85f;
         Direction direction;
-        float epsilon = 2f;
         switch (motionEvent.getAction())
         {
             case (MotionEvent.ACTION_DOWN):
@@ -190,25 +167,13 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                 if (direction == null)
                 {
                     AnimatedLogger.logInfo("Direction", "No Switch" + ", dx = " + dx + ", dy = " + dy);
-                    Toast t = Toast.makeText(view.getContext(), "No Switch" + ", dx = " + dx + ", dy = " + dy, Toast.LENGTH_LONG);
-                    //t.show();
                     disabled = false;
                     return true;
                 }
 
-                SwitchAction a = new SwitchAction(position, direction, true, gamemaster);
-                if (gamemaster != null)
-                {
-                    gamemaster.performAction(a);
-                    gamemaster.sendMessageToServer(new SwitchMessage(a.getFirst(), a.getSecond()));
-                }
-                else
-                {
-                    gmAnimated.switchElementsFromUser(a.getFirst(), a.getSecond());
-                }
+                SwitchAction a = new SwitchAction(position, direction, true);
+                gmAnimated.switchElementsFromUser(a.getFirst(), a.getSecond());
                 AnimatedLogger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy);
-                Toast t = Toast.makeText(view.getContext(), direction.toString() + ", dx = " + dx + ", dy = " + dy, Toast.LENGTH_LONG);
-                //t.show();
             }
         }
         return true;
@@ -233,8 +198,6 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
 
     private Direction calcDirection(float x2, float y2)
     {
-        //float offsetX = 65f;
-        //float offsetY = 85f;
         float offsetX = 0f;
         float offsetY = 0f;
         float epsilon = 2f;
@@ -267,12 +230,6 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
             {
                 direction = Direction.Up;
             }
-        }
-        else
-        {
-            //Logger.logInfo("Direction", "No Switch" + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown);
-            //Toast t = Toast.makeText(view.getContext(), "No Switch" + ", dx = " + dx + ", dy = " + dy + ", lrRatio = " + ratioLeftRight + ", udRatio = " + ratioUpDown, Toast.LENGTH_LONG);
-            //t.show();
         }
 
         return direction;

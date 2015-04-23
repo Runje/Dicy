@@ -3,7 +3,6 @@ package games.runje.dicy.controller;
 import android.util.Log;
 
 import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -12,15 +11,13 @@ import games.runje.dicymodel.data.Coords;
 public class SwitchAction extends Action
 {
     private final boolean switchBackPossible;
-    private AnimatedGamemaster gamemaster;
     private Coords first;
     private Coords second;
 
-    public SwitchAction(Coords p, Direction direction, boolean switchBackPossible, AnimatedGamemaster gm)
+    public SwitchAction(Coords p, Direction direction, boolean switchBackPossible)
     {
         this.first = p;
         this.switchBackPossible = switchBackPossible;
-        this.gamemaster = gm;
 
         switch (direction)
 
@@ -40,12 +37,11 @@ public class SwitchAction extends Action
         }
     }
 
-    public SwitchAction(Coords p1, Coords p2, boolean switchBackPossible, AnimatedGamemaster gm)
+    public SwitchAction(Coords p1, Coords p2, boolean switchBackPossible)
     {
         this.first = p1;
         this.second = p2;
         this.switchBackPossible = switchBackPossible;
-        this.gamemaster = gm;
     }
 
     public Coords getFirst()
@@ -61,6 +57,7 @@ public class SwitchAction extends Action
     @Override
     public void execute()
     {
+        // TODO: can be deleted
         boolean switchedBack = ((AnimatedBoard) this.board).switchElements(first, second, switchBackPossible);
         if (!switchedBack)
         {
@@ -82,15 +79,7 @@ public class SwitchAction extends Action
     @Override
     public boolean isPossible()
     {
-        if (gamemaster.isAnimationIsRunning())
-        {
-            return false;
-        }
-
-        Board board = gamemaster.getBoard();
-
         return !(second.row < 0 || second.row >= board.getNumberOfRows() ||
                 second.column < 0 || second.column >= board.getNumberOfColumns());
-
     }
 }

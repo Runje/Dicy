@@ -7,5 +7,5 @@ import android.view.animation.Animation;
  */
 public interface DicyAnimation extends Animation.AnimationListener
 {
-    public void start();
+    void start();
 }

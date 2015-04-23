@@ -15,7 +15,7 @@ import games.runje.dicymodel.skills.Skill;
  */
 public interface ClientGamemaster
 {
-    public void receiveMessage(ByteBuffer buffer, int length);
+    void receiveMessage(ByteBuffer buffer, int length);
 
     void startGame(Board board, Rules rules, LocalGame game);
 
@@ -23,7 +23,7 @@ public interface ClientGamemaster
 
     void nextFromHost();
 
-    public void changeGravityFromHost(Gravity gravity);
+    void changeGravityFromHost(Gravity gravity);
 
     void startRecreateAnimation(ArrayList<BoardElement> elements);
 

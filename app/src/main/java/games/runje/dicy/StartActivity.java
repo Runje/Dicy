@@ -36,35 +36,4 @@ public class StartActivity extends Activity
         startActivity(intent);
     }
 
-    public void clickChip(View v)
-    {
-        /*Animation animation = null;
-        switch (v.getId())
-        {
-            case R.id.dicyChip:
-                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-                break;
-            case R.id.dicychip2:
-                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
-                break;
-            case R.id.dicychip3:
-                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
-                break;
-            case R.id.dicychip4:
-                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce);
-                break;
-            case R.id.dicychip5:
-                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slideup);
-                break;
-            case R.id.dicychip6:
-                animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoomin);
-                break;
-
-
-        }
-
-
-        v.startAnimation(animation);*/
-
-    }
 }

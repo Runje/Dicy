@@ -64,7 +64,6 @@ public class OnlineGameActivity extends Activity
     {
         ConnectionToServer.sendMessage(new IdentifyMessage());
         ConnectionToServer.sendMessage(new FindOpponentMessage());
-
     }
 
 }

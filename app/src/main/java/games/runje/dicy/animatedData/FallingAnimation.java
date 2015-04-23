@@ -24,7 +24,6 @@ public class FallingAnimation implements DicyAnimation
         this.board = board;
         this.animationHandler = animationHandler;
 
-        // statt gamemaster reicht animated board
     }
 
 

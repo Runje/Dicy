@@ -68,12 +68,8 @@ public abstract class BoardElement
         {
             return false;
         }
-        if (!position.equals(element.position))
-        {
-            return false;
-        }
+        return position.equals(element.position);
 
-        return true;
     }
 
     @Override

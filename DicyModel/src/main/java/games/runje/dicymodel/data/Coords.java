@@ -55,12 +55,8 @@ public class Coords
         {
             return false;
         }
-        if (row != coords.row)
-        {
-            return false;
-        }
+        return row == coords.row;
 
-        return true;
     }
 
     @Override

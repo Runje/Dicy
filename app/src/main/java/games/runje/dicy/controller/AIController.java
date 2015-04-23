@@ -16,11 +16,9 @@ public class AIController
     private final Activity activity;
     private GamemasterAnimated gmAnimated;
     private String LogKey = "AIController";
-    private AnimatedGamemaster gamemaster;
 
-    public AIController(Player p, Activity a, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
+    public AIController(Player p, Activity a, GamemasterAnimated gmAnimated)
     {
-        gamemaster = gm;
         this.gmAnimated = gmAnimated;
         player = p;
         activity = a;
@@ -94,8 +92,6 @@ public class AIController
     {
         AnimatedLogger.logInfo(LogKey, "Making a move");
         Move m = player.getStrategy().getNextMove(gmAnimated.getRules(), gmAnimated.getAnimatedBoard());
-        //Action a = new SwitchAction(m.getFirst(), m.getSecond(), true, gamemaster);
-        //AnimatedGamemaster.getInstance().performAction(a);
         gmAnimated.switchElements(m.getFirst(), m.getSecond());
     }
 

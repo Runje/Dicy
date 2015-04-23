@@ -62,7 +62,7 @@ public class Rules
 
         this.initStraightPoints(2);
         this.initFullHousePoints(0);
-        this.initXOfAKindPoints(this.minXOfAKind, this.maxLengthOfRow, 1, 2);
+        this.initXOfAKindPoints(this.minXOfAKind, maxLengthOfRow, 1, 2);
         // TODO: Calculate
         this.pointLimit = 35;
         this.pointLimitSetManually = false;
@@ -168,7 +168,7 @@ public class Rules
 
     public int getMaxLengthOfRow()
     {
-        return this.maxLengthOfRow;
+        return maxLengthOfRow;
     }
 
     public int getXOfAKindPoints(int x, int value)

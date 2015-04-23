@@ -48,7 +48,7 @@ public class GamemasterAnimated extends AbstractGamemaster
 
     public void init()
     {
-        animatedBoard = new AnimatedBoard(board, activity, null, this);
+        animatedBoard = new AnimatedBoard(board, activity, this);
         this.board = animatedBoard;
         controls.setGamemaster(this);
         controls.setAnimatedBoard(animatedBoard);
@@ -87,7 +87,7 @@ public class GamemasterAnimated extends AbstractGamemaster
     protected void startPointAnimation(ArrayList<PointElement> elements)
     {
         Logger.logInfo(LogKey, "Start Point animated Animation");
-        new PointsAnimation(elements, null, this).start();
+        new PointsAnimation(elements, this).start();
     }
 
     @Override
@@ -156,7 +156,7 @@ public class GamemasterAnimated extends AbstractGamemaster
             public void run()
             {
                 activity.setContentView(R.layout.game);
-                View mainView = (View) activity.findViewById(R.id.board);
+                View mainView = activity.findViewById(R.id.board);
                 mainView.post(new Runnable()
                 {
                     @Override
@@ -168,7 +168,7 @@ public class GamemasterAnimated extends AbstractGamemaster
                             if (pl.isAi())
                             {
                                 // TODO: gamemaster
-                                new AIController(pl, GamemasterAnimated.this.activity, null, GamemasterAnimated.this);
+                                new AIController(pl, GamemasterAnimated.this.activity, GamemasterAnimated.this);
                             }
                         }
 
@@ -184,9 +184,9 @@ public class GamemasterAnimated extends AbstractGamemaster
                             player.setSkills(animatedSkills);
                         }
 
-                        GamemasterAnimated.this.animatedBoard = new AnimatedBoard(GamemasterAnimated.this.board, activity, null, GamemasterAnimated.this);
+                        GamemasterAnimated.this.animatedBoard = new AnimatedBoard(GamemasterAnimated.this.board, activity, GamemasterAnimated.this);
                         GamemasterAnimated.this.board = animatedBoard;
-                        GamemasterAnimated.this.controls = new LocalGameControls(activity, GamemasterAnimated.this.game, getAnimatedBoard(), null, GamemasterAnimated.this);
+                        GamemasterAnimated.this.controls = new LocalGameControls(activity, GamemasterAnimated.this.game, getAnimatedBoard(), GamemasterAnimated.this);
                         GamemasterAnimated.this.controls.setGamemaster(GamemasterAnimated.this);
                         new CalcPointLimit(GamemasterAnimated.this.board, rules, controls, GamemasterAnimated.this.game).execute();
 

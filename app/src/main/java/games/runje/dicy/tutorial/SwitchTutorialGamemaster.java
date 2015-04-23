@@ -1,13 +1,8 @@
 package games.runje.dicy.tutorial;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.widget.ImageView;
 
-import games.runje.dicy.R;
 import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicy.layouts.GameLayout;
 import games.runje.dicymodel.GameControls;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
@@ -31,7 +26,7 @@ public class SwitchTutorialGamemaster extends GamemasterAnimated
     {
         Logger.logInfo(LogKey, "Starting Game");
         //RelativeLayout root = (RelativeLayout) getActivity().getWindow().getDecorView().getRootView();
-        GameLayout root = (GameLayout) getActivity().findViewById(R.id.points);
+        /*GameLayout root = (GameLayout) getActivity().findViewById(R.id.points);
         Context context = root.getContext();
         ImageView image = new ImageView(context);
         image.setClickable(true);
@@ -40,7 +35,7 @@ public class SwitchTutorialGamemaster extends GamemasterAnimated
         root.addView(image, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);*/
 
 
-        new Hider(root.getBoard());
+        //new Hider(root.getBoard());
         //root.setForeground(getActivity().getResources().getDrawable(R.drawable.green_square));
     }
 }

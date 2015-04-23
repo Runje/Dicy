@@ -37,8 +37,6 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class LocalGameActivity extends Activity
 {
-
-
     private String LogKey = "LocalGameActivity";
     private GamemasterAnimated gmAnimated;
 
@@ -55,18 +53,18 @@ public class LocalGameActivity extends Activity
         Logger.setInstance(new AnimatedLogger());
         Logger.logInfo(LogKey, "On Post Create");
         setContentView(R.layout.game);
-        View mainView = (View) findViewById(R.id.board);
+        View mainView = findViewById(R.id.board);
         mainView.post(new Runnable()
         {
             @Override
             public void run()
             {
                 Intent intent = getIntent();
-                boolean[] playing = intent.getBooleanArrayExtra(OptionActivity.PlayingIntent);
-                String[] players = intent.getStringArrayExtra(OptionActivity.PlayerIntent);
+                boolean[] playing = intent.getBooleanArrayExtra(NewOptionActivity.PlayingIntent);
+                String[] players = intent.getStringArrayExtra(NewOptionActivity.PlayerIntent);
                 List<String> p = new ArrayList<>();
 
-                for (int i = 0; i < OptionActivity.MaxPlayers; i++)
+                for (int i = 0; i < NewOptionActivity.MaxPlayers; i++)
                 {
                     if (playing[i])
                     {
@@ -75,10 +73,10 @@ public class LocalGameActivity extends Activity
                     }
                 }
 
-                String[] strategies = intent.getStringArrayExtra(OptionActivity.StrategyIntent);
+                String[] strategies = intent.getStringArrayExtra(NewOptionActivity.StrategyIntent);
                 List<Strategy> s = new ArrayList<>();
 
-                for (int i = 0; i < OptionActivity.MaxPlayers; i++)
+                for (int i = 0; i < NewOptionActivity.MaxPlayers; i++)
                 {
                     if (playing[i])
                     {
@@ -87,7 +85,7 @@ public class LocalGameActivity extends Activity
                     }
                 }
 
-                String length = intent.getStringExtra(OptionActivity.LengthIntent);
+                String length = intent.getStringExtra(NewOptionActivity.LengthIntent);
                 int f = 5;
                 switch (length)
                 {
@@ -102,12 +100,12 @@ public class LocalGameActivity extends Activity
                         break;
                 }
 
-                boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
+                boolean diagonal = intent.getBooleanExtra(NewOptionActivity.DiagonalIntent, false);
 
                 Rules rules = new Rules();
                 rules.setDiagonalActive(diagonal);
-                rules.setMinStraight(intent.getIntExtra(OptionActivity.StraightIntent, 7));
-                rules.setMinXOfAKind(intent.getIntExtra(OptionActivity.XOfAKindIntent, 11));
+                rules.setMinStraight(intent.getIntExtra(NewOptionActivity.StraightIntent, 7));
+                rules.setMinXOfAKind(intent.getIntExtra(NewOptionActivity.XOfAKindIntent, 11));
                 rules.initStraightPoints(4);
 
                 Board bb = Board.createBoardNoPoints(5, 5, rules);
@@ -134,7 +132,7 @@ public class LocalGameActivity extends Activity
 
 
                 // TODO: gamemaster
-                LocalGameControls controls = new LocalGameControls(LocalGameActivity.this, game, null, null, null);
+                LocalGameControls controls = new LocalGameControls(LocalGameActivity.this, game, null, null);
                 new CalcPointLimit(bb, rules, controls, game).execute();
 
                 LocalGameActivity.this.gmAnimated = new GamemasterAnimated(bb, rules, LocalGameActivity.this, controls, game);
@@ -146,7 +144,7 @@ public class LocalGameActivity extends Activity
                     if (pl.isAi())
                     {
                         // TODO: gamemaster
-                        new AIController(pl, LocalGameActivity.this, null, gmAnimated);
+                        new AIController(pl, LocalGameActivity.this, gmAnimated);
                     }
                 }
 

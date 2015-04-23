@@ -55,7 +55,7 @@ public class GameActivity extends Activity
         super.onPostCreate(savedInstanceState);
 
 
-        View mainView = (View) findViewById(R.id.board);
+        View mainView = findViewById(R.id.board);
         mainView.post(new Runnable()
         {
             @Override
@@ -87,11 +87,11 @@ public class GameActivity extends Activity
                     player.setSkills(animatedSkills);
                 }
                 Board bb = Board.createBoardNoPoints(5, 5, rules);
-                LocalGameControls controls = new LocalGameControls(GameActivity.this, game, null, null, null);
+                LocalGameControls controls = new LocalGameControls(GameActivity.this, game, null, null);
                 new CalcPointLimit(bb, rules, controls, game).execute();
                 GamemasterAnimated gmAnimated = new GamemasterAnimated(bb, rules, GameActivity.this, controls, game);
 
-                boolean diagonal = intent.getBooleanExtra(OptionActivity.DiagonalIntent, false);
+                boolean diagonal = false;
 
                 RelativeLayout l = new RelativeLayout(GameActivity.this);
                 // TODO: create local game here

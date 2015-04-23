@@ -18,7 +18,6 @@ import java.util.List;
 
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.layouts.BoardLayout;
@@ -35,7 +34,6 @@ import games.runje.dicymodel.game.LocalGame;
 public class Controls extends RelativeLayout implements GameControls
 {
     protected final Activity activity;
-    protected final AnimatedGamemaster gamemaster;
     protected GamemasterAnimated gmAnimated;
     protected AnimatedBoard board;
     protected List<PlayerLayout> playerLayouts = new ArrayList<>();
@@ -46,10 +44,9 @@ public class Controls extends RelativeLayout implements GameControls
     private String LogKey = "Controls";
 
     //TODO: controls as member
-    public Controls(Activity context, AnimatedBoard b, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
+    public Controls(Activity context, AnimatedBoard b, GamemasterAnimated gmAnimated)
     {
         super(context);
-        this.gamemaster = gm;
         this.gmAnimated = gmAnimated;
         this.activity = context;
         this.board = b;

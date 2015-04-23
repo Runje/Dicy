@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import games.runje.dicy.R;
-import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicymodel.data.BoardElement;
@@ -26,13 +25,13 @@ public class AnimatedBoardElement extends ImageView
     private Coords position;
 
 
-    public AnimatedBoardElement(Context context, BoardElement element, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
+    public AnimatedBoardElement(Context context, BoardElement element, GamemasterAnimated gmAnimated)
     {
         super(context);
         this.value = element.getValue();
         setImageResource(ElementToImageResource(element));
         this.position = element.getPosition();
-        this.touchListener = new AnimatedBoardElementTL(this.position, gm, gmAnimated);
+        this.touchListener = new AnimatedBoardElementTL(this.position, gmAnimated);
         this.setOnTouchListener(this.touchListener);
     }
 
@@ -47,11 +46,9 @@ public class AnimatedBoardElement extends ImageView
         {
             case 1:
                 return R.drawable.one;
-            //return R.drawable.dicy_one;
 
             case 2:
                 return R.drawable.two;
-            //return R.drawable.dicy_two;
 
             case 3:
                 return R.drawable.three;

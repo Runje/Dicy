@@ -110,20 +110,4 @@ public class ConnectionToServer
         }
     }
 
-    public void sendMessage(final String msg)
-    {
-       /* try {
-            //Send the message to the server
-            OutputStream os = s.getOutputStream();
-            OutputStreamWriter osw = new OutputStreamWriter(os);
-            BufferedWriter bw = new BufferedWriter(osw);
-
-            String sendMessageToFirst = msg + "\n";
-            bw.write(sendMessageToFirst);
-            bw.flush();
-            Logger.logInfo(LogKey, "Message sent to the server : " + sendMessageToFirst);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }*/
-    }
 }

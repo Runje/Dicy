@@ -35,7 +35,6 @@ import games.runje.dicymodel.ai.Strategy;
  */
 public class NewOptionActivity extends Activity
 {
-
     public static final String PlayingIntent = "Playing";
     public static final String PlayerIntent = "Player";
     public static final String LengthIntent = "Length";

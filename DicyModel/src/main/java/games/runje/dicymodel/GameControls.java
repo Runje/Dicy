@@ -7,11 +7,11 @@ import games.runje.dicymodel.data.Board;
  */
 public interface GameControls
 {
-    public void setEnabledControls(boolean enabled);
+    void setEnabledControls(boolean enabled);
 
-    public boolean areControlsEnabled();
+    boolean areControlsEnabled();
 
-    public void update();
+    void update();
 
     void setGamemaster(AbstractGamemaster gamemaster);
 

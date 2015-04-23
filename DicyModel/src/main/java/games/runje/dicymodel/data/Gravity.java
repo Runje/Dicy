@@ -8,5 +8,5 @@ public enum Gravity
     Up,
     Down,
     Right,
-    Left;
+    Left
 }

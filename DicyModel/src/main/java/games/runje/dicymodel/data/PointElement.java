@@ -99,12 +99,8 @@ public class PointElement
         {
             return false;
         }
-        if (type != that.type)
-        {
-            return false;
-        }
+        return type == that.type;
 
-        return true;
     }
 
     @Override

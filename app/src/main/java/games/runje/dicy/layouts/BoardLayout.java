@@ -46,7 +46,7 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
 
         diceSize = screenWidth / (board.getNumberOfColumns() + 3);
         // min(halfHeight, diceSize)
-        int halfHeight = (int) (screenHeight / (board.getNumberOfRows() + 3));
+        int halfHeight = screenHeight / (board.getNumberOfRows() + 3);
         diceSize = Math.min(diceSize, halfHeight);
         createAbsoluteLayout();
         //this.setBackgroundColor(Color.BLUE);

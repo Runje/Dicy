@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.GamemasterAnimated;
 import games.runje.dicy.layouts.BoardLayout;
@@ -35,22 +34,19 @@ public class AnimatedBoard extends Board
     private ArrayList<ArrayList<AnimatedBoardElement>> animatedBoard;
 
     private BoardLayout gameLayout;
-    private AnimatedGamemaster gamemaster;
 
-    public AnimatedBoard(int rows, int columns, Activity activity, AnimatedGamemaster gm, GamemasterAnimated gmAnimated)
+    public AnimatedBoard(int rows, int columns, Activity activity, GamemasterAnimated gmAnimated)
     {
         super(rows, columns);
         this.activity = activity;
-        this.gamemaster = gm;
         this.gmAnimated = gmAnimated;
 
         createAnimatedBoard(rows, columns);
     }
 
-    public AnimatedBoard(int[] dices, Activity a, AnimatedGamemaster gm)
+    public AnimatedBoard(int[] dices, Activity a)
     {
         super((int) Math.sqrt(dices.length));
-        this.gamemaster = gm;
         int root = (int) Math.sqrt(dices.length);
         this.activity = a;
         Board b = Board.createElementsBoard(dices);
@@ -59,11 +55,10 @@ public class AnimatedBoard extends Board
 
     }
 
-    public AnimatedBoard(Board b, Activity activity, AnimatedGamemaster gm, GamemasterAnimated gamemasterAnimated)
+    public AnimatedBoard(Board b, Activity activity, GamemasterAnimated gamemasterAnimated)
     {
         super(b.getNumberOfRows(), b.getNumberOfColumns());
         this.activity = activity;
-        this.gamemaster = gm;
         this.gmAnimated = gamemasterAnimated;
 
         for (int i = 0; i < b.getNumberOfRows(); i++)
@@ -77,11 +72,11 @@ public class AnimatedBoard extends Board
         createAnimatedBoard(rows, columns);
     }
 
-    public static AnimatedBoard createBoardNoPoints(int rows, int columns, Activity activity, Rules rules, AnimatedGamemaster gm)
+    public static AnimatedBoard createBoardNoPoints(int rows, int columns, Activity activity, Rules rules)
     {
         while (true)
         {
-            AnimatedBoard b = new AnimatedBoard(rows, columns, activity, gm, null);
+            AnimatedBoard b = new AnimatedBoard(rows, columns, activity, null);
             ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(b, rules);
             if (BoardChecker.getAll(b, rules).size() == 0 && moves.size() > 0)
             {
@@ -109,7 +104,7 @@ public class AnimatedBoard extends Board
             // fill rows with dummy dices
             for (int j = 0; j < columns; j++)
             {
-                row.add(new AnimatedBoardElement(this.activity, this.getElement(i, j), gamemaster, gmAnimated));
+                row.add(new AnimatedBoardElement(this.activity, this.getElement(i, j), gmAnimated));
             }
         }
 
@@ -144,15 +139,7 @@ public class AnimatedBoard extends Board
     public boolean switchElements(Coords first, Coords second, boolean switchBackPossible)
     {
         AnimatedLogger.logDebug(LogKey, "Animated Switch, first: " + first + ", second: " + second + ", Board: " + this.board + "\n" + this.animatedBoard);
-        Rules rules = null;
-        if (gamemaster != null)
-        {
-            rules = gamemaster.getRules();
-        }
-        else
-        {
-            rules = gmAnimated.getRules();
-        }
+        Rules rules = gmAnimated.getRules();
 
         boolean switchback = super.switchElements(first, second, switchBackPossible, rules);
 
@@ -164,7 +151,7 @@ public class AnimatedBoard extends Board
         AnimatedBoardElement firstImage = this.getAnimatedElement(first);
         AnimatedBoardElement secondImage = this.getAnimatedElement(second);
 
-        SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, switchback, gamemaster, gmAnimated);
+        SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, switchback, gmAnimated);
         s.start();
 
         return switchback;
@@ -237,77 +224,15 @@ public class AnimatedBoard extends Board
         return elements;
     }
 
-    /**
-     * recreates the given elements
-     *
-     * @param elements the new elements
-     */
-    public void recreateElements(ArrayList<BoardElement> elements)
-    {
-        if (gamemaster != null)
-        {
-            gamemaster.lock();
-        }
-
-        super.recreateElements(elements);
-
-        int[] max = getMaxFallLength(elements);
-        for (BoardElement element : elements)
-        {
-            Coords pos = element.getPosition();
-            AnimatedBoardElement animatedElement = new AnimatedBoardElement(this.activity, element, gamemaster, gmAnimated);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(gameLayout.getDiceSize(), gameLayout.getDiceSize());
-
-            int x = 0;
-            int y = 0;
-
-            switch (this.gravity)
-            {
-                case Up:
-                    x = gameLayout.CoordsToX(pos);
-                    y = gameLayout.CoordsToY(new Coords(pos.row + max[pos.column], pos.column));
-                    break;
-                case Down:
-                    x = gameLayout.CoordsToX(pos);
-                    y = gameLayout.CoordsToY(new Coords(pos.row - max[pos.column], pos.column));
-                    break;
-                case Right:
-                    x = gameLayout.CoordsToX(new Coords(pos.row, pos.column - max[pos.row]));
-                    y = gameLayout.CoordsToY(pos);
-                    break;
-                case Left:
-                    x = gameLayout.CoordsToX(new Coords(pos.row, pos.column + max[pos.row]));
-                    y = gameLayout.CoordsToY(pos);
-                    break;
-            }
-
-            animatedElement.setX(x);
-            animatedElement.setY(y);
-            gameLayout.addView(animatedElement, params);
-            AnimatedLogger.logDebug(LogKey, "Pos: " + pos + ". X: " + params.leftMargin + " Y: " + params.topMargin);
-            new FallAnimation(animatedElement, pos, gamemaster, gmAnimated).start();
-            if (gamemaster != null)
-            {
-                gamemaster.unlock();
-            }
-        }
-
-    }
-
     public void recreateElements(ArrayList<BoardElement> elements, AnimationHandler animationHandler)
     {
-        if (gamemaster != null)
-        {
-            gamemaster.lock();
-        }
-
         super.recreateElements(elements);
 
         int[] max = getMaxFallLength(elements);
         for (BoardElement element : elements)
         {
             Coords pos = element.getPosition();
-            AnimatedBoardElement animatedElement = new AnimatedBoardElement(this.activity, element, gamemaster, gmAnimated);
+            AnimatedBoardElement animatedElement = new AnimatedBoardElement(this.activity, element, gmAnimated);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(gameLayout.getDiceSize(), gameLayout.getDiceSize());
 
             int x = 0;
@@ -342,11 +267,6 @@ public class AnimatedBoard extends Board
         }
 
         animationHandler.start();
-        if (gamemaster != null)
-        {
-            gamemaster.unlock();
-        }
-
     }
 
 
@@ -430,11 +350,6 @@ public class AnimatedBoard extends Board
         return max;
     }
 
-    public void deleteElements(ArrayList<PointElement> elements)
-    {
-        super.deleteElements(elements);
-    }
-
     /**
      * Checks if the Animated Board and the internal board are consistent.
      *
@@ -462,28 +377,6 @@ public class AnimatedBoard extends Board
         }
 
         return result;
-    }
-
-    /**
-     * Lets the Elements fall down.
-     *
-     * @return Fallen down elements.
-     */
-    public ArrayList<BoardElement> moveElementsFromGravity()
-    {
-        ArrayList<BoardElement> elements = this.determineFallingElements();
-        AnimatedLogger.logInfo(LogKey, "Falling elements: " + elements);
-        for (BoardElement element : elements)
-        {
-            Coords pos = element.getPosition();
-            AnimatedBoardElement animatedElement = this.getAnimatedElement(pos);
-
-            Coords newPos = determineFallingPosition(element);
-            new FallAnimation(animatedElement, newPos, gamemaster, gmAnimated).start();
-        }
-
-        super.moveElementsFromGravity();
-        return elements;
     }
 
     public ArrayList<BoardElement> moveElementsFromGravity(AnimationHandler animationHandler)
@@ -589,7 +482,6 @@ public class AnimatedBoard extends Board
                 {
                     return true;
                 }
-
             }
         }
 

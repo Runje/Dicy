@@ -49,7 +49,7 @@ public class PlayerLayout extends RelativeLayout
         super(context);
         this.gm = gm;
         this.player = player;
-        this.container = (View) gm.getActivity().findViewById(containerId);
+        this.container = gm.getActivity().findViewById(containerId);
         //makeBorder();
         image = (ImageView) container.findViewById(R.id.player_icon);
         image.setImageResource(imageId);
