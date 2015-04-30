@@ -14,12 +14,12 @@ public class AIController
 {
     private final Player player;
     private final Activity activity;
-    private GamemasterAnimated gmAnimated;
+    private AIControllerHandler handler;
     private String LogKey = "AIController";
 
-    public AIController(Player p, Activity a, GamemasterAnimated gmAnimated)
+    public AIController(Player p, Activity a, AIControllerHandler handler)
     {
-        this.gmAnimated = gmAnimated;
+        this.handler = handler;
         player = p;
         activity = a;
         start();
@@ -46,14 +46,14 @@ public class AIController
                         break;
                     }
 
-                    Game game = gmAnimated.getGame();
+                    Game game = handler.getGame();
                     if (game.isFinishedOrCancelled())
                     {
                         break;
                     }
 
-                    //Logger.logDebug(LogKey, "Checking, turn: " + game.hasTurn(player) + ", controls enabled: " + gmAnimated.areControlsEnabled());
-                    if (game.hasTurn(player) && gmAnimated.areControlsEnabled())
+                    //Logger.logDebug(LogKey, "Checking, turn: " + game.hasTurn(player) + ", controls enabled: " + handler.areControlsEnabled());
+                    if (game.hasTurn(player) && handler.areControlsEnabled())
                     {
                         LocalGame l = (LocalGame) game;
 
@@ -77,7 +77,7 @@ public class AIController
                                 @Override
                                 public void run()
                                 {
-                                    gmAnimated.next();
+                                    handler.next();
                                 }
                             });
 
@@ -91,8 +91,8 @@ public class AIController
     private void makeMove()
     {
         AnimatedLogger.logInfo(LogKey, "Making a move");
-        Move m = player.getStrategy().getNextMove(gmAnimated.getRules(), gmAnimated.getAnimatedBoard());
-        gmAnimated.switchElements(m.getFirst(), m.getSecond());
+        Move m = player.getStrategy().getNextMove(handler.getRules(), handler.getBoard());
+        handler.switchElements(m.getFirst(), m.getSecond());
     }
 
 

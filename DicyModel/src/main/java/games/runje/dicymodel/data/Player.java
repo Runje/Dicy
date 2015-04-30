@@ -27,6 +27,11 @@ public class Player
         this.id = id;
     }
 
+    public Player(String name, long id)
+    {
+        this(name, null, id);
+    }
+
     public long getId()
     {
         return id;
@@ -65,8 +70,6 @@ public class Player
             points = 0;
             strikes = 0;
         }
-
-
     }
 
     public void addPoints(int p)
@@ -119,7 +122,6 @@ public class Player
         for (Skill s : skills)
         {
             s.load(count[s.getLoadValue()]);
-
         }
     }
 

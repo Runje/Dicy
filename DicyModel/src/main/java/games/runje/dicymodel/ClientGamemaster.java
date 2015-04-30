@@ -1,8 +1,8 @@
 package games.runje.dicymodel;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import games.runje.dicymodel.communication.messages.Message;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
@@ -15,8 +15,6 @@ import games.runje.dicymodel.skills.Skill;
  */
 public interface ClientGamemaster
 {
-    void receiveMessage(ByteBuffer buffer, int length);
-
     void startGame(Board board, Rules rules, LocalGame game);
 
     void switchElementsFromHost(Coords first, Coords second);
@@ -30,4 +28,6 @@ public interface ClientGamemaster
     void recreateBoard(Board board);
 
     void executeSkillFromHost(Skill s);
+
+    void receiveMessage(Message msg);
 }

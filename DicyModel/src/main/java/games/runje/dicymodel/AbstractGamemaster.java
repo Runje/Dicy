@@ -1,12 +1,14 @@
 package games.runje.dicymodel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Move;
+import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
 import games.runje.dicymodel.game.GameState;
 import games.runje.dicymodel.game.LocalGame;
@@ -24,16 +26,22 @@ public abstract class AbstractGamemaster
     protected GameControls controls;
     protected LocalGame game;
     protected Skill activeSkill;
-
     protected ArrayList<BoardElement> recreateElements;
+    private List<Player> players;
     private String LogKey = "AbstractGamemaster";
 
-    protected AbstractGamemaster(Board board, Rules rules, GameControls controls, LocalGame game)
+    protected AbstractGamemaster(Rules rules, List<Player> players)
+    {
+        this(rules, players, Board.createBoardNoPoints(rules));
+    }
+
+    protected AbstractGamemaster(Rules rules, List<Player> players, Board board)
     {
         this.board = board;
         this.rules = rules;
-        this.controls = controls;
-        this.game = game;
+        this.players = players;
+        // TODO: starting player
+        this.game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, 0);
     }
 
     public void switchElements(Coords first, Coords second)
@@ -285,17 +293,9 @@ public abstract class AbstractGamemaster
         stateTransition(GameState.Executed);
     }
 
-    public void startGame()
+
+    public Board getBoard()
     {
-
-    }
-
-
-    public void startGame(Board board, Rules rules, LocalGame game)
-    {
-        this.board = board;
-        // TODO
-        //this.rules = rules;
-        this.game = game;
+        return board;
     }
 }

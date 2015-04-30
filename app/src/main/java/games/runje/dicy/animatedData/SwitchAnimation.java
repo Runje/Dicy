@@ -3,7 +3,7 @@ package games.runje.dicy.animatedData;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import games.runje.dicy.controller.GamemasterAnimated;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -13,12 +13,12 @@ public class SwitchAnimation implements Animation.AnimationListener
 {
     private final String LogKey = "SwitchAnimation";
     private final boolean withSwitchBack;
-    private GamemasterAnimated gmAnimated;
+    private AnimatedGamemaster gmAnimated;
     private AnimatedBoardElement secondImage;
     private AnimatedBoardElement firstImage;
     private boolean update = true;
 
-    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, GamemasterAnimated gmAnimated)
+    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, AnimatedGamemaster gmAnimated)
     {
         this.gmAnimated = gmAnimated;
         this.firstImage = firstImage;
@@ -26,7 +26,7 @@ public class SwitchAnimation implements Animation.AnimationListener
         this.withSwitchBack = true;
     }
 
-    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, boolean withSwitchBack, GamemasterAnimated gmAnimated)
+    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, boolean withSwitchBack, AnimatedGamemaster gmAnimated)
     {
         this.gmAnimated = gmAnimated;
         this.firstImage = firstImage;

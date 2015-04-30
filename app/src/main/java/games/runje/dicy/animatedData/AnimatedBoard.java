@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.controller.AnimatedLogger;
-import games.runje.dicy.controller.GamemasterAnimated;
+import games.runje.dicy.controller.BoardListener;
 import games.runje.dicy.layouts.BoardLayout;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.boardChecker.BoardChecker;
@@ -27,20 +27,19 @@ import games.runje.dicymodel.data.PointElement;
 public class AnimatedBoard extends Board
 {
     public static final String LogKey = "AnimatedBoard";
-    private GamemasterAnimated gmAnimated;
 
     private Activity activity;
 
     private ArrayList<ArrayList<AnimatedBoardElement>> animatedBoard;
 
     private BoardLayout gameLayout;
+    private BoardListener boardListener;
 
-    public AnimatedBoard(int rows, int columns, Activity activity, GamemasterAnimated gmAnimated)
+    public AnimatedBoard(int rows, int columns, Activity activity, BoardListener b)
     {
         super(rows, columns);
+        this.boardListener = b;
         this.activity = activity;
-        this.gmAnimated = gmAnimated;
-
         createAnimatedBoard(rows, columns);
     }
 
@@ -55,11 +54,11 @@ public class AnimatedBoard extends Board
 
     }
 
-    public AnimatedBoard(Board b, Activity activity, GamemasterAnimated gamemasterAnimated)
+    public AnimatedBoard(Board b, Activity activity, BoardListener boardListener)
     {
         super(b.getNumberOfRows(), b.getNumberOfColumns());
         this.activity = activity;
-        this.gmAnimated = gamemasterAnimated;
+        this.boardListener = boardListener;
 
         for (int i = 0; i < b.getNumberOfRows(); i++)
         {
@@ -74,6 +73,7 @@ public class AnimatedBoard extends Board
 
     public static AnimatedBoard createBoardNoPoints(int rows, int columns, Activity activity, Rules rules)
     {
+        // TODO: delete?
         while (true)
         {
             AnimatedBoard b = new AnimatedBoard(rows, columns, activity, null);
@@ -104,12 +104,12 @@ public class AnimatedBoard extends Board
             // fill rows with dummy dices
             for (int j = 0; j < columns; j++)
             {
-                row.add(new AnimatedBoardElement(this.activity, this.getElement(i, j), gmAnimated));
+                row.add(new AnimatedBoardElement(this.activity, this.getElement(i, j), boardListener));
             }
         }
 
         // TODO: heightWeight
-        this.gameLayout = new BoardLayout(this, 0.5);
+        this.gameLayout = new BoardLayout(this, boardListener);
     }
 
     public BoardLayout getBoardLayout()
@@ -134,27 +134,6 @@ public class AnimatedBoard extends Board
                 getAnimatedElement(pos).setValue(getElement(pos).getValue());
             }
         }
-    }
-
-    public boolean switchElements(Coords first, Coords second, boolean switchBackPossible)
-    {
-        AnimatedLogger.logDebug(LogKey, "Animated Switch, first: " + first + ", second: " + second + ", Board: " + this.board + "\n" + this.animatedBoard);
-        Rules rules = gmAnimated.getRules();
-
-        boolean switchback = super.switchElements(first, second, switchBackPossible, rules);
-
-        if (!switchBackPossible)
-        {
-            switchback = false;
-        }
-
-        AnimatedBoardElement firstImage = this.getAnimatedElement(first);
-        AnimatedBoardElement secondImage = this.getAnimatedElement(second);
-
-        SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, switchback, gmAnimated);
-        s.start();
-
-        return switchback;
     }
 
     public void setAnimatedElement(Coords coords, AnimatedBoardElement element)
@@ -232,7 +211,7 @@ public class AnimatedBoard extends Board
         for (BoardElement element : elements)
         {
             Coords pos = element.getPosition();
-            AnimatedBoardElement animatedElement = new AnimatedBoardElement(this.activity, element, gmAnimated);
+            AnimatedBoardElement animatedElement = new AnimatedBoardElement(this.activity, element, boardListener);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(gameLayout.getDiceSize(), gameLayout.getDiceSize());
 
             int x = 0;
@@ -501,8 +480,4 @@ public class AnimatedBoard extends Board
         }
     }
 
-    public GamemasterAnimated getGamemaster()
-    {
-        return gmAnimated;
-    }
 }

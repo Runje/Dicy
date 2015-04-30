@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import games.runje.dicy.controller.GamemasterAnimated;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.PointElement;
 
@@ -18,10 +18,10 @@ import games.runje.dicymodel.data.PointElement;
 public class PointsAnimation implements Animation.AnimationListener
 {
     private final ArrayList<PointElement> elements;
-    private final GamemasterAnimated gmAnimated;
+    private final AnimatedGamemaster gmAnimated;
     private ArrayList<TextView> tvs;
 
-    public PointsAnimation(ArrayList<PointElement> elements, GamemasterAnimated gmAnimated)
+    public PointsAnimation(ArrayList<PointElement> elements, AnimatedGamemaster gmAnimated)
     {
         this.elements = elements;
         this.gmAnimated = gmAnimated;

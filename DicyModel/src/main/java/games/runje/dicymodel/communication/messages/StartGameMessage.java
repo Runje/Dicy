@@ -5,10 +5,8 @@ import java.nio.ByteBuffer;
 import games.runje.dicymodel.ClientGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
-import games.runje.dicymodel.ai.OnlineStrategy;
 import games.runje.dicymodel.communication.MessageConverter;
 import games.runje.dicymodel.data.Board;
-import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
 
 /**
@@ -60,20 +58,13 @@ public class StartGameMessage extends Message
     public void executeAtClient(ClientGamemaster gamemaster)
     {
         Logger.logInfo(LogKey, "StartGameMessage is executed");
-        for (Player p : game.getPlayers())
-        {
-            if (p.getId() != toId)
-            {
-                p.setStrategy(new OnlineStrategy());
-                Logger.logInfo(LogKey, p.getId() + " is online player");
-            }
-            else
-            {
-                p.setStrategy(null);
-                Logger.logInfo(LogKey, p.getId() + " is human player");
-            }
-        }
+
 
         gamemaster.startGame(board, rules, game);
+    }
+
+    public LocalGame getGame()
+    {
+        return game;
     }
 }

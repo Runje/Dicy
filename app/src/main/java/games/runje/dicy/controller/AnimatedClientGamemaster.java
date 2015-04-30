@@ -2,15 +2,13 @@ package games.runje.dicy.controller;
 
 import android.app.Activity;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 import games.runje.dicymodel.ClientGamemaster;
-import games.runje.dicymodel.GameControls;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.communication.ConnectionToServer;
-import games.runje.dicymodel.communication.MessageParser;
 import games.runje.dicymodel.communication.messages.GravityMessage;
 import games.runje.dicymodel.communication.messages.Message;
 import games.runje.dicymodel.communication.messages.NextMessage;
@@ -20,6 +18,7 @@ import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
+import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.GameState;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
@@ -27,27 +26,26 @@ import games.runje.dicymodel.skills.Skill;
 /**
  * Created by Thomas on 09.04.2015.
  */
-public class AnimatedClientGamemaster extends GamemasterAnimated implements ClientGamemaster
+public class AnimatedClientGamemaster extends AnimatedGamemaster implements ClientGamemaster
 {
     private String LogKey = "AnimatedClientGamemaster";
     private boolean messageInProcess = false;
     private boolean waitForMessage = true;
 
-    public AnimatedClientGamemaster(Board board, Rules rules, Activity activity, GameControls controls, LocalGame game)
+    public AnimatedClientGamemaster(Board board, Rules rules, Activity activity, List<Player> players)
     {
-        super(board, rules, activity, controls, game);
+        super(players, rules, activity, board);
     }
 
     @Override
-    public void receiveMessage(ByteBuffer buffer, int length)
+    public void receiveMessage(final Message msg)
     {
         Logger.logInfo(LogKey, "ReceiveMessage in Gamemaster");
-        final Message msg = MessageParser.parse(buffer, length);
+
         while (messageInProcess || !waitForMessage)
         {
             try
             {
-
                 Logger.logInfo(LogKey, String.format("Waiting: %b, Processing: %b", waitForMessage, messageInProcess));
                 Thread.sleep(100);
             }
@@ -152,11 +150,14 @@ public class AnimatedClientGamemaster extends GamemasterAnimated implements Clie
         // do nothing more, wait for Message with falling elements
     }
 
-    @Override
-    public void startGame(Board board, Rules r, LocalGame game)
+    public void startGame(Board board, Rules r, final LocalGame game)
     {
-        super.startGame(board, r, game);
-        waitForMessage = true;
+        this.board = board;
+        this.rules = r;
+        this.game = game;
+        Logger.logInfo(LogKey, "Starting Game");
+
+
     }
 
     protected void transitionToNormal()

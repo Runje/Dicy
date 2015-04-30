@@ -143,11 +143,11 @@ public class Board
         return createBoard(boardElements);
     }
 
-    public static Board createBoardNoPoints(int rows, int columns, Rules rules)
+    public static Board createBoardNoPoints(Rules rules)
     {
         while (true)
         {
-            Board b = new Board(rows, columns);
+            Board b = new Board(rules.getRows(), rules.getColumns());
             ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(b, rules);
             if (BoardChecker.getAll(b, rules).size() == 0 && moves.size() > 0)
             {

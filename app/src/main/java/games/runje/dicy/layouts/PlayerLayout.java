@@ -1,6 +1,6 @@
 package games.runje.dicy.layouts;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -20,7 +20,8 @@ import java.util.List;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.animatedSkills.AnimatedHelpSkill;
 import games.runje.dicy.controller.AnimatedLogger;
-import games.runje.dicy.controller.GamemasterAnimated;
+import games.runje.dicy.controls.ControlHandler;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
@@ -34,23 +35,24 @@ public class PlayerLayout extends RelativeLayout
     public static String HtmlWhite = "#ffffff";
     public static String HtmlBlue = "#155DCA";
     private final View container;
+    private final Activity activity;
     ImageView image;
     TextView name;
     TextView strikes;
     TextView points;
     View skillView;
     List<SkillLayout> skills = new ArrayList<>();
-    GamemasterAnimated gm;
+    ControlHandler handler;
     private Player player;
     private String LogKey = "PlayerLayout";
 
-    public PlayerLayout(Context context, Player player, int imageId, GamemasterAnimated gm, int containerId)
+    public PlayerLayout(Activity activity, Player player, int imageId, int containerId, ControlHandler handler)
     {
-        super(context);
-        this.gm = gm;
+        super(activity);
+        this.handler = handler;
+        this.activity = activity;
         this.player = player;
-        this.container = gm.getActivity().findViewById(containerId);
-        //makeBorder();
+        this.container = activity.findViewById(containerId);
         image = (ImageView) container.findViewById(R.id.player_icon);
         image.setImageResource(imageId);
 
@@ -96,9 +98,10 @@ public class PlayerLayout extends RelativeLayout
         setBackground(rectShapeDrawable);
     }
 
-    public void updatePlayer(Player player, boolean isPlaying, LocalGame game)
+    public void updatePlayer(LocalGame game)
     {
-
+        boolean isPlaying = game.hasTurn(player);
+        Logger.logInfo(LogKey, player.getName() + " is playing: " + isPlaying);
         String pointColor = "";
         if (game.areMostPoints(player.getPoints()))
         {
@@ -205,9 +208,8 @@ public class PlayerLayout extends RelativeLayout
             AnimatedLogger.logInfo(LogKey, "Adding skill: " + skill.getName() + ", animatedHelp: " + (skill instanceof AnimatedHelpSkill));
 
 
-            SkillLayout sl = new SkillLayout(getContext(), skill, gm, containers[i]);
+            SkillLayout sl = new SkillLayout(activity, skill, handler, containers[i]);
             skills.add(sl);
-            // TODO: make 2 classes for each skill (normal skill and animated skill) with waitMethod and pay method
         }
 
         containers[2].setVisibility(View.GONE);

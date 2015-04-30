@@ -30,7 +30,7 @@ public class StartActivity extends Activity
         //Toast.makeText(this, "Playing online is not implemented yet", Toast.LENGTH_LONG).show();
     }
 
-    public void clickHighscore(View v)
+    public void clickPlay(View v)
     {
         Intent intent = new Intent(this, NewOptionActivity.class);
         startActivity(intent);

@@ -11,6 +11,9 @@ public class Rules
      * The maximum totalLength of one row/column.
      */
     public final static int maxLengthOfRow = 10;
+    private final int rows;
+    private final int columns;
+    private int lengthFactor;
     private boolean pointLimitSetManually;
     /**
      * Points can be achieved diagonally.
@@ -45,7 +48,6 @@ public class Rules
      */
     private int minStraight;
     private int pointLimit;
-
     /**
      * Creates standard Rules:
      * 6 Dices.
@@ -60,12 +62,36 @@ public class Rules
         this.minStraight = this.numberOfDices + 1;
         this.minXOfAKind = 3;
 
+        this.columns = 5;
+        this.rows = 5;
+
+        this.lengthFactor = 5;
         this.initStraightPoints(2);
         this.initFullHousePoints(0);
         this.initXOfAKindPoints(this.minXOfAKind, maxLengthOfRow, 1, 2);
         // TODO: Calculate
         this.pointLimit = 35;
         this.pointLimitSetManually = false;
+    }
+
+    public int getLengthFactor()
+    {
+        return lengthFactor;
+    }
+
+    public void setLengthFactor(int lengthFactor)
+    {
+        this.lengthFactor = lengthFactor;
+    }
+
+    public int getColumns()
+    {
+        return columns;
+    }
+
+    public int getRows()
+    {
+        return rows;
     }
 
     public boolean isPointLimitSetManually()

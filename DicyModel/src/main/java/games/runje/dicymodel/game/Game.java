@@ -2,7 +2,6 @@ package games.runje.dicymodel.game;
 
 import java.util.ArrayList;
 
-import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
@@ -13,7 +12,6 @@ import games.runje.dicymodel.data.PointElement;
 public abstract class Game
 {
     private boolean strikePossible = true;
-    private Rules rules;
 
     /**
      * @return if the game is over.
@@ -47,8 +45,4 @@ public abstract class Game
         this.strikePossible = strikePossible;
     }
 
-    public Rules getRules()
-    {
-        return rules;
-    }
 }

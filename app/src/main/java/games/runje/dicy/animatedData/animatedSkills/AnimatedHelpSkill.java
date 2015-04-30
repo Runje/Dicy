@@ -16,7 +16,7 @@ public class AnimatedHelpSkill extends HelpSkill
 {
     public AnimatedHelpSkill(int value, int max, String name)
     {
-        super(value, max, name);
+        super(value, max);
         setImageId(R.drawable.blueyellowchip);
     }
 

@@ -10,8 +10,7 @@ import android.widget.TextView;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
 import games.runje.dicy.controller.AnimatedLogger;
-import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicymodel.AbstractGamemaster;
+import games.runje.dicy.controls.ControlHandler;
 import games.runje.dicymodel.skills.Skill;
 
 /**
@@ -20,18 +19,18 @@ import games.runje.dicymodel.skills.Skill;
 public class SkillLayout extends LinearLayout
 {
     private final ImageView loadImage;
-    private final AbstractGamemaster gm;
+    private final ControlHandler handler;
     private TextView loadText;
     private FrameLayout clickArea;
     private ImageView image;
     private Skill skill;
     private String LogKey = "SkillLayout";
 
-    public SkillLayout(Context context, final Skill skill, final GamemasterAnimated gm, View container)
+    public SkillLayout(Context context, final Skill skill, final ControlHandler handler, View container)
     {
         super(context);
         this.skill = skill;
-        this.gm = gm;
+        this.handler = handler;
         container.setVisibility(View.VISIBLE);
         this.clickArea = (FrameLayout) container.findViewById(R.id.skill_clickarea);
         this.image = (ImageView) container.findViewById(R.id.skill_image);
@@ -50,8 +49,7 @@ public class SkillLayout extends LinearLayout
             @Override
             public void onClick(View view)
             {
-                // TODO: final works here?
-                gm.executeSkillFromUser(skill);
+                handler.executeSkillFromUser(skill);
             }
         });
 

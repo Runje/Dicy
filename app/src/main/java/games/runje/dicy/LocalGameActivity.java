@@ -13,20 +13,13 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.animatedData.animatedSkills.AnimatedSkill;
-import games.runje.dicy.controller.AIController;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
-import games.runje.dicy.controller.CalcPointLimit;
-import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicy.controls.LocalGameControls;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Strategy;
-import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Player;
-import games.runje.dicymodel.game.LocalGame;
-import games.runje.dicymodel.skills.Skill;
 
 
 /**
@@ -38,7 +31,7 @@ import games.runje.dicymodel.skills.Skill;
 public class LocalGameActivity extends Activity
 {
     private String LogKey = "LocalGameActivity";
-    private GamemasterAnimated gmAnimated;
+    private AnimatedGamemaster gmAnimated;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
@@ -59,95 +52,10 @@ public class LocalGameActivity extends Activity
             @Override
             public void run()
             {
-                Intent intent = getIntent();
-                boolean[] playing = intent.getBooleanArrayExtra(NewOptionActivity.PlayingIntent);
-                String[] players = intent.getStringArrayExtra(NewOptionActivity.PlayerIntent);
-                List<String> p = new ArrayList<>();
+                Rules rules = NewOptionActivity.getRulesFromIntent(getIntent());
+                List<Player> players = getPlayersFromIntent();
 
-                for (int i = 0; i < NewOptionActivity.MaxPlayers; i++)
-                {
-                    if (playing[i])
-                    {
-                        p.add(players[i]);
-                        AnimatedLogger.logInfo("LocalGameActivity", "adding " + players[i]);
-                    }
-                }
-
-                String[] strategies = intent.getStringArrayExtra(NewOptionActivity.StrategyIntent);
-                List<Strategy> s = new ArrayList<>();
-
-                for (int i = 0; i < NewOptionActivity.MaxPlayers; i++)
-                {
-                    if (playing[i])
-                    {
-                        s.add(Strategy.makeStrategy(strategies[i]));
-                        AnimatedLogger.logInfo("LocalGameActivity", "adding " + strategies[i]);
-                    }
-                }
-
-                String length = intent.getStringExtra(NewOptionActivity.LengthIntent);
-                int f = 5;
-                switch (length)
-                {
-                    case "Short":
-                        f = 5;
-                        break;
-                    case "Middle":
-                        f = 10;
-                        break;
-                    case "Long":
-                        f = 20;
-                        break;
-                }
-
-                boolean diagonal = intent.getBooleanExtra(NewOptionActivity.DiagonalIntent, false);
-
-                Rules rules = new Rules();
-                rules.setDiagonalActive(diagonal);
-                rules.setMinStraight(intent.getIntExtra(NewOptionActivity.StraightIntent, 7));
-                rules.setMinXOfAKind(intent.getIntExtra(NewOptionActivity.XOfAKindIntent, 11));
-                rules.initStraightPoints(4);
-
-                Board bb = Board.createBoardNoPoints(5, 5, rules);
-
-                List<Player> playerList = new ArrayList<>();
-                for (int i = 0; i < p.size(); i++)
-                {
-                    String name = p.get(i);
-                    Strategy strategy = s.get(i);
-                    playerList.add(new Player(name, strategy, 77));
-                }
-
-                LocalGame game = new LocalGame(rules.getPointLimit(), f, playerList, 0);
-                for (Player player : game.getPlayers())
-                {
-                    List<Skill> animatedSkills = new ArrayList<>();
-                    for (Skill skill : player.getSkills())
-                    {
-                        animatedSkills.add(AnimatedSkill.create(skill));
-                    }
-
-                    player.setSkills(animatedSkills);
-                }
-
-
-                // TODO: gamemaster
-                LocalGameControls controls = new LocalGameControls(LocalGameActivity.this, game, null, null);
-                new CalcPointLimit(bb, rules, controls, game).execute();
-
-                LocalGameActivity.this.gmAnimated = new GamemasterAnimated(bb, rules, LocalGameActivity.this, controls, game);
-                gmAnimated.init();
-
-                // start AI
-                for (Player pl : game.getPlayers())
-                {
-                    if (pl.isAi())
-                    {
-                        // TODO: gamemaster
-                        new AIController(pl, LocalGameActivity.this, gmAnimated);
-                    }
-                }
-
+                LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(players, rules, LocalGameActivity.this);
                 LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
                 boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -155,6 +63,47 @@ public class LocalGameActivity extends Activity
         });
 
     }
+
+    private List<Player> getPlayersFromIntent()
+    {
+        Intent intent = getIntent();
+        boolean[] playing = intent.getBooleanArrayExtra(NewOptionActivity.PlayingIntent);
+        String[] players = intent.getStringArrayExtra(NewOptionActivity.PlayerIntent);
+        List<String> p = new ArrayList<>();
+
+        for (int i = 0; i < NewOptionActivity.MaxPlayers; i++)
+        {
+            if (playing[i])
+            {
+                p.add(players[i]);
+                AnimatedLogger.logInfo("LocalGameActivity", "adding " + players[i]);
+            }
+        }
+
+        String[] strategies = intent.getStringArrayExtra(NewOptionActivity.StrategyIntent);
+        List<Strategy> s = new ArrayList<>();
+
+        for (int i = 0; i < NewOptionActivity.MaxPlayers; i++)
+        {
+            if (playing[i])
+            {
+                s.add(Strategy.makeStrategy(strategies[i]));
+                AnimatedLogger.logInfo("LocalGameActivity", "adding " + strategies[i]);
+            }
+        }
+
+        List<Player> playerList = new ArrayList<>();
+        for (int i = 0; i < p.size(); i++)
+        {
+            String name = p.get(i);
+            Strategy strategy = s.get(i);
+            playerList.add(new Player(name, strategy, i));
+        }
+
+        return playerList;
+    }
+
+
 
     @Override
     public void onBackPressed()

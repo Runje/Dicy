@@ -5,9 +5,9 @@ package games.runje.dicymodel.skills;
  */
 public class HelpSkill extends Skill
 {
-    public HelpSkill(int value, int max, String name)
+    public HelpSkill(int value, int max)
     {
-        super(value, max, name);
+        super(value, max, Skill.Help);
     }
 
 

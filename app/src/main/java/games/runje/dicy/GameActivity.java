@@ -2,30 +2,21 @@ package games.runje.dicy;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.animatedData.AnimatedBoard;
-import games.runje.dicy.animatedData.animatedSkills.AnimatedSkill;
-import games.runje.dicy.controller.CalcPointLimit;
-import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicy.controls.LocalGameControls;
+import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.Rules;
-import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Player;
-import games.runje.dicymodel.game.LocalGame;
-import games.runje.dicymodel.skills.Skill;
 
 
 /**
@@ -61,47 +52,22 @@ public class GameActivity extends Activity
             @Override
             public void run()
             {
-                Intent intent = getIntent();
-                List<String> players = new ArrayList<>();
-                players.add("Thomas");
-                players.add("Milena");
                 List<Player> playerList = new ArrayList<>();
-                for (int i = 0; i < players.size(); i++)
-                {
-                    String name = players.get(i);
-                    Strategy strategy = null;
-                    playerList.add(new Player(name, strategy, 77));
-                }
+                Player player1 = new Player("Thomas", 0);
+                //player1.addSkill(new ChangeSkill(6,6));
+                //player1.addSkill(new HelpSkill(1, 6));
+                playerList.add(player1);
 
-                // TODO: gamemaster
+                Player player2 = new Player("Milena", 1);
+                //player2.addSkill(new ChangeSkill(6,6));
+                //player2.addSkill(new HelpSkill(1, 6));
+                playerList.add(player2);
+
                 Rules rules = new Rules();
-                LocalGame game = new LocalGame(rules.getPointLimit(), rules.getPointLimit() * 5, playerList, 0);
-                for (Player player : game.getPlayers())
-                {
-                    List<Skill> animatedSkills = new ArrayList<>();
-                    for (Skill skill : player.getSkills())
-                    {
-                        animatedSkills.add(AnimatedSkill.create(skill));
-                    }
-
-                    player.setSkills(animatedSkills);
-                }
-                Board bb = Board.createBoardNoPoints(5, 5, rules);
-                LocalGameControls controls = new LocalGameControls(GameActivity.this, game, null, null);
-                new CalcPointLimit(bb, rules, controls, game).execute();
-                GamemasterAnimated gmAnimated = new GamemasterAnimated(bb, rules, GameActivity.this, controls, game);
-
-                boolean diagonal = false;
-
-                RelativeLayout l = new RelativeLayout(GameActivity.this);
-                // TODO: create local game here
-                AnimatedBoard board = gmAnimated.getAnimatedBoard();
-                RelativeLayout b = board.getBoardLayout();
-                RelativeLayout.LayoutParams pB = (RelativeLayout.LayoutParams) b.getLayoutParams();
-                pB.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-
+                Board bb = Board.createBoardNoPoints(rules);
+                AnimatedGamemaster gmAnimated = new AnimatedGamemaster(playerList, rules, GameActivity.this);
                 LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
-                boardContainer.addView(b, ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
         });
 

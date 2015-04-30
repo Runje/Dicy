@@ -10,9 +10,8 @@ import android.widget.ImageView;
 
 import games.runje.dicy.R;
 import games.runje.dicy.controller.AnimatedLogger;
+import games.runje.dicy.controller.DiceListener;
 import games.runje.dicy.controller.Direction;
-import games.runje.dicy.controller.GamemasterAnimated;
-import games.runje.dicy.controller.SwitchAction;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -22,18 +21,17 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
 {
     private final String LogKey = "AnimatedBoardElementTL";
     protected Coords position;
-    private GamemasterAnimated gmAnimated;
     private boolean switchEnabled = true;
     private boolean disabled = false;
     private ImageView arrow;
     private float x1;
     private float y1;
+    private DiceListener diceListener;
 
-    public AnimatedBoardElementTL(Coords position, GamemasterAnimated gmAnimated)
+    public AnimatedBoardElementTL(Coords position, DiceListener d)
     {
-        this.gmAnimated = gmAnimated;
-        arrow = new ImageView(gmAnimated.getActivity());
-        arrow.setImageResource(R.drawable.arrow2);
+        this.diceListener = d;
+
         this.position = position;
     }
 
@@ -63,6 +61,12 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent)
     {
+        if (this.arrow == null)
+        {
+            arrow = new ImageView(view.getContext());
+            arrow.setImageResource(R.drawable.arrow2);
+        }
+
         AnimatedLogger.logDebug(LogKey, "Touching Dice " + position + ". Disabled: " + disabled);
         if (disabled)
         {
@@ -85,7 +89,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
         {
             case (MotionEvent.ACTION_UP):
 
-                gmAnimated.endWait(position);
+                diceListener.executeOnTouch(position);
                 break;
         }
 
@@ -140,7 +144,8 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                     // only add if it has no parent
                     arrow.setX(view.getX());
                     arrow.setY(view.getY());
-                    gmAnimated.getAnimatedBoard().getBoardLayout().addView(arrow);
+                    // TODO: arrow
+                    ((ViewGroup) view.getParent()).addView(arrow);
                     AnimatedLogger.logDebug(LogKey, "Added arrow");
                 }
 
@@ -171,12 +176,35 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                     return true;
                 }
 
-                SwitchAction a = new SwitchAction(position, direction, true);
-                gmAnimated.switchElementsFromUser(a.getFirst(), a.getSecond());
+                Coords second = calcSecondPos(position, direction);
+                diceListener.executeOnSwitch(position, second);
                 AnimatedLogger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy);
             }
         }
         return true;
+    }
+
+    private Coords calcSecondPos(Coords position, Direction direction)
+    {
+        Coords second = null;
+        switch (direction)
+
+        {
+            case Up:
+                second = new Coords(position.row - 1, position.column);
+                break;
+            case Down:
+                second = new Coords(position.row + 1, position.column);
+                break;
+            case Left:
+                second = new Coords(position.row, position.column - 1);
+                break;
+            case Right:
+                second = new Coords(position.row, position.column + 1);
+                break;
+        }
+
+        return second;
     }
 
     private float directionToRotation(Direction direction)

@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-import games.runje.dicymodel.ClientGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.communication.messages.Message;
 
@@ -24,7 +23,7 @@ public class ConnectionToServer
     private static boolean firstTime = true;
     private static Socket s;
     private static boolean connected = false;
-    private static ClientGamemaster gamemaster;
+    private static MessageHandler messageHandler;
     private static String LogKey = "ConnectionToServer";
     private static long fromId;
 
@@ -33,9 +32,9 @@ public class ConnectionToServer
         return connected;
     }
 
-    public static void connect(ClientGamemaster gm, int id)
+    public static void connect(MessageHandler handler, int id)
     {
-        gamemaster = gm;
+        messageHandler = handler;
         fromId = id;
         if (connected)
         {
@@ -80,7 +79,8 @@ public class ConnectionToServer
             {
                 ByteBuffer buffer = ByteBuffer.allocate(2000);
                 int length = MessageReader.readMessage(is, buffer);
-                gamemaster.receiveMessage(buffer, length);
+                final Message msg = MessageParser.parse(buffer, length);
+                messageHandler.handleMessage(msg);
             }
         }
         catch (Exception exception)

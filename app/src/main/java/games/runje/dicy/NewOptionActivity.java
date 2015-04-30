@@ -21,9 +21,11 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import games.runje.dicy.controller.CalcPointLimit;
 import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.layouts.XOfAKindLayout;
 import games.runje.dicy.util.ViewUtilities;
+import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Strategy;
 
 
@@ -43,6 +45,7 @@ public class NewOptionActivity extends Activity
     public static final String XOfAKindIntent = "XOfAKind";
     public static final String StrategyIntent = "Strategy";
     final static int MaxPlayers = 4;
+    private static String PointLimitIntent = "PointLimit";
     private EditText[] editPlayers = new EditText[MaxPlayers];
     private CheckBox[] playingCb = new CheckBox[MaxPlayers];
     private Spinner[] strategySpinner = new Spinner[MaxPlayers];
@@ -52,6 +55,36 @@ public class NewOptionActivity extends Activity
     private StraightLayout straight;
     private XOfAKindLayout xOfAKind;
     private int size = 75;
+
+    public static Rules getRulesFromIntent(Intent intent)
+    {
+        String length = intent.getStringExtra(NewOptionActivity.LengthIntent);
+        int f = 5;
+        switch (length)
+        {
+            case "Short":
+                f = 5;
+                break;
+            case "Middle":
+                f = 10;
+                break;
+            case "Long":
+                f = 20;
+                break;
+        }
+
+        boolean diagonal = intent.getBooleanExtra(NewOptionActivity.DiagonalIntent, false);
+
+        Rules rules = new Rules();
+        rules.setDiagonalActive(diagonal);
+        rules.setMinStraight(intent.getIntExtra(NewOptionActivity.StraightIntent, 7));
+        rules.setMinXOfAKind(intent.getIntExtra(NewOptionActivity.XOfAKindIntent, 11));
+        rules.initStraightPoints(4);
+
+        int pointLimit = intent.getIntExtra(PointLimitIntent, -1);
+        rules.setPointLimit(pointLimit);
+        return rules;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -176,10 +209,10 @@ public class NewOptionActivity extends Activity
         return lengthSpinner;
     }
 
-
     public void clickPlay(View v)
     {
-        Intent intent = new Intent(NewOptionActivity.this, LocalGameActivity.class);
+
+        final Intent intent = new Intent(NewOptionActivity.this, LocalGameActivity.class);
         boolean[] playing = {true, true, false, false};
         int numberPlayers = 2;
 
@@ -208,7 +241,20 @@ public class NewOptionActivity extends Activity
             return;
         }
 
-        startActivity(intent);
+        final Rules rules = getRulesFromIntent(intent);
+
+        // TODO: Show loading screen
+        new CalcPointLimit(rules, new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                intent.putExtra(PointLimitIntent, rules.getPointLimit());
+                startActivity(intent);
+            }
+        }).execute();
+
+
     }
 
     View createPlayers()

@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
+import games.runje.dicy.controller.BoardListener;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
@@ -20,6 +21,7 @@ import games.runje.dicymodel.data.Gravity;
 public class BoardLayout extends RelativeLayout implements View.OnClickListener
 {
     private final String LogKey = "BoardLayout";
+    private final BoardListener boardListener;
     AnimatedBoard board;
     int diceSize;
     private int XOffset = 1;
@@ -29,10 +31,11 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
     private Border left;
     private Border right;
 
-    public BoardLayout(AnimatedBoard b, double heightWeight)
+    public BoardLayout(AnimatedBoard b, BoardListener boardListener)
     {
         super(b.getActivity());
-        LinearLayout boardContainer = (LinearLayout) b.getGamemaster().getActivity().findViewById(R.id.board);
+        this.boardListener = boardListener;
+        LinearLayout boardContainer = (LinearLayout) b.getActivity().findViewById(R.id.board);
         this.board = b;
         DisplayMetrics dm = new DisplayMetrics();
         board.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -209,7 +212,13 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
                 break;
         }
 
-        board.getGamemaster().changeGravityFromUser(newGravity);
+        // TODO: gamemaster
+        boardListener.changeGravityFromUser(newGravity);
+    }
+
+    public void updateGravity()
+    {
+        updateGravity(board.getGravity());
     }
 
     public void updateGravity(Gravity gravity)
@@ -224,7 +233,6 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
 
         switch (gravity)
         {
-
             case Up:
                 board.getBoardLayout().setYOffset(0);
                 above.setBackgroundColor(yellow);
@@ -242,5 +250,13 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
                 left.setBackgroundColor(yellow);
                 break;
         }
+    }
+
+    public void setEnabledGravity(boolean enabled)
+    {
+        getAboveBorder().setEnabled(enabled);
+        getBelowBorder().setEnabled(enabled);
+        getLeftBorder().setEnabled(enabled);
+        getRightBorder().setEnabled(enabled);
     }
 }

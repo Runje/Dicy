@@ -1,24 +1,21 @@
 package games.runje.dicy.controller;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
 import games.runje.dicy.animatedData.AnimationHandler;
 import games.runje.dicy.animatedData.FallingAnimation;
 import games.runje.dicy.animatedData.PointsAnimation;
+import games.runje.dicy.animatedData.SwitchAnimation;
 import games.runje.dicy.animatedData.animatedSkills.AnimatedSkill;
-import games.runje.dicy.controls.LocalGameControls;
+import games.runje.dicy.controls.ControlHandler;
+import games.runje.dicy.controls.Controls;
+import games.runje.dicy.layouts.BoardLayout;
 import games.runje.dicymodel.AbstractGamemaster;
-import games.runje.dicymodel.GameControls;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.data.Board;
@@ -26,37 +23,66 @@ import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
-import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 11.03.2015.
  */
-public class GamemasterAnimated extends AbstractGamemaster
+public class AnimatedGamemaster extends AbstractGamemaster implements BoardListener, AIControllerHandler, ControlHandler
 {
     private final String LogKey = "GamemasterAnimated";
+    protected Activity activity;
     AnimatedBoard animatedBoard;
-    private Activity activity;
 
-    public GamemasterAnimated(Board board, Rules rules, Activity activity, GameControls controls, LocalGame game)
+    public AnimatedGamemaster(List<Player> players, Rules rules, Activity activity)
     {
-        super(board, rules, controls, game);
-        this.activity = activity;
-        this.controls = controls;
-
+        this(players, rules, activity, Board.createBoardNoPoints(rules));
     }
 
-    public void init()
+    public AnimatedGamemaster(List<Player> players, Rules rules, Activity activity, Board board)
     {
+        super(rules, players, board);
+        this.activity = activity;
+
+        // start AI
+        for (Player pl : game.getPlayers())
+        {
+            if (pl.isAi())
+            {
+                new AIController(pl, activity, this);
+            }
+        }
+
+        for (Player player : game.getPlayers())
+        {
+            List<Skill> animatedSkills = new ArrayList<>();
+            for (Skill skill : player.getSkills())
+            {
+                animatedSkills.add(AnimatedSkill.create(skill));
+            }
+
+            player.setSkills(animatedSkills);
+        }
+
         animatedBoard = new AnimatedBoard(board, activity, this);
         this.board = animatedBoard;
-        controls.setGamemaster(this);
-        controls.setAnimatedBoard(animatedBoard);
-        // start game when point calculation are ready
-        controls.setEnabledControls(false);
+        this.controls = new Controls(activity, this, game);
+        controls.setEnabledControls(true);
         controls.update();
     }
 
+    @Override
+    public void setEnabledBoard(boolean enabled)
+    {
+        if (enabled)
+        {
+            this.animatedBoard.enable();
+        }
+        else
+        {
+            this.animatedBoard.disable();
+        }
+    }
 
     public AnimatedBoard getAnimatedBoard()
     {
@@ -72,15 +98,16 @@ public class GamemasterAnimated extends AbstractGamemaster
         if (!(second.row < 0 || second.row >= board.getNumberOfRows() ||
                 second.column < 0 || second.column >= board.getNumberOfColumns()))
         {
-            animatedBoard.switchElements(first, second, true);
+            AnimatedLogger.logDebug(LogKey, "Animated Switch, first: " + first + ", second: " + second + ", Board: " + this.board + "\n" + this.animatedBoard);
+
+            boolean switchback = board.switchElements(first, second, true, rules);
+
+            AnimatedBoardElement firstImage = animatedBoard.getAnimatedElement(first);
+            AnimatedBoardElement secondImage = animatedBoard.getAnimatedElement(second);
+
+            SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, switchback, this);
+            s.start();
         }
-        else
-        {
-            //endSwitchAnimation();
-        }
-
-
-
     }
 
     @Override
@@ -145,64 +172,7 @@ public class GamemasterAnimated extends AbstractGamemaster
         return activity;
     }
 
-    public void startGame(Board board, Rules r, LocalGame game)
-    {
-        super.startGame(board, rules, game);
 
-        Logger.logInfo(LogKey, "Starting Game");
-        activity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                activity.setContentView(R.layout.game);
-                View mainView = activity.findViewById(R.id.board);
-                mainView.post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        // start AI
-                        for (Player pl : GamemasterAnimated.this.game.getPlayers())
-                        {
-                            if (pl.isAi())
-                            {
-                                // TODO: gamemaster
-                                new AIController(pl, GamemasterAnimated.this.activity, GamemasterAnimated.this);
-                            }
-                        }
-
-                        for (Player player : GamemasterAnimated.this.game.getPlayers())
-                        {
-                            List<Skill> animatedSkills = new ArrayList<>();
-                            for (Skill skill : player.getSkills())
-                            {
-                                animatedSkills.add(AnimatedSkill.create(skill));
-                                Logger.logInfo(LogKey, "Animated Skill created: " + skill.getName());
-                            }
-
-                            player.setSkills(animatedSkills);
-                        }
-
-                        GamemasterAnimated.this.animatedBoard = new AnimatedBoard(GamemasterAnimated.this.board, activity, GamemasterAnimated.this);
-                        GamemasterAnimated.this.board = animatedBoard;
-                        GamemasterAnimated.this.controls = new LocalGameControls(activity, GamemasterAnimated.this.game, getAnimatedBoard(), GamemasterAnimated.this);
-                        GamemasterAnimated.this.controls.setGamemaster(GamemasterAnimated.this);
-                        new CalcPointLimit(GamemasterAnimated.this.board, rules, controls, GamemasterAnimated.this.game).execute();
-
-                        //LocalGameActivity.this.gmAnimated = new GamemasterAnimated(bb, rules, LocalGameActivity.this, controls, game);
-
-
-                        LinearLayout boardContainer = (LinearLayout) activity.findViewById(R.id.board);
-                        boardContainer.addView(getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    }
-                });
-
-            }
-        });
-
-
-    }
 
 
     public void switchElementsFromUser(Coords first, Coords second)
@@ -213,6 +183,12 @@ public class GamemasterAnimated extends AbstractGamemaster
     public void nextFromUser()
     {
         next();
+    }
+
+    @Override
+    public BoardLayout getBoardLayout()
+    {
+        return animatedBoard.getBoardLayout();
     }
 
     public void changeGravityFromUser(Gravity gravity)
@@ -251,5 +227,17 @@ public class GamemasterAnimated extends AbstractGamemaster
         }
 
         animationHandler.start();
+    }
+
+    @Override
+    public void executeOnTouch(Coords pos)
+    {
+        endWait(pos);
+    }
+
+    @Override
+    public void executeOnSwitch(Coords first, Coords second)
+    {
+        switchElementsFromUser(first, second);
     }
 }

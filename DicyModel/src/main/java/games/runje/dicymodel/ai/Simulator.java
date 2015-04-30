@@ -46,7 +46,7 @@ public class Simulator
 
         for (int i = 0; i < n; i++)
         {
-            Board board = Board.createBoardNoPoints(b.getNumberOfRows(), b.getNumberOfColumns(), rules);
+            Board board = Board.createBoardNoPoints(rules);
             ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(board, rules);
 
             if (moves.size() == 0)

@@ -13,7 +13,6 @@ import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
 import games.runje.dicymodel.skills.ChangeSkill;
 import games.runje.dicymodel.skills.HelpSkill;
-import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 17.01.2015.
@@ -64,8 +63,12 @@ public class LocalGame extends Game
         for (int i = 0; i < playerList.size(); i++)
         {
             Player p = playerList.get(i);
-            p.addSkill(new HelpSkill(1, 6, Skill.Help));
-            p.addSkill(new ChangeSkill(6, 6, Skill.Change));
+            // TODO: skills
+            if (p.getSkills().size() < 2)
+            {
+                p.addSkill(new HelpSkill(1, 6));
+                p.addSkill(new ChangeSkill(6, 6));
+            }
             //Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
 
@@ -147,8 +150,8 @@ public class LocalGame extends Game
     @Override
     public boolean hasTurn(Player player)
     {
-        // TODO: if same name?
-        return players.get(turn).getName().equals(player.getName());
+        Logger.logInfo(LogKey, "Hast Turn: " + getPlayingPlayer().getId() + ". Player: " + player.getId());
+        return getPlayingPlayer().getId() == player.getId();
     }
 
     @Override

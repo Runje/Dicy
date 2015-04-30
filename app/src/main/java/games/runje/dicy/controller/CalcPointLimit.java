@@ -13,6 +13,7 @@ import games.runje.dicymodel.game.LocalGame;
  */
 public class CalcPointLimit extends AsyncTask<Void, Void, Void>
 {
+    private Runnable runnable;
     private Board board;
     private Rules rules;
     private GameControls gameControls;
@@ -24,6 +25,12 @@ public class CalcPointLimit extends AsyncTask<Void, Void, Void>
         this.rules = r;
         this.gameControls = controls;
         this.game = game;
+    }
+
+    public CalcPointLimit(Rules r, Runnable runnable)
+    {
+        this.runnable = runnable;
+        this.rules = r;
     }
 
     @Override
@@ -38,10 +45,12 @@ public class CalcPointLimit extends AsyncTask<Void, Void, Void>
     @Override
     protected void onPostExecute(Void voids)
     {
-        game.setPointsLimit(rules.getPointLimit());
+        /*game.setPointsLimit(rules.getPointLimit());
         rules.setPointLimitSetManually(true);
         gameControls.update();
-        gameControls.startGame();
+        gameControls.startGame();*/
+
+        runnable.run();
     }
 
 }

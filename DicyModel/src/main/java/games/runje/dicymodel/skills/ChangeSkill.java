@@ -14,10 +14,11 @@ public class ChangeSkill extends Skill
         super(skill);
     }
 
-    public ChangeSkill(int value, int max, String name)
+    public ChangeSkill(int value, int max)
     {
-        super(value, max, name);
+        super(value, max, Skill.Change);
     }
+
 
     protected void startExecute(Board board, AbstractGamemaster gm)
     {
