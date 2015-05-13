@@ -1,6 +1,8 @@
 package games.runje.dicymodel.ai;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.Utilities;
@@ -39,11 +41,10 @@ public class Simulator
         this.rules = rules;
     }
 
-    public static int getLimit(Rules rules, Board b)
+    public static int getLimit(Rules rules)
     {
-        int points = 0;
         int n = 30;
-
+        List<Integer> pointList = new ArrayList<>(n);
         for (int i = 0; i < n; i++)
         {
             Board board = Board.createBoardNoPoints(rules);
@@ -56,11 +57,12 @@ public class Simulator
             }
 
             Simulator s = new Simulator(board, rules, false);
-            points += s.makeMove(Strategy.getBestSwitchMove(moves), n / 10);
+            pointList.add(s.makeMove(Strategy.getBestSwitchMove(moves), 10));
         }
 
-        int average = points / n;
-        return average / 2;
+        Collections.sort(pointList);
+        // median
+        return pointList.get(n / 4);
     }
 
     public int makeOnlySwitch(Move m)
@@ -77,11 +79,14 @@ public class Simulator
 
     public int makeMove(Move m, int n)
     {
-        int points = 0;
+
+        List<Integer> pointList = new ArrayList<>(n);
+
         for (int i = 0; i < n; i++)
         {
             Board b = new Board(board);
             b.switchElements(m.getFirst(), m.getSecond());
+            int points = 0;
             while (true)
             {
                 ArrayList<PointElement> pointElements = BoardChecker.getAll(b, rules);
@@ -97,9 +102,14 @@ public class Simulator
                 b.moveElementsFromGravity();
                 b.recreateElements();
             }
+
+            pointList.add(points);
         }
 
-        return points / n;
+        Collections.sort(pointList);
+
+        // median
+        return pointList.get(n / 2);
     }
 
     public Board getBoard()

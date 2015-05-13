@@ -75,14 +75,18 @@ public class GameInfo
                 Rules rules = GameInfo.this.handler.getRules();
 
                 List<PointElement> elements = new ArrayList<PointElement>();
-                for (int i = 3; i < 6; i++)
+                for (int length = 3; length < 6; length++)
                 {
-                    for (int j = 1; j < 7; j++)
+                    for (int value = 1; value < 7; value++)
                     {
-                        elements.add(new PointElement(PointType.XOfAKind, i, j, null, Orientation.Down, rules.getPoints(i, j, PointType.XOfAKind)));
+                        elements.add(new PointElement(PointType.XOfAKind, length, value, null, Orientation.Down, rules.getPoints(length, value, PointType.XOfAKind)));
+                        if ((length == 3 && value < 5) || (length == 4 && value < 4) || (length == 5 && value < 3))
+                        {
+                            elements.add(new PointElement(PointType.Straight, length, value, null, Orientation.Down, rules.getPoints(length, value, PointType.Straight)));
+                        }
+
                     }
 
-                    elements.add(new PointElement(PointType.Straight, i, 1, null, Orientation.Down, rules.getPoints(i, 1, PointType.Straight)));
 
                 }
                 // 2. Chain together various setter methods to set the dialog characteristics

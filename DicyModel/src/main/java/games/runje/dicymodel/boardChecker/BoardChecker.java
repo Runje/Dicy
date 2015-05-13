@@ -1,6 +1,7 @@
 package games.runje.dicymodel.boardChecker;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.data.Board;
@@ -71,6 +72,7 @@ public class BoardChecker
                 if (points > 0)
                 {
                     m.setPoints(points);
+                    m.setPointElements(pointElements);
                     moves.add(m);
                 }
             }
@@ -82,6 +84,22 @@ public class BoardChecker
         return moves;
     }
 
+    public static Move getBestSwitchMove(Board board, Rules rules)
+    {
+        List<Move> moves = getPossiblePointMoves(board, rules);
+        int max = 0;
+        Move maxMove = null;
+        for (Move move : moves)
+        {
+            if (move.getPoints() > max)
+            {
+                maxMove = move;
+                max = move.getPoints();
+            }
+        }
+
+        return maxMove;
+    }
     public static ArrayList<Move> getAllPossibleMoves(Board board, Rules rules)
     {
         ArrayList<Move> moves = new ArrayList<>();

@@ -8,16 +8,19 @@ import android.content.Context;
 public class StraightLayout extends DicesLayout
 {
 
-    public StraightLayout(Context context, int length, int size)
+    private int value;
+
+    public StraightLayout(Context context, int length, int size, int value)
     {
-        super(context, length, size, 6);
+        super(context, length, size, 5);
+        this.value = value;
         init();
     }
 
     @Override
     protected int getValue(int i)
     {
-        return i + 1;
+        return i + value;
     }
 
     @Override

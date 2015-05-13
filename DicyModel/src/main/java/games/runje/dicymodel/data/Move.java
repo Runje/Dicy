@@ -1,5 +1,7 @@
 package games.runje.dicymodel.data;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas on 07.01.2015.
  */
@@ -8,6 +10,7 @@ public class Move
     private int points = 0;
     private Coords first;
     private Coords second;
+    private ArrayList<PointElement> pointElements;
 
     public Move(Coords first, Coords second)
     {
@@ -53,5 +56,15 @@ public class Move
                 ", first=" + first +
                 ", second=" + second +
                 '}';
+    }
+
+    public ArrayList<PointElement> getPointElements()
+    {
+        return pointElements;
+    }
+
+    public void setPointElements(ArrayList<PointElement> pointElements)
+    {
+        this.pointElements = pointElements;
     }
 }

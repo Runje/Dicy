@@ -31,7 +31,7 @@ public class PointList extends ScrollView
             switch (element.getType())
             {
                 case Straight:
-                    dices = new StraightLayout(context, element.getMultiplicity(), size);
+                    dices = new StraightLayout(context, element.getMultiplicity(), size, value);
                     break;
                 case FullHouse:
                     break;

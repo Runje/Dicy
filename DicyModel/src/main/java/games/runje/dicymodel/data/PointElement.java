@@ -12,7 +12,7 @@ public class PointElement
 
     private PointType type;
     /**
-     * Highest number of dice.
+     * X in XOfAKind and the lowest value in the straight
      */
     private int diceValue;
     /**

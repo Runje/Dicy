@@ -159,7 +159,7 @@ public class NewOptionActivity extends Activity
 
 
         // TODO: height of dices should be same as textview
-        straight = new StraightLayout(this, 3, size);
+        straight = new StraightLayout(this, 3, size, 1);
         RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
         final int id = t.getId();
         p.addRule(RelativeLayout.RIGHT_OF, id);

@@ -132,7 +132,7 @@ public class LocalGame extends Game
     public void endSwitch()
     {
         //Logger.logInfo(LogKey, "End switch");
-        if (switchPoints > pointsLimit || !isStrikePossible())
+        if (switchPoints >= pointsLimit || !isStrikePossible())
         {
             movePoints += switchPoints;
         }
@@ -150,7 +150,7 @@ public class LocalGame extends Game
     @Override
     public boolean hasTurn(Player player)
     {
-        Logger.logInfo(LogKey, "Hast Turn: " + getPlayingPlayer().getId() + ". Player: " + player.getId());
+        Logger.logInfo(LogKey, "Has Turn: " + getPlayingPlayer().getId() + ". Player: " + player.getId());
         return getPlayingPlayer().getId() == player.getId();
     }
 

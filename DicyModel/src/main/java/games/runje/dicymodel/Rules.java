@@ -34,7 +34,7 @@ public class Rules
     /**
      * The points for a straight. The index is the totalLength of the straight.
      */
-    private int[] straightPoints;
+    private int[][] straightPoints;
     /**
      * The points for a Full House. The index is the value of the three of a kind.
      */
@@ -70,7 +70,7 @@ public class Rules
         this.initFullHousePoints(0);
         this.initXOfAKindPoints(this.minXOfAKind, maxLengthOfRow, 1, 2);
         // TODO: Calculate
-        this.pointLimit = 35;
+        this.pointLimit = -1;
         this.pointLimitSetManually = false;
     }
 
@@ -135,6 +135,16 @@ public class Rules
             // increase factor
             f *= factor;
         }
+
+        int[][] xPoints = {{0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 45, 20, 25, 30, 35, 40},
+                {0, 155, 55, 75, 95, 115, 135},
+                {0, 1000, 400, 500, 600, 700, 800}
+        };
+
+        xOfAKindPoints = xPoints;
     }
 
     /**
@@ -165,21 +175,35 @@ public class Rules
      */
     public void initStraightPoints(int points)
     {
-        this.straightPoints = new int[this.numberOfDices + 1];
+        this.straightPoints = new int[this.numberOfDices + 1][this.numberOfDices + 1];
         int factor = 1;
-        for (int i = 0; i < this.numberOfDices + 1; i++)
+        for (int j = 0; j < this.numberOfDices + 1; j++)
         {
-            //if (this.minStraight <= i)
+            for (int i = 0; i < this.numberOfDices + 1; i++)
             {
-                this.straightPoints[i] = points * factor;
-                // double the factor
-                factor *= 2;
-            }
-            //else
-            {
-                //this.straightPoints[i] = 0;
+                //if (this.minStraight <= i)
+                {
+                    this.straightPoints[j][i] = points * factor;
+                    // double the factor
+                    factor *= 2;
+                }
+                //else
+                {
+                    //this.straightPoints[i] = 0;
+                }
             }
         }
+
+
+        int[][] sPoints = {{0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 30, 15, 20, 25, 0, 0},
+                {0, 120, 40, 80, 0, 0, 0},
+                {0, 500, 250, 0, 0, 0, 0}
+        };
+
+        straightPoints = sPoints;
     }
 
     public int getMinXOfAKind()
@@ -222,9 +246,9 @@ public class Rules
         this.minStraight = minStraight;
     }
 
-    public int getStraightPoints(int length)
+    public int getStraightPoints(int length, int value)
     {
-        return this.straightPoints[length];
+        return this.straightPoints[length][value];
     }
 
     public int getPoints(int length, int value, PointType type)
@@ -232,7 +256,7 @@ public class Rules
         switch (type)
         {
             case Straight:
-                return this.getStraightPoints(length);
+                return this.getStraightPoints(length, value);
             case FullHouse:
                 break;
             case XOfAKind:
@@ -250,5 +274,15 @@ public class Rules
     public void setPointLimit(int pointLimit)
     {
         this.pointLimit = pointLimit;
+    }
+
+    public void setStraightPoints(int[][] straightPoints)
+    {
+        this.straightPoints = straightPoints;
+    }
+
+    public void setxOfAKindPoints(int[][] xOfAKindPoints)
+    {
+        this.xOfAKindPoints = xOfAKindPoints;
     }
 }

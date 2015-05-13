@@ -101,15 +101,20 @@ public class StraightFinder extends Finder
                 if (length >= rules.getMinStraight())
                 {
                     // ascending
-                    int highestValue = lastValue;
+                    int lowestValue = lastValue - length + 1;
 
                     // descending
                     if (descendingLast)
                     {
-                        highestValue = lastValue + length - 1;
+                        lowestValue = lastValue;
                     }
 
-                    elements.add(this.createPointElement(length, endIndex, orientation, highestValue, firstPoint, PointType.Straight));
+                    if (length == 7)
+                    {
+                        int a = -1;
+                    }
+
+                    elements.add(this.createPointElement(length, endIndex, orientation, lowestValue, firstPoint, PointType.Straight));
                 }
             }
 

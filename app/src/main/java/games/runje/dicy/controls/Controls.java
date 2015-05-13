@@ -53,18 +53,18 @@ public class Controls implements GameControls
         if (game.isGameOver() && enabled)
         {
             AnimatedLogger.logInfo(LogKey, "Game Over");
+            enabled = false;
             return;
         }
 
-        if (game.hasAIPlayerTurn() && enabled)
-        {
-            handler.setEnabledBoard(false);
-            setEnabledControls(false);
-            AnimatedLogger.logInfo(LogKey, "Disabling controls for " + game.getPlayingPlayer().getName() + ":" + game.getPlayingPlayer().getId());
-            return;
-        }
+        boolean aiEnabled = game.hasAIPlayerTurn() && enabled;
 
         this.enabled = enabled;
+        if (aiEnabled)
+        {
+            enabled = false;
+        }
+
         handler.setEnabledBoard(enabled);
         boardLayout.setEnabledGravity(enabled);
         gameInfo.setEnabled(enabled);
