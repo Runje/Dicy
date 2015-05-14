@@ -119,7 +119,7 @@ public class GameInfo
         this.movePointsText.setText("" + Integer.toString(game.getSwitchPoints()) + "\\" + sLimit);
 
 
-        if (game.getSwitchPoints() > game.getPointsLimit())
+        if (game.getSwitchPoints() >= game.getPointsLimit())
         {
             movePointsText.setTextColor(Color.parseColor(PlayerLayout.HtmlBlue));
         }

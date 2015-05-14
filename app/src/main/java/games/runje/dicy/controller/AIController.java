@@ -57,7 +57,24 @@ public class AIController
                     {
                         LocalGame l = (LocalGame) game;
 
-                        if (l.getMovePoints() == 0)
+                        boolean someOneIsWinning = false;
+                        int i = l.getLastLeadingPlayer();
+                        if (i != -1)
+                        {
+                            Player winner = l.getPlayers().get(i);
+
+
+                            if (winner.getId() != player.getId())
+                            {
+                                if (winner.getPoints() >= l.getGameEndPoints() && (l.getMovePoints() + player.getPoints() <= winner.getPoints()))
+                                {
+                                    someOneIsWinning = true;
+                                }
+                            }
+                        }
+
+                        boolean nextMoveSurePoints = getPointsOfNextMove() >= l.getPointsLimit();
+                        if (l.getMovePoints() == 0 || someOneIsWinning || nextMoveSurePoints)
                         {
                             activity.runOnUiThread(new Runnable()
                             {
@@ -88,6 +105,10 @@ public class AIController
         }).start();
     }
 
+    private int getPointsOfNextMove()
+    {
+        return player.getStrategy().getNextMove(handler.getRules(), handler.getBoard()).getPoints();
+    }
     private void makeMove()
     {
         AnimatedLogger.logInfo(LogKey, "Making a move");
