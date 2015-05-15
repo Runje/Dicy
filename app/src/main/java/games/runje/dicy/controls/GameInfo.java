@@ -74,24 +74,9 @@ public class GameInfo
 
                 Rules rules = GameInfo.this.handler.getRules();
 
-                List<PointElement> elements = new ArrayList<PointElement>();
-                for (int length = 3; length < 6; length++)
-                {
-                    for (int value = 1; value < 7; value++)
-                    {
-                        elements.add(new PointElement(PointType.XOfAKind, length, value, null, Orientation.Down, rules.getPoints(length, value, PointType.XOfAKind)));
-                        if ((length == 3 && value < 5) || (length == 4 && value < 4) || (length == 5 && value < 3))
-                        {
-                            elements.add(new PointElement(PointType.Straight, length, value, null, Orientation.Down, rules.getPoints(length, value, PointType.Straight)));
-                        }
-
-                    }
-
-
-                }
                 // 2. Chain together various setter methods to set the dialog characteristics
                 builder.setMessage("Points")
-                        .setTitle("List").setView(new PointList(activity, elements));
+                        .setTitle("List").setView(PointList.createPointList(activity, rules));
                 builder.setPositiveButton("ok", new DialogInterface.OnClickListener()
                 {
                     @Override

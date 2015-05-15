@@ -12,26 +12,16 @@ import games.runje.dicymodel.data.Coords;
 public class SwitchAnimation implements Animation.AnimationListener
 {
     private final String LogKey = "SwitchAnimation";
-    private final boolean withSwitchBack;
     private AnimatedGamemaster gmAnimated;
     private AnimatedBoardElement secondImage;
     private AnimatedBoardElement firstImage;
-    private boolean update = true;
+
 
     public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, AnimatedGamemaster gmAnimated)
     {
         this.gmAnimated = gmAnimated;
         this.firstImage = firstImage;
         this.secondImage = secondImage;
-        this.withSwitchBack = true;
-    }
-
-    public SwitchAnimation(AnimatedBoardElement firstImage, AnimatedBoardElement secondImage, boolean withSwitchBack, AnimatedGamemaster gmAnimated)
-    {
-        this.gmAnimated = gmAnimated;
-        this.firstImage = firstImage;
-        this.secondImage = secondImage;
-        this.withSwitchBack = withSwitchBack;
     }
 
     public void start()
@@ -91,14 +81,6 @@ public class SwitchAnimation implements Animation.AnimationListener
         aB.setAnimatedElement(first, secondImage);
         aB.setAnimatedElement(second, firstImage);
         gmAnimated.endSwitchAnimation();
-    }
-
-    /**
-     * No UpdateAfterSwitch will be called.
-     */
-    private void setNoUpdate()
-    {
-        this.update = false;
     }
 
     @Override

@@ -38,8 +38,6 @@ public class PointsAnimation implements Animation.AnimationListener
     @Override
     public void onAnimationEnd(Animation animation)
     {
-        AnimatedBoard board = gmAnimated.getAnimatedBoard();
-
         // Delete Points
         for (TextView tv : tvs)
         {

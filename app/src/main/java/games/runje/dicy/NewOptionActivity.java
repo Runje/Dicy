@@ -241,9 +241,11 @@ public class NewOptionActivity extends Activity
             return;
         }
 
+        // TODO: show Loading screen
+        v.setEnabled(false);
+
         final Rules rules = getRulesFromIntent(intent);
 
-        // TODO: Show loading screen
         new CalcPointLimit(rules, new Runnable()
         {
             @Override
