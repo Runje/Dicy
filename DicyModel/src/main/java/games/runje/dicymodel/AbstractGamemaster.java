@@ -27,7 +27,6 @@ public abstract class AbstractGamemaster
     protected LocalGame game;
     protected Skill activeSkill;
     protected ArrayList<BoardElement> recreateElements;
-    private List<Player> players;
     private String LogKey = "AbstractGamemaster";
 
     protected AbstractGamemaster(Rules rules, List<Player> players)
@@ -39,7 +38,6 @@ public abstract class AbstractGamemaster
     {
         this.board = board;
         this.rules = rules;
-        this.players = players;
         // TODO: starting player
         this.game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, 0);
     }

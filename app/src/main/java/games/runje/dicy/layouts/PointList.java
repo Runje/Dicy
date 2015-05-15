@@ -37,8 +37,6 @@ public class PointList extends ScrollView
                 case Straight:
                     dices = new StraightLayout(context, element.getMultiplicity(), size, value);
                     break;
-                case FullHouse:
-                    break;
                 case XOfAKind:
                     dices = new XOfAKindLayout(context, element.getMultiplicity(), size, maxLength, value);
                     break;

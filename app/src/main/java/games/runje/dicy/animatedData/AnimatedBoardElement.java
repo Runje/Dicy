@@ -65,7 +65,6 @@ public class AnimatedBoardElement extends ImageView
             case 0:
                 return R.drawable.dice3d;
             default:
-                assert false;
                 return 0;
 
         }

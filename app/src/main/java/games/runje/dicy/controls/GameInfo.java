@@ -25,7 +25,6 @@ import games.runje.dicymodel.game.LocalGame;
  */
 public class GameInfo
 {
-    private final TextView limit;
     private final Button nextButton;
     private final TextView current;
     private final TextView movePointsText;
@@ -39,8 +38,8 @@ public class GameInfo
         this.game = game;
         this.activity = activity;
         this.handler = handler;
-        this.limit = (TextView) activity.findViewById(R.id.goal_text);
-        this.limit.setText("" + game.getGameEndPoints());
+        TextView limit = (TextView) activity.findViewById(R.id.goal_text);
+        limit.setText("" + game.getGameEndPoints());
         current = (TextView) activity.findViewById(R.id.currentPoints);
         current.setText("0");
 

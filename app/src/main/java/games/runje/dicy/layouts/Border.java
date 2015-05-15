@@ -11,9 +11,16 @@ import android.view.View;
  */
 public class Border extends View
 {
+    private Paint paint;
+
     public Border(Context context)
     {
         super(context);
+
+        paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(5);
     }
 
     @Override
@@ -25,15 +32,17 @@ public class Border extends View
         int y = getHeight();
         int radius;
         radius = 100;
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(5);
+        Paint paint = getPaint();
         canvas.drawPaint(paint);
         // Use Color.parseColor to define HTML colors
         paint.setColor(Color.parseColor("#CD5C5C"));
         canvas.drawRect(0, radius, radius, 0, paint);
 
 
+    }
+
+    public Paint getPaint()
+    {
+        return paint;
     }
 }
