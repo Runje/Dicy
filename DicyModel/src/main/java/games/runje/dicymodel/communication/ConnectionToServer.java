@@ -24,7 +24,7 @@ public class ConnectionToServer
     private static Socket s;
     private static boolean connected = false;
     private static MessageHandler messageHandler;
-    private static String LogKey = "ConnectionToServer";
+    public static String LogKey = "ConnectionToServer";
     private static long fromId;
 
     public static boolean isConnected()

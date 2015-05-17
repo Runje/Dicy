@@ -22,7 +22,7 @@ public class OnlineGameCreator implements MessageHandler
 {
     AnimatedClientGamemaster gamemaster;
     Activity activity;
-    private String LogKey = "OnlineGameCreator";
+    public static String LogKey = "OnlineGameCreator";
 
     public OnlineGameCreator(Activity activity)
     {

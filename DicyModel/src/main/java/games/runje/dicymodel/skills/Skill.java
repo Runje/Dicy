@@ -97,7 +97,7 @@ public class Skill
 
     protected void startExecute(Board board, AbstractGamemaster gm)
     {
-        Logger.logInfo("Skill", "start Execute in Base");
+        Logger.logDebug("Skill", "start Execute in Base");
         gm.endExecuteSkill();
     }
 

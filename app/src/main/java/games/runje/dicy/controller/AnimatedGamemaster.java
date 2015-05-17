@@ -107,7 +107,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     @Override
     protected void startSwitchAnimation(Coords first, Coords second)
     {
-        Logger.logInfo(LogKey, "Start Animation Switching elements");
+        Logger.logDebug(LogKey, "Start Animation Switching elements");
 
         //check if possible
         if (!(second.row < 0 || second.row >= board.getNumberOfRows() ||
@@ -131,7 +131,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     @Override
     protected void startPointAnimation(ArrayList<PointElement> elements)
     {
-        Logger.logInfo(LogKey, "Start Point animated Animation");
+        Logger.logDebug(LogKey, "Start Point animated Animation");
         new PointsAnimation(elements, this).start();
     }
 

@@ -15,7 +15,7 @@ public class AIController
     private final Player player;
     private final Activity activity;
     private AIControllerHandler handler;
-    private String LogKey = "AIController";
+    public static String LogKey = "AIController";
 
     public AIController(Player p, Activity a, AIControllerHandler handler)
     {
@@ -88,7 +88,7 @@ public class AIController
                         }
                         else
                         {
-                            AnimatedLogger.logInfo(LogKey, "Next");
+                            AnimatedLogger.logDebug(LogKey, "Next");
                             activity.runOnUiThread(new Runnable()
                             {
                                 @Override
@@ -111,7 +111,7 @@ public class AIController
     }
     private void makeMove()
     {
-        AnimatedLogger.logInfo(LogKey, "Making a move");
+        AnimatedLogger.logDebug(LogKey, "Making a move");
         Move m = player.getStrategy().getNextMove(handler.getRules(), handler.getBoard());
         handler.switchElements(m.getFirst(), m.getSecond());
     }

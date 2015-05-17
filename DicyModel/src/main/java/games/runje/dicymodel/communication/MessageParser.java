@@ -19,7 +19,7 @@ import games.runje.dicymodel.communication.messages.SwitchMessage;
  */
 public class MessageParser
 {
-    private static String LogKey = "MessageParser";
+    public static String LogKey = "MessageParser";
 
     public static Message parse(ByteBuffer buffer, int length)
     {

@@ -30,7 +30,7 @@ import games.runje.dicymodel.data.Player;
  */
 public class LocalGameActivity extends Activity
 {
-    private String LogKey = "LocalGameActivity";
+    public static String LogKey = "LocalGameActivity";
     private AnimatedGamemaster gmAnimated;
 
     @Override
@@ -44,6 +44,7 @@ public class LocalGameActivity extends Activity
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Logger.setInstance(new AnimatedLogger());
+        Logger.init();
         Logger.logInfo(LogKey, "On Post Create");
         setContentView(R.layout.game);
         View mainView = findViewById(R.id.board);
@@ -76,7 +77,7 @@ public class LocalGameActivity extends Activity
             if (playing[i])
             {
                 p.add(players[i]);
-                AnimatedLogger.logInfo("LocalGameActivity", "adding " + players[i]);
+                AnimatedLogger.logDebug("LocalGameActivity", "adding " + players[i]);
             }
         }
 
@@ -88,7 +89,7 @@ public class LocalGameActivity extends Activity
             if (playing[i])
             {
                 s.add(Strategy.makeStrategy(strategies[i]));
-                AnimatedLogger.logInfo("LocalGameActivity", "adding " + strategies[i]);
+                AnimatedLogger.logDebug("LocalGameActivity", "adding " + strategies[i]);
             }
         }
 

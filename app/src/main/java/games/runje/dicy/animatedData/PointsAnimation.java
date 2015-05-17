@@ -17,6 +17,7 @@ import games.runje.dicymodel.data.PointElement;
  */
 public class PointsAnimation implements Animation.AnimationListener
 {
+    public static String LogKey;
     private final ArrayList<PointElement> elements;
     private final AnimatedGamemaster gmAnimated;
     private ArrayList<TextView> tvs;

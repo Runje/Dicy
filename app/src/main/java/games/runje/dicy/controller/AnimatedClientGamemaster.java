@@ -28,7 +28,7 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class AnimatedClientGamemaster extends AnimatedGamemaster implements ClientGamemaster
 {
-    private String LogKey = "AnimatedClientGamemaster";
+    public static String LogKey = "AnimatedClientGamemaster";
     private boolean messageInProcess = false;
     private boolean waitForMessage = true;
 
@@ -40,13 +40,13 @@ public class AnimatedClientGamemaster extends AnimatedGamemaster implements Clie
     @Override
     public void receiveMessage(final Message msg)
     {
-        Logger.logInfo(LogKey, "ReceiveMessage in Gamemaster");
+        Logger.logDebug(LogKey, "ReceiveMessage in Gamemaster");
 
         while (messageInProcess || !waitForMessage)
         {
             try
             {
-                Logger.logInfo(LogKey, String.format("Waiting: %b, Processing: %b", waitForMessage, messageInProcess));
+                Logger.logDebug(LogKey, String.format("Waiting: %b, Processing: %b", waitForMessage, messageInProcess));
                 Thread.sleep(100);
             }
             catch (InterruptedException e)

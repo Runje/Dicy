@@ -2,6 +2,14 @@ package games.runje.dicy.controller;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import games.runje.dicy.animatedData.AnimatedBoardElementTL;
+import games.runje.dicy.animatedData.FallingAnimation;
+import games.runje.dicy.animatedData.PointsAnimation;
 import games.runje.dicymodel.Logger;
 
 /**
@@ -9,9 +17,72 @@ import games.runje.dicymodel.Logger;
  */
 public class AnimatedLogger extends Logger
 {
+    protected static Map<String, Integer> keyMap;
+    private static HashMap<String, Integer> keyGroup;
+    private static HashMap<String, List<String>> groupMap;
+
+    private static String animations = "Animations";
+
+    @Override
+    protected void initLevels()
+    {
+        Log.d("Logger", "Init Levels");
+        LogLevel = 3;
+        keyMap = new HashMap<>();
+        groupMap = new HashMap<>();
+        keyGroup = new HashMap<>();
+
+        initAnimationGroup();
+
+        // single keys
+        keyMap.put(AnimatedBoardElementTL.LogKey, 3);
+
+
+        for(String key : keyGroup.keySet())
+        {
+            int value = keyGroup.get(key);
+            List<String> keys = groupMap.get(key);
+
+            for (String groupKey:keys)
+            {
+                keyMap.put(groupKey, value);
+            }
+        }
+    }
+
+    private void initAnimationGroup()
+    {
+        // group Animation
+        keyGroup.put(animations, 3);
+
+        List<String> anims = new ArrayList<>();
+        anims.add(FallingAnimation.LogKey);
+        anims.add(PointsAnimation.LogKey);
+
+        groupMap.put(animations, anims);
+    }
+
+    protected boolean printMessage(int level, String key)
+    {
+        if (level >= LogLevel)
+        {
+            return true;
+        }
+
+        if (!keyMap.containsKey(key))
+        {
+            return false;
+        }
+
+        return level >= keyMap.get(key);
+    }
+
     @Override
     protected void log(int level, String key, String message)
     {
-        Log.d(key, message);
+        if (printMessage(level, key))
+        {
+            Log.d(key, message);
+        }
     }
 }

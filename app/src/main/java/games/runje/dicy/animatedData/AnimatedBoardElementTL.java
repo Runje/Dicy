@@ -22,7 +22,7 @@ import games.runje.dicymodel.data.Coords;
  */
 public class AnimatedBoardElementTL implements View.OnTouchListener
 {
-    private final String LogKey = "AnimatedBoardElementTL";
+    public final static String LogKey = "AnimatedBoardElementTL";
     protected Coords position;
     private boolean switchEnabled = true;
     private boolean disabled = false;
@@ -103,7 +103,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
     private boolean switchOnTouch(View view, MotionEvent motionEvent)
     {
         diceListener.setAllEnabled(false);
-        AnimatedLogger.logInfo(LogKey, "Disabling all controls");
+        AnimatedLogger.logDebug(LogKey, "Disabling all controls");
         disabled = false;
         float x2 = 0;
         float y2 = 0;
@@ -193,16 +193,16 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                 direction = calcDirection(x2, y2);
                 if (direction == null)
                 {
-                    AnimatedLogger.logInfo("Direction", "No Switch" + ", dx = " + dx + ", dy = " + dy);
+                    AnimatedLogger.logDebug("Direction", "No Switch" + ", dx = " + dx + ", dy = " + dy);
                     disabled = false;
                     diceListener.setAllEnabled(true);
-                    AnimatedLogger.logInfo(LogKey, "Enabling all controls");
+                    AnimatedLogger.logDebug(LogKey, "Enabling all controls");
                     return true;
                 }
 
                 Coords second2 = calcSecondPos(position, direction);
                 diceListener.executeOnSwitch(position, second2);
-                AnimatedLogger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy);
+                AnimatedLogger.logDebug("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy);
             }
         }
         return true;
@@ -261,7 +261,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
         float ratioUpDown = Math.abs(dy) / Math.abs(dx);
 
         // distance should be a minimum
-        double distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(2, dy));
+        double distance = Math.sqrt(Math.pow(Math.abs(dx), 2) + Math.pow(2, Math.abs(dy)));
         Logger.logDebug(LogKey, "Distance: " + distance);
 
         if (distance < 50)

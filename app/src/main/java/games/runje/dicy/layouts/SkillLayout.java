@@ -22,7 +22,7 @@ public class SkillLayout extends LinearLayout
     private FrameLayout clickArea;
     private ImageView image;
     private Skill skill;
-    private String LogKey = "SkillLayout";
+    public static String LogKey = "SkillLayout";
 
     public SkillLayout(Context context, final Skill skill, final ControlHandler handler, View container)
     {

@@ -27,7 +27,7 @@ public class Board
      */
     protected int columns;
     protected Gravity gravity;
-    private String LogKey = "Board";
+    public static String LogKey = "Board";
 
     /**
      * Initializes an empty Board.
@@ -328,7 +328,7 @@ public class Board
         for (BoardElement element : elements)
         {
             setElement(element.getPosition(), element);
-            Logger.logInfo(LogKey, "Setting element with value " + element.getValue() + " at " + element.getPosition());
+            Logger.logDebug(LogKey, "Setting element with value " + element.getValue() + " at " + element.getPosition());
         }
     }
 

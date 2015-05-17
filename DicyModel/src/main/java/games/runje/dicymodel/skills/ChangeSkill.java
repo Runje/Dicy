@@ -24,7 +24,7 @@ public class ChangeSkill extends Skill
     {
         // TODO
         board.getElement(pos).setValue(6);
-        Logger.logInfo("ChangeSkill", "Setting value = 6 of " + pos);
+        Logger.logDebug("ChangeSkill", "Setting value = 6 of " + pos);
         super.startExecute(board, gm);
     }
 }

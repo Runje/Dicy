@@ -14,7 +14,7 @@ public class RecreateBoardMessage extends Message
 {
     public static final String Name = "RecreateBoardMessage";
     Board board;
-    private String LogKey = Name;
+    public static String LogKey = Name;
 
     public RecreateBoardMessage(Board board)
     {
@@ -48,7 +48,7 @@ public class RecreateBoardMessage extends Message
     @Override
     public void executeAtClient(ClientGamemaster gamemaster)
     {
-        Logger.logInfo(LogKey, "RecreateBoardMessage is executed");
+        Logger.logDebug(LogKey, "RecreateBoardMessage is executed");
         gamemaster.recreateBoard(board);
     }
 }

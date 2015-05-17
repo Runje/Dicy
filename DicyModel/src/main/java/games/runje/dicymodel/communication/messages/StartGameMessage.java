@@ -18,7 +18,7 @@ public class StartGameMessage extends Message
     Board board;
     Rules rules;
     LocalGame game;
-    private String LogKey = Name;
+    public static String LogKey = Name;
 
     public StartGameMessage(Board board, Rules rules, LocalGame game)
     {
@@ -57,7 +57,7 @@ public class StartGameMessage extends Message
     @Override
     public void executeAtClient(ClientGamemaster gamemaster)
     {
-        Logger.logInfo(LogKey, "StartGameMessage is executed");
+        Logger.logDebug(LogKey, "StartGameMessage is executed");
 
 
         gamemaster.startGame(board, rules, game);

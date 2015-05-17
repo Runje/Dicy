@@ -26,7 +26,7 @@ public class HostGamemaster extends AbstractGamemaster
     private final Socket secondClient;
     private final long firstId;
     private final long secondId;
-    private String LogKey = "HostGamemaster";
+    public static String LogKey = "HostGamemaster";
 
     public HostGamemaster(Board board, Rules rules, List<Player> player, Socket firstClient, long firstId, Socket secondClient, long secondId)
     {
@@ -111,9 +111,9 @@ public class HostGamemaster extends AbstractGamemaster
 
     protected void startRecreateBoardAnimation()
     {
-        Logger.logInfo(LogKey, "Old board: " + board.toString());
+        Logger.logDebug(LogKey, "Old board: " + board.toString());
         board.recreateBoard();
-        Logger.logInfo(LogKey, "New board: " + board.toString());
+        Logger.logDebug(LogKey, "New board: " + board.toString());
         sendMessageToBoth(new RecreateBoardMessage(board));
         endRecreateBoardAnimation();
     }

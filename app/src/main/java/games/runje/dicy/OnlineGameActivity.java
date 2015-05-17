@@ -27,7 +27,7 @@ import games.runje.dicymodel.communication.messages.IdentifyMessage;
 public class OnlineGameActivity extends Activity
 {
     private ConnectionToServer client;
-    private String LogKey = "OnlineGameActivity";
+    public static String LogKey = "OnlineGameActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
