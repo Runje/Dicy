@@ -65,7 +65,6 @@ public class AnimatedBoardElement extends ImageView
             case 0:
                 return R.drawable.dice3d;
             default:
-                assert false;
                 return 0;
 
         }
@@ -140,7 +139,7 @@ public class AnimatedBoardElement extends ImageView
      */
     public void remove()
     {
-        AnimatedLogger.logInfo(LogKey, "Removing from View: " + this.getPosition() + ". Value = " + this.getValue() + ". NULL: " + (this.getParent() == null));
+        AnimatedLogger.logDebug(LogKey, "Removing from View: " + this.getPosition() + ". Value = " + this.getValue() + ". NULL: " + (this.getParent() == null));
         // Attention: dependent from the parents layout
         ((RelativeLayout) this.getParent()).removeView(this);
     }

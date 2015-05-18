@@ -12,14 +12,14 @@ import games.runje.dicymodel.Logger;
 public class MessageReader
 {
 
-    private static String LogKey = "MessageReader";
+    public static String LogKey = "MessageReader";
 
     public static int readMessage(InputStream is, ByteBuffer buffer) throws IOException
     {
         read(is, buffer, 0, 4);
 
         int length = buffer.getInt();
-        Logger.logInfo(LogKey, "totalLength: " + length);
+        Logger.logDebug(LogKey, "totalLength: " + length);
 
         read(is, buffer, 4, length - 4);
 

@@ -30,7 +30,7 @@ public class LocalGame extends Game
     private int turn;
     private int movePoints;
     private int switchPoints;
-    private String LogKey = "LocalGame";
+    public static String LogKey = "LocalGame";
     private int pointsLimit;
     private String winner;
     private boolean cancelled = false;
@@ -69,7 +69,7 @@ public class LocalGame extends Game
                 p.addSkill(new HelpSkill(1, 6));
                 p.addSkill(new ChangeSkill(6, 6));
             }
-            //Logger.logInfo(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
+            //Logger.logDebug(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
         }
 
         // random starting player
@@ -99,7 +99,7 @@ public class LocalGame extends Game
     public void addPointElements(ArrayList<PointElement> elements, Board board)
     {
         int points = Utilities.getPointsFrom(elements);
-        //Logger.logInfo(LogKey, "Add switch points: " + points);
+        //Logger.logDebug(LogKey, "Add switch points: " + points);
         switchPoints += points;
 
         loadSkills(elements, board);
@@ -122,16 +122,16 @@ public class LocalGame extends Game
         getPlayingPlayer().loadSkills(count);
         for (int i = 0; i < count.length; i++)
         {
-            //Logger.logInfo(LogKey, "i: " + i + ", count: " + count[i]);
+            //Logger.logDebug(LogKey, "i: " + i + ", count: " + count[i]);
         }
 
-        //Logger.logInfo(LogKey, "Skillload: " + getPlayingPlayer().getSkill(Skill.Help).getCurrentLoad());
+        //Logger.logDebug(LogKey, "Skillload: " + getPlayingPlayer().getSkill(Skill.Help).getCurrentLoad());
     }
 
     @Override
     public void endSwitch()
     {
-        //Logger.logInfo(LogKey, "End switch");
+        //Logger.logDebug(LogKey, "End switch");
         if (switchPoints >= pointsLimit || !isStrikePossible())
         {
             movePoints += switchPoints;
@@ -150,7 +150,7 @@ public class LocalGame extends Game
     @Override
     public boolean hasTurn(Player player)
     {
-        Logger.logInfo(LogKey, "Has Turn: " + getPlayingPlayer().getId() + ". Player: " + player.getId());
+        Logger.logDebug(LogKey, "Has Turn: " + getPlayingPlayer().getId() + ". Player: " + player.getId());
         return getPlayingPlayer().getId() == player.getId();
     }
 
@@ -266,7 +266,7 @@ public class LocalGame extends Game
         }
         else if (maxPoints < gameEndPoints)
         {
-            Logger.logInfo(LogKey, "Maxpoints: " + maxPoints + ", index " + index);
+            Logger.logDebug(LogKey, "Maxpoints: " + maxPoints + ", index " + index);
             lastLeadingPlayer = -1;
         }
     }
@@ -286,7 +286,7 @@ public class LocalGame extends Game
             winner = getPlayingPlayer().getName();
         }
 
-        //Logger.logInfo(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
+        //Logger.logDebug(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
         return lastLeadingPlayerTurn && enoughPoints;
     }
 

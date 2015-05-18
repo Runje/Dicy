@@ -27,8 +27,7 @@ public abstract class AbstractGamemaster
     protected LocalGame game;
     protected Skill activeSkill;
     protected ArrayList<BoardElement> recreateElements;
-    private List<Player> players;
-    private String LogKey = "AbstractGamemaster";
+    public static String LogKey = "AbstractGamemaster";
 
     protected AbstractGamemaster(Rules rules, List<Player> players)
     {
@@ -39,7 +38,6 @@ public abstract class AbstractGamemaster
     {
         this.board = board;
         this.rules = rules;
-        this.players = players;
         // TODO: starting player
         this.game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, 0);
     }
@@ -47,7 +45,7 @@ public abstract class AbstractGamemaster
     public void switchElements(Coords first, Coords second)
     {
         controls.setEnabledControls(false);
-        Logger.logInfo(LogKey, "Switching elements");
+        Logger.logDebug(LogKey, "Switching elements");
         this.lastMove = new Move(first, second);
         startSwitchAnimation(first, second);
     }
@@ -71,7 +69,7 @@ public abstract class AbstractGamemaster
 
     protected void startSwitchAnimation(Coords first, Coords second)
     {
-        Logger.logInfo(LogKey, "Start Switching elements");
+        Logger.logDebug(LogKey, "Start Switching elements");
         board.switchElements(first, second);
         endSwitchAnimation();
     }
@@ -98,8 +96,8 @@ public abstract class AbstractGamemaster
             case Switched:
                 ArrayList<PointElement> elements = BoardChecker.getAll(board, rules);
                 int points = Utilities.getPointsFrom(elements);
-                Logger.logInfo(LogKey, "Points after switch: " + points);
-                Logger.logInfo(LogKey, "Board after switch: " + board);
+                Logger.logDebug(LogKey, "Points after switch: " + points);
+                Logger.logDebug(LogKey, "Board after switch: " + board);
                 game.addPointElements(elements, board);
                 if (points == 0)
                 {
@@ -185,9 +183,9 @@ public abstract class AbstractGamemaster
 
     protected void startRecreateBoardAnimation()
     {
-        Logger.logInfo(LogKey, "Old board: " + board.toString());
+        Logger.logDebug(LogKey, "Old board: " + board.toString());
         board.recreateBoard();
-        Logger.logInfo(LogKey, "New board: " + board.toString());
+        Logger.logDebug(LogKey, "New board: " + board.toString());
         endRecreateBoardAnimation();
     }
 
@@ -215,7 +213,7 @@ public abstract class AbstractGamemaster
 
     public void endRecreateAnimation()
     {
-        Logger.logInfo(LogKey, "Board after recreate: " + board);
+        Logger.logDebug(LogKey, "Board after recreate: " + board);
         stateTransition(GameState.Recreated);
     }
 
@@ -239,7 +237,7 @@ public abstract class AbstractGamemaster
 
     protected void startPointAnimation(ArrayList<PointElement> elements)
     {
-        Logger.logInfo(LogKey, "Start Point animated Animation");
+        Logger.logDebug(LogKey, "Start Point animated Animation");
         endPointAnimation();
     }
 

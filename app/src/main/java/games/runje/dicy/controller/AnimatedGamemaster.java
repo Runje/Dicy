@@ -18,6 +18,8 @@ import games.runje.dicy.layouts.BoardLayout;
 import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.Utilities;
+import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
@@ -90,9 +92,22 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     }
 
     @Override
+    public int getPointsFromSwitch(Coords position, Coords second)
+    {
+        if (!Utilities.coordsInBoard(second, board))
+        {
+            return 0;
+        }
+
+        Board b = new Board(board);
+        b.switchElements(position, second);
+        return Utilities.getPointsFrom(BoardChecker.getAll(b, rules));
+    }
+
+    @Override
     protected void startSwitchAnimation(Coords first, Coords second)
     {
-        Logger.logInfo(LogKey, "Start Animation Switching elements");
+        Logger.logDebug(LogKey, "Start Animation Switching elements");
 
         //check if possible
         if (!(second.row < 0 || second.row >= board.getNumberOfRows() ||
@@ -100,20 +115,23 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         {
             AnimatedLogger.logDebug(LogKey, "Animated Switch, first: " + first + ", second: " + second + ", Board: " + this.board + "\n" + this.animatedBoard);
 
-            boolean switchback = board.switchElements(first, second, true, rules);
+            board.switchElements(first, second, true, rules);
 
             AnimatedBoardElement firstImage = animatedBoard.getAnimatedElement(first);
             AnimatedBoardElement secondImage = animatedBoard.getAnimatedElement(second);
 
-            SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, switchback, this);
+            SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, this);
             s.start();
         }
+
+        // enabling controls
+        setAllEnabled(true);
     }
 
     @Override
     protected void startPointAnimation(ArrayList<PointElement> elements)
     {
-        Logger.logInfo(LogKey, "Start Point animated Animation");
+        Logger.logDebug(LogKey, "Start Point animated Animation");
         new PointsAnimation(elements, this).start();
     }
 
@@ -227,6 +245,12 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         }
 
         animationHandler.start();
+    }
+
+    public void setAllEnabled(boolean b)
+    {
+        controls.setEnabledControls(b);
+        setEnabledBoard(b);
     }
 
     @Override

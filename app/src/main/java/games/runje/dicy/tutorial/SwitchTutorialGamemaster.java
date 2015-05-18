@@ -15,7 +15,7 @@ import games.runje.dicymodel.data.Player;
  */
 public class SwitchTutorialGamemaster extends AnimatedGamemaster
 {
-    private String LogKey = "SwitchTutorialGamemaster";
+    public static String LogKey = "SwitchTutorialGamemaster";
 
     public SwitchTutorialGamemaster(Board board, Rules rules, Activity activity, List<Player> players)
     {

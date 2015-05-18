@@ -7,7 +7,7 @@ import games.runje.dicymodel.Logger;
  */
 public class Testlogger
 {
-    private static String LogKey = "Test";
+    public static String LogKey = "Test";
 
     public static void log(String message)
     {

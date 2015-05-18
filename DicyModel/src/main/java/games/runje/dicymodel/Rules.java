@@ -24,10 +24,6 @@ public class Rules
      */
     private int numberOfDices;
     /**
-     * If a Full House gives Points.
-     */
-    private boolean fullHouseActive = false;
-    /**
      * The minimum of same dices for points.
      */
     private int minXOfAKind;
@@ -35,10 +31,6 @@ public class Rules
      * The points for a straight. The index is the totalLength of the straight.
      */
     private int[][] straightPoints;
-    /**
-     * The points for a Full House. The index is the value of the three of a kind.
-     */
-    private int[] fullHousePoints;
     /**
      * Points for x of a kind. The first index is the X, the second index is the value of the dice.
      */
@@ -67,7 +59,6 @@ public class Rules
 
         this.lengthFactor = 5;
         this.initStraightPoints(2);
-        this.initFullHousePoints(0);
         this.initXOfAKindPoints(this.minXOfAKind, maxLengthOfRow, 1, 2);
         // TODO: Calculate
         this.pointLimit = -1;
@@ -147,26 +138,6 @@ public class Rules
         xOfAKindPoints = xPoints;
     }
 
-    /**
-     * Initialize the full house points.
-     *
-     * @param points Points for the lowest Full House.
-     */
-    private void initFullHousePoints(int points)
-    {
-        this.fullHousePoints = new int[this.numberOfDices + 1];
-        for (int i = 0; i < this.numberOfDices + 1; i++)
-        {
-            if (this.fullHouseActive)
-            {
-                this.fullHousePoints[i] = points * i;
-            }
-            else
-            {
-                this.fullHousePoints[i] = 0;
-            }
-        }
-    }
 
     /**
      * Initialize the straight points array. The first straight gives "points" points, for each dice more the points are doubled.
@@ -257,8 +228,6 @@ public class Rules
         {
             case Straight:
                 return this.getStraightPoints(length, value);
-            case FullHouse:
-                break;
             case XOfAKind:
                 return this.getXOfAKindPoints(length, value);
         }

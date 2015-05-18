@@ -45,7 +45,7 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
         screenWidth = boardContainer.getWidth();
         screenHeight = boardContainer.getHeight();
 
-        Logger.logInfo(LogKey, "Width: " + screenWidth + ", Height: " + screenHeight);
+        Logger.logDebug(LogKey, "Width: " + screenWidth + ", Height: " + screenHeight);
 
         diceSize = screenWidth / (board.getNumberOfColumns() + 3);
         // min(halfHeight, diceSize)

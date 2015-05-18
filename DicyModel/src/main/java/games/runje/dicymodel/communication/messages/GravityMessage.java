@@ -16,7 +16,7 @@ public class GravityMessage extends Message
     public static final String Name = "GravityMessage";
 
     private Gravity gravity;
-    private String LogKey = "GravityMessage";
+    public static String LogKey = "GravityMessage";
 
     public GravityMessage(Gravity g)
     {
@@ -52,7 +52,7 @@ public class GravityMessage extends Message
     {
         ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         byte[] bytes = MessageConverter.stringToByte(gravity.toString());
-        Logger.logInfo(LogKey, "contentlength: " + contentLength + ", bytesLength: " + bytes.length + ", gravity: " + gravity);
+        Logger.logDebug(LogKey, "contentlength: " + contentLength + ", bytesLength: " + bytes.length + ", gravity: " + gravity);
         buffer.put(bytes);
         MessageConverter.fillBufferWithZero(buffer, MessageConverter.gravityLength - bytes.length);
         return buffer.array();

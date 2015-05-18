@@ -7,8 +7,6 @@ public enum PointType
 {
     Straight,
 
-    FullHouse,
-
     XOfAKind
 
 }

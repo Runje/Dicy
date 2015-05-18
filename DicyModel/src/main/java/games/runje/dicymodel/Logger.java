@@ -1,6 +1,10 @@
 package games.runje.dicymodel;
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Thomas on 03.04.2015.
  */
@@ -13,10 +17,13 @@ public class Logger
 
     protected static Logger instance = new Logger();
 
+
     public Logger()
     {
 
     }
+
+
 
     public static Logger getInstance()
     {
@@ -48,4 +55,14 @@ public class Logger
         System.out.println(key + ": " + message);
     }
 
+
+    public static void init()
+    {
+        getInstance().initLevels();
+    }
+
+    protected void initLevels()
+    {
+
+    }
 }

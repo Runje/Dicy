@@ -2,6 +2,8 @@ package games.runje.dicymodel;
 
 import java.util.ArrayList;
 
+import games.runje.dicymodel.data.Board;
+import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.PointElement;
 
 /**
@@ -33,5 +35,10 @@ public class Utilities
         }
 
         return points;
+    }
+
+    public static boolean coordsInBoard(Coords position, Board board)
+    {
+        return (position.column >= 0) && (position.row >= 0) && (position.row < board.getNumberOfRows()) && (position.column < board.getNumberOfColumns());
     }
 }

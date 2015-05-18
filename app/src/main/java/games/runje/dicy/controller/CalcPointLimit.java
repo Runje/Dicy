@@ -3,6 +3,7 @@ package games.runje.dicy.controller;
 import android.os.AsyncTask;
 
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.StopWatch;
 import games.runje.dicymodel.ai.Simulator;
 
 /**
@@ -22,8 +23,11 @@ public class CalcPointLimit extends AsyncTask<Void, Void, Void>
     @Override
     protected Void doInBackground(Void... voids)
     {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         rules.setPointLimit(Simulator.getLimit(rules));
-        AnimatedLogger.logDebug("CalcPointLimit", "Calculated Limit: " + rules.getPointLimit());
+        stopWatch.stop();
+        AnimatedLogger.logDebug("CalcPointLimit", "Calculated Limit: " + rules.getPointLimit() + ", Time: " + stopWatch.getElapsedTimeSecs());
 
         return null;
     }

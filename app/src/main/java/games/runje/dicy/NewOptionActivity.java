@@ -50,7 +50,7 @@ public class NewOptionActivity extends Activity
     private CheckBox[] playingCb = new CheckBox[MaxPlayers];
     private Spinner[] strategySpinner = new Spinner[MaxPlayers];
     private Spinner lengthSpinner;
-    private String LogKey = "Options";
+    public static String LogKey = "Options";
     private CheckBox diagonal;
     private StraightLayout straight;
     private XOfAKindLayout xOfAKind;
@@ -241,9 +241,11 @@ public class NewOptionActivity extends Activity
             return;
         }
 
+        // TODO: show Loading screen
+        v.setEnabled(false);
+
         final Rules rules = getRulesFromIntent(intent);
 
-        // TODO: Show loading screen
         new CalcPointLimit(rules, new Runnable()
         {
             @Override

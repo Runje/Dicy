@@ -44,7 +44,7 @@ public class PlayerLayout extends RelativeLayout
     List<SkillLayout> skills = new ArrayList<>();
     ControlHandler handler;
     private Player player;
-    private String LogKey = "PlayerLayout";
+    public static String LogKey = "PlayerLayout";
 
     public PlayerLayout(Activity activity, Player player, int imageId, int containerId, ControlHandler handler)
     {
@@ -101,7 +101,7 @@ public class PlayerLayout extends RelativeLayout
     public void updatePlayer(LocalGame game)
     {
         boolean isPlaying = game.hasTurn(player);
-        Logger.logInfo(LogKey, player.getName() + " is playing: " + isPlaying);
+        Logger.logDebug(LogKey, player.getName() + " is playing: " + isPlaying);
         String pointColor = "";
         if (game.areMostPoints(player.getPoints()))
         {
@@ -205,7 +205,7 @@ public class PlayerLayout extends RelativeLayout
         for (int i = 0; i < player.getSkills().size(); i++)
         {
             Skill skill = player.getSkills().get(i);
-            AnimatedLogger.logInfo(LogKey, "Adding skill: " + skill.getName() + ", animatedHelp: " + (skill instanceof AnimatedHelpSkill));
+            AnimatedLogger.logDebug(LogKey, "Adding skill: " + skill.getName() + ", animatedHelp: " + (skill instanceof AnimatedHelpSkill));
 
 
             SkillLayout sl = new SkillLayout(activity, skill, handler, containers[i]);

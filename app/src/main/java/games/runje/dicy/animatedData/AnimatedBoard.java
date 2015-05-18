@@ -80,7 +80,7 @@ public class AnimatedBoard extends Board
             ArrayList<Move> moves = BoardChecker.getPossiblePointMoves(b, rules);
             if (BoardChecker.getAll(b, rules).size() == 0 && moves.size() > 0)
             {
-                AnimatedLogger.logInfo(LogKey, "Possible Moves: " + moves);
+                AnimatedLogger.logDebug(LogKey, "Possible Moves: " + moves);
                 return b;
             }
         }
@@ -198,7 +198,7 @@ public class AnimatedBoard extends Board
     public ArrayList<BoardElement> recreateElements()
     {
         ArrayList<BoardElement> elements = super.recreateElements();
-        AnimatedLogger.logInfo(LogKey, "Recreating elements: " + elements);
+        AnimatedLogger.logDebug(LogKey, "Recreating elements: " + elements);
         recreateElements(elements);
         return elements;
     }
@@ -361,7 +361,7 @@ public class AnimatedBoard extends Board
     public ArrayList<BoardElement> moveElementsFromGravity(AnimationHandler animationHandler)
     {
         ArrayList<BoardElement> elements = this.determineFallingElements();
-        AnimatedLogger.logInfo(LogKey, "Falling elements: " + elements);
+        AnimatedLogger.logDebug(LogKey, "Falling elements: " + elements);
         for (BoardElement element : elements)
         {
             Coords pos = element.getPosition();

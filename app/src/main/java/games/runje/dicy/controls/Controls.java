@@ -27,7 +27,7 @@ public class Controls implements GameControls
     LocalGame game;
 
     boolean enabled;
-    private String LogKey = "GameControls";
+    public static String LogKey = "GameControls";
 
     public Controls(Activity activity, ControlHandler handler, LocalGame game)
     {
@@ -82,9 +82,9 @@ public class Controls implements GameControls
             FinishedDialog d = new FinishedDialog();
             d.setContext(activity);
             d.setName(game.getWinner());
-            AnimatedLogger.logInfo(LogKey, "Before show");
+            AnimatedLogger.logDebug(LogKey, "Before show");
             d.show(activity.getFragmentManager(), "Game is finished");
-            AnimatedLogger.logInfo(LogKey, "After show");
+            AnimatedLogger.logDebug(LogKey, "After show");
         }
     }
 

@@ -29,7 +29,7 @@ public class SkillMessage extends Message
         this.contentLength = length - headerLength;
         this.skill = MessageConverter.byteToString(buffer, MessageConverter.skillLength);
         this.pos = MessageConverter.byteToCoords(buffer);
-        Logger.logInfo(LogKey, "Pos in Skill: " + pos);
+        Logger.logDebug(LogKey, "Pos in Skill: " + pos);
     }
 
     public SkillMessage(String skillName, Coords position)
@@ -60,7 +60,7 @@ public class SkillMessage extends Message
     {
         Skill s = gamemaster.getGame().getPlayingPlayer().getSkill(skill);
         s.setPos(pos);
-        Logger.logInfo(LogKey, "Pos: " + pos);
+        Logger.logDebug(LogKey, "Pos: " + pos);
         gamemaster.executeSkill(s, fromId);
     }
 
@@ -70,7 +70,7 @@ public class SkillMessage extends Message
         // TODO
         Skill s = new Skill(1, 1, skill);
         s.setPos(pos);
-        Logger.logInfo(LogKey, "Pos: " + pos);
+        Logger.logDebug(LogKey, "Pos: " + pos);
         gamemaster.executeSkillFromHost(s);
     }
 

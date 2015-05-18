@@ -10,4 +10,8 @@ public interface DiceListener
     public void executeOnTouch(Coords pos);
 
     public void executeOnSwitch(Coords first, Coords second);
+
+    int getPointsFromSwitch(Coords position, Coords second);
+
+    void setAllEnabled(boolean b);
 }

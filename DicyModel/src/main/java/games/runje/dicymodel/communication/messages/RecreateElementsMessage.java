@@ -34,7 +34,7 @@ public class RecreateElementsMessage extends Message
             elements.add(MessageConverter.byteToBoardElement(buffer));
         }
 
-        Logger.logInfo(LogKey, "RecreateMessage Elements: " + elements);
+        Logger.logDebug(LogKey, "RecreateMessage Elements: " + elements);
     }
 
     @Override

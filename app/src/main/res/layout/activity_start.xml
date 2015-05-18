@@ -27,7 +27,8 @@
                 android:layout_height="230dp"
                 android:layout_gravity="left|center_vertical"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
                 <FrameLayout
                     android:layout_width="wrap_content"

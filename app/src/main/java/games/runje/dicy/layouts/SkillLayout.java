@@ -18,25 +18,22 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class SkillLayout extends LinearLayout
 {
-    private final ImageView loadImage;
-    private final ControlHandler handler;
     private TextView loadText;
     private FrameLayout clickArea;
     private ImageView image;
     private Skill skill;
-    private String LogKey = "SkillLayout";
+    public static String LogKey = "SkillLayout";
 
     public SkillLayout(Context context, final Skill skill, final ControlHandler handler, View container)
     {
         super(context);
         this.skill = skill;
-        this.handler = handler;
         container.setVisibility(View.VISIBLE);
         this.clickArea = (FrameLayout) container.findViewById(R.id.skill_clickarea);
         this.image = (ImageView) container.findViewById(R.id.skill_image);
         image.setImageResource(skill.getImageId());
 
-        this.loadImage = (ImageView) container.findViewById(R.id.skill_value);
+        ImageView loadImage = (ImageView) container.findViewById(R.id.skill_value);
         loadImage.setImageResource(AnimatedBoardElement.valueToImageResource(skill.getLoadValue()));
 
         TextView text = (TextView) container.findViewById(R.id.skill_name);

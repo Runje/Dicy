@@ -15,7 +15,7 @@ public class FallingAnimation implements DicyAnimation
     private final Coords to;
     private AnimationHandler animationHandler;
     private AnimatedBoard board;
-    private String LogKey = "FallingAnimation";
+    public static String LogKey = "FallingAnimation";
 
     public FallingAnimation(AnimatedBoardElement element, Coords to, AnimatedBoard board, AnimationHandler animationHandler)
     {
@@ -45,7 +45,7 @@ public class FallingAnimation implements DicyAnimation
     @Override
     public void onAnimationStart(Animation animation)
     {
-        AnimatedLogger.logInfo(LogKey, "Starting Fall Animation for pos: " + element.getPosition() + ". To: " + this.to);
+        AnimatedLogger.logDebug(LogKey, "Starting Fall Animation for pos: " + element.getPosition() + ". To: " + this.to);
     }
 
     @Override

@@ -17,6 +17,7 @@ import games.runje.dicymodel.data.PointElement;
  */
 public class PointsAnimation implements Animation.AnimationListener
 {
+    public static String LogKey;
     private final ArrayList<PointElement> elements;
     private final AnimatedGamemaster gmAnimated;
     private ArrayList<TextView> tvs;
@@ -38,8 +39,6 @@ public class PointsAnimation implements Animation.AnimationListener
     @Override
     public void onAnimationEnd(Animation animation)
     {
-        AnimatedBoard board = gmAnimated.getAnimatedBoard();
-
         // Delete Points
         for (TextView tv : tvs)
         {

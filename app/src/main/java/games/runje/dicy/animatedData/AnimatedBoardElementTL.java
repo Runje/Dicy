@@ -3,15 +3,18 @@ package games.runje.dicy.animatedData;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import games.runje.dicy.R;
 import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.DiceListener;
 import games.runje.dicy.controller.Direction;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -19,7 +22,7 @@ import games.runje.dicymodel.data.Coords;
  */
 public class AnimatedBoardElementTL implements View.OnTouchListener
 {
-    private final String LogKey = "AnimatedBoardElementTL";
+    public final static String LogKey = "AnimatedBoardElementTL";
     protected Coords position;
     private boolean switchEnabled = true;
     private boolean disabled = false;
@@ -27,6 +30,7 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
     private float x1;
     private float y1;
     private DiceListener diceListener;
+    private Toast toast;
 
     public AnimatedBoardElementTL(Coords position, DiceListener d)
     {
@@ -98,11 +102,15 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
 
     private boolean switchOnTouch(View view, MotionEvent motionEvent)
     {
+        diceListener.setAllEnabled(false);
+        AnimatedLogger.logDebug(LogKey, "Disabling all controls");
+        disabled = false;
         float x2 = 0;
         float y2 = 0;
         float dx = 0;
         float dy = 0;
         Direction direction;
+        Logger.logDebug(LogKey, "" + motionEvent.getAction());
         switch (motionEvent.getAction())
         {
             case (MotionEvent.ACTION_DOWN):
@@ -151,10 +159,24 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
 
                 AnimatedLogger.logDebug(LogKey, "Setting arrow direction: " + direction);
                 arrow.setRotation(directionToRotation(direction));
+
+                Coords second = calcSecondPos(position, direction);
+                int points = diceListener.getPointsFromSwitch(position, second);
+                if (toast == null)
+                {
+                    toast = Toast.makeText(view.getContext(), "" + points, Toast.LENGTH_SHORT);
+                }
+                else
+                {
+                    toast.setText("" + points);
+                }
+
+                toast.show();
                 disabled = false;
                 break;
             case (MotionEvent.ACTION_UP):
             {
+
                 // remove highlighting
                 ColorMatrix cm = new ColorMatrix();
                 ColorFilter normal = new ColorMatrixColorFilter(cm);
@@ -171,14 +193,16 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                 direction = calcDirection(x2, y2);
                 if (direction == null)
                 {
-                    AnimatedLogger.logInfo("Direction", "No Switch" + ", dx = " + dx + ", dy = " + dy);
+                    AnimatedLogger.logDebug("Direction", "No Switch" + ", dx = " + dx + ", dy = " + dy);
                     disabled = false;
+                    diceListener.setAllEnabled(true);
+                    AnimatedLogger.logDebug(LogKey, "Enabling all controls");
                     return true;
                 }
 
-                Coords second = calcSecondPos(position, direction);
-                diceListener.executeOnSwitch(position, second);
-                AnimatedLogger.logInfo("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy);
+                Coords second2 = calcSecondPos(position, direction);
+                diceListener.executeOnSwitch(position, second2);
+                AnimatedLogger.logDebug("Direction", direction.toString() + ", dx = " + dx + ", dy = " + dy);
             }
         }
         return true;
@@ -235,6 +259,15 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
         Direction direction = null;
         float ratioLeftRight = Math.abs(dx) / Math.abs(dy);
         float ratioUpDown = Math.abs(dy) / Math.abs(dx);
+
+        // distance should be a minimum
+        double distance = Math.sqrt(Math.pow(Math.abs(dx), 2) + Math.pow(2, Math.abs(dy)));
+        Logger.logDebug(LogKey, "Distance: " + distance);
+
+        if (distance < 50)
+        {
+            return null;
+        }
 
         // Use dx and dy to determine the direction
         if (Math.abs(dx) > Math.abs(dy) && ratioLeftRight > epsilon)
