@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg3045"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   width="189"
+   height="267"
+   sodipodi:docname="human.svg">
+  <metadata
+     id="metadata3051">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3049" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1680"
+     inkscape:window-height="998"
+     id="namedview3047"
+     showgrid="false"
+     inkscape:zoom="5.0000659"
+     inkscape:cx="65.969495"
+     inkscape:cy="153.34102"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3045" />
+  <path
+     style="fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+     d="m 63.999156,186.60106 25.199668,-34.79954 26.799646,35.19953 2.79996,0 2.79997,-1.99997 0.39999,-3.59995 -27.999629,-36.79952 -0.399995,-29.59961 28.399624,17.59977 3.59995,-0.79999 1.19999,-3.59995 -0.4,-1.99997 -14.7998,-8.39989 -17.599769,-17.19978 0,-1.19998 4.399942,-1.599979 3.199957,-5.199932 0.4,-5.599926 -2.199976,-6.199918 -4.599939,-3.79995 -4.799937,-1.199984 -4.599939,0.399995 -3.79995,1.999973 -3.199958,3.999947 -1.799976,5.199932 0.799989,4.799937 3.199958,4.999934 3.199958,1.399981 1.599979,1.39998 0.199997,1.39998 -10.59986,9.19988 -5.999921,5.79993 -9.199879,5.59992 -7.599899,4.59994 -0.399995,3.39996 1.799976,1.99997 4.199945,0.79999 8.399889,-5.39993 18.999749,-11.99984 0.399995,29.19961 -27.599636,36.79952 -0.399995,3.19996 2.399969,2.59996 z"
+     id="path3055"
+     inkscape:connector-curvature="0"
+     inkscape:export-filename="C:\Users\Thomas\AndroidstudioProjects\Dicy\app\src\main\res\drawable\mensch.png"
+     inkscape:export-xdpi="200"
+     inkscape:export-ydpi="200" />
+</svg>
