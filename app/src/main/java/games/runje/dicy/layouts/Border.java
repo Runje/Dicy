@@ -6,12 +6,15 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 
+import games.runje.dicy.R;
+
 /**
  * Created by Thomas on 26.03.2015.
  */
 public class Border extends View
 {
     private Paint paint;
+    private boolean active;
 
     public Border(Context context)
     {
@@ -19,8 +22,8 @@ public class Border extends View
 
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(5);
+        paint.setColor(getResources().getColor(R.color.dicy_yellow));
+        paint.setStrokeWidth(3);
     }
 
     @Override
@@ -35,7 +38,16 @@ public class Border extends View
         Paint paint = getPaint();
         canvas.drawPaint(paint);
         // Use Color.parseColor to define HTML colors
-        paint.setColor(Color.parseColor("#CD5C5C"));
+        //paint.setColor(Color.parseColor("#CD5C5C"));
+        if (active)
+        {
+            paint.setStyle(Paint.Style.FILL);
+        }
+        else
+        {
+            paint.setStyle(Paint.Style.STROKE);
+        }
+
         canvas.drawRect(0, radius, radius, 0, paint);
 
 
@@ -44,5 +56,14 @@ public class Border extends View
     public Paint getPaint()
     {
         return paint;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+        postInvalidate();
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }

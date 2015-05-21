@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
+import android.media.Image;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,14 +32,17 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class PlayerLayout extends RelativeLayout
 {
-    public static String HtmlGreen = "#33CA15";
-    public static String HtmlWhite = "#ffffff";
-    public static String HtmlBlue = "#155DCA";
+    public static String HtmlGreen = "#000000";
+    public static String HtmlWhite = "#FFFF00";
+    public static String HtmlBlue = "#0B0B3B";
     private final View container;
     private final Activity activity;
+    private final ImageView strike1;
+    private final ImageView strike2;
+    private final ImageView strike3;
     ImageView image;
     TextView name;
-    TextView strikes;
+    //TextView strikes;
     TextView points;
     View skillView;
     List<SkillLayout> skills = new ArrayList<>();
@@ -62,8 +66,10 @@ public class PlayerLayout extends RelativeLayout
         points = (TextView) container.findViewById(R.id.player_points);
         points.setText(Integer.toString(player.getPoints()));
 
-        strikes = (TextView) container.findViewById(R.id.player_strike);
-
+        //strikes = (TextView) container.findViewById(R.id.player_strike);
+        strike1 = (ImageView) container.findViewById(R.id.strike1);
+        strike2 = (ImageView) container.findViewById(R.id.strike2);
+        strike3 = (ImageView) container.findViewById(R.id.strike3);
         this.skillView = skills();
 
     }
@@ -122,7 +128,7 @@ public class PlayerLayout extends RelativeLayout
         if (isPlaying)
         {
             startTurnAnimation();
-            name.setTextColor(Color.RED);
+            name.setTextColor(getResources().getColor(R.color.dicy_yellow));
             String color = "";
             int sumPoints = game.getMovePoints() + player.getPoints() + game.getSwitchPoints();
             if (game.areMostPoints(sumPoints))
@@ -142,12 +148,34 @@ public class PlayerLayout extends RelativeLayout
         }
         else
         {
-            name.setTextColor(Color.GRAY);
+            name.setTextColor(Color.BLACK);
             stopTurnAnimation();
         }
         points.setText(Html.fromHtml(pointString + playPoints));
 
-        strikes.setText(strikesToString(player.getStrikes()));
+        //strikes.setText(strikesToString(player.getStrikes()));
+        setStrikes(player.getStrikes());
+    }
+
+    private void setStrikes(int strikes)
+    {
+        strike1.setVisibility(INVISIBLE);
+        strike2.setVisibility(INVISIBLE);
+        strike3.setVisibility(INVISIBLE);
+        if (strikes >= 1)
+        {
+            strike1.setVisibility(VISIBLE);
+        }
+
+        if (strikes >= 2)
+        {
+            strike2.setVisibility(VISIBLE);
+        }
+
+        if (strikes >= 3)
+        {
+            strike3.setVisibility(VISIBLE);
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,8 +26,7 @@ import games.runje.dicymodel.game.LocalGame;
  */
 public class GameInfo
 {
-    private final Button nextButton;
-    private final TextView current;
+    private final ImageView nextButton;
     private final TextView movePointsText;
     private final Activity activity;
     private final ControlHandler handler;
@@ -40,21 +40,18 @@ public class GameInfo
         this.handler = handler;
         TextView limit = (TextView) activity.findViewById(R.id.goal_text);
         limit.setText("" + game.getGameEndPoints());
-        current = (TextView) activity.findViewById(R.id.currentPoints);
-        current.setText("0");
 
         movePointsText = (TextView) activity.findViewById(R.id.switchPointsText);
         movePointsText.setText("0\\" + game.getPointsLimit());
 
-        nextButton = (Button) activity.findViewById(R.id.next_button);
-        nextButton.setOnClickListener(new View.OnClickListener()
-        {
+        nextButton = (ImageView) activity.findViewById(R.id.image_next);
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 handler.nextFromUser();
             }
         });
+        //nextButton.setColorFilter(R.color.dicy_yellow);
 
         initPointListButton();
     }
@@ -62,7 +59,7 @@ public class GameInfo
 
     private void initPointListButton()
     {
-        Button b = (Button) activity.findViewById(R.id.pointList);
+        ImageView b = (ImageView) activity.findViewById(R.id.pointList);
         b.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -94,7 +91,6 @@ public class GameInfo
 
     public void update()
     {
-        this.current.setText("" + Integer.toString(game.getMovePoints()));
 
         int pointsLimit = game.getPointsLimit();
         String sLimit = Integer.toString(pointsLimit);
@@ -109,7 +105,7 @@ public class GameInfo
         }
         else
         {
-            movePointsText.setTextColor(Color.RED);
+            movePointsText.setTextColor(Color.parseColor("#610B0B"));
         }
     }
 

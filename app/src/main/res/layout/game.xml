@@ -2,87 +2,95 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+    android:background="@drawable/dicy_rectangle"
+    android:padding="1.5dp">
+
+    <LinearLayout
+        android:id="@+id/board"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:background="@drawable/dicy_rectangle"
+        android:layout_weight="1">
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:orientation="horizontal"
-        >
+        android:background="@drawable/dicy_rectangle"
+        android:padding="1.5dp">
 
-        <Button
-            android:id="@+id/next_button"
+        <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/next_button_text"/>
-
-        <Button
+            android:layout_height="70dp"
             android:id="@+id/pointList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pointlist_button_text"/>
+            android:src="@drawable/questionmark"
+            android:layout_gravity="center_vertical" />
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/raceflag2"/>
+            android:src="@drawable/raceflag2"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="center_vertical" />
 
         <TextView
             android:id="@+id/goal_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
-            android:textSize="@dimen/player_text_size"/>
+            android:textSize="@dimen/player_text_size"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/dicy_yellow" />
 
         <ImageView
             android:id="@+id/imageView3"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/dice3d"/>
+            android:src="@drawable/dice3d"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center_vertical" />
 
         <TextView
             android:id="@+id/switchPointsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1"
-            android:textSize="@dimen/player_text_size"/>
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/chip_button_enabled"/>
+            android:textSize="@dimen/player_text_size"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/dicy_yellow" />
 
         <TextView
-            android:id="@+id/currentPoints"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="2"
-            android:textSize="@dimen/player_text_size"/>
-    </LinearLayout>
+            android:id="@+id/textView"
+            android:layout_weight="1" />
 
-    <LinearLayout
-        android:id="@+id/board"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/image_next"
+            android:src="@drawable/next_arrow" />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:background="@drawable/dicy_rectangle"
+        android:padding="1.5dp">
 
         <include
             android:id="@+id/player1"
             layout="@layout/player"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <include
             android:id="@+id/player2"

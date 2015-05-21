@@ -39,6 +39,8 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
         this.board = b;
         DisplayMetrics dm = new DisplayMetrics();
         board.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        board.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        board.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         int screenWidth = dm.widthPixels;
         int screenHeight = dm.heightPixels;
 
@@ -105,6 +107,7 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
         below.setId(R.id.borderBelow);
         below.setOnClickListener(this);
         this.addView(below, paramsB);
+        below.setActive(true);
 
         // left
         RelativeLayout.LayoutParams paramsL = new RelativeLayout.LayoutParams(diceSize, diceSize * (board.getNumberOfColumns() + 1));
@@ -135,7 +138,7 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
                 params.topMargin = CoordsToY(pos);
 
                 ImageView background = new ImageView(getContext());
-                background.setImageResource(R.drawable.dicy_square);
+                background.setImageResource(R.drawable.dicy_rectangle);
                 this.addView(background, params);
             }
         }
@@ -152,6 +155,8 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
                 this.addView(iv, params);
             }
         }
+
+        updateGravity();
     }
 
     public int CoordsToX(Coords pos)
@@ -223,31 +228,40 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
 
     public void updateGravity(Gravity gravity)
     {
-        int brown = Color.parseColor("#795548");
-        above.setBackgroundColor(brown);
-        below.setBackgroundColor(brown);
-        left.setBackgroundColor(brown);
-        right.setBackgroundColor(brown);
+        int colorInactive = Color.TRANSPARENT;
+        /*above.setBackgroundColor(colorInactive);
+        below.setBackgroundColor(colorInactive);
+        left.setBackgroundColor(colorInactive);
+        right.setBackgroundColor(colorInactive);*/
 
-        int yellow = Color.YELLOW;
+        above.setActive(false);
+        below.setActive(false);
+        right.setActive(false);
+        left.setActive(false);
+
+        int yellow = R.color.dicy_yellow;
 
         switch (gravity)
         {
             case Up:
-                board.getBoardLayout().setYOffset(0);
-                above.setBackgroundColor(yellow);
+                setYOffset(0);
+                //above.setBackgroundColor(yellow);
+                above.setActive(true);
                 break;
             case Down:
-                board.getBoardLayout().setYOffset(1);
-                below.setBackgroundColor(yellow);
+                setYOffset(1);
+                //below.setBackgroundColor(yellow);
+                below.setActive(true);
                 break;
             case Right:
-                board.getBoardLayout().setXOffset(1);
-                right.setBackgroundColor(yellow);
+                setXOffset(1);
+                //right.setBackgroundColor(yellow);
+                right.setActive(true);
                 break;
             case Left:
-                board.getBoardLayout().setXOffset(0);
-                left.setBackgroundColor(yellow);
+                setXOffset(0);
+                //left.setBackgroundColor(yellow);
+                left.setActive(true);
                 break;
         }
     }
