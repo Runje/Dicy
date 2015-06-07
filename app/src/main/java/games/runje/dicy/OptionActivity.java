@@ -1,7 +1,9 @@
 package games.runje.dicy;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,12 +41,14 @@ import games.runje.dicymodel.ai.Strategy;
 public class OptionActivity extends Activity
 {
     public static final String PlayingIntent = "Playing";
-    public static final String PlayerIntent = "Player";
+    public static final String Player1Intent = "Player1";
+    public static final String Player2Intent = "Player2";
     public static final String LengthIntent = "Length";
     public static final String DiagonalIntent = "Diagonal";
     public static final String StraightIntent = "Straight";
     public static final String XOfAKindIntent = "XOfAKind";
-    public static final String StrategyIntent = "Strategy";
+    public static final String Strategy1Intent = "Strategy1";
+    public static final String Strategy2Intent = "Strategy2";
     final static int MaxPlayers = 4;
     private static String PointLimitIntent = "PointLimit";
     private EditText[] editPlayers = new EditText[MaxPlayers];
@@ -100,14 +104,14 @@ public class OptionActivity extends Activity
 
         setContentView(R.layout.activity_option);
         lengthSpinner();
-        View straight = straight();
+        View straightView = straight();
         LinearLayout layout = (LinearLayout) findViewById(R.id.rules_layout);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = 10;
-        if (straight.getParent() == null)
+        if (straightView.getParent() == null)
         {
-            layout.addView(straight, params);
+            layout.addView(straightView, params);
         }
 
         View x = xOfAKind();
@@ -116,7 +120,7 @@ public class OptionActivity extends Activity
             layout.addView(x, params);
         }
 
-        this.diagonal = (CheckBox) findViewById(R.id.checkbox_diagonal);
+
     }
 
     private View xOfAKind()
@@ -212,15 +216,91 @@ public class OptionActivity extends Activity
         String[] strategies = {s1, s2, Strategy.Human, Strategy.Human};
 
         intent.putBooleanArray(PlayingIntent, playing);
-        intent.putStringArray(StrategyIntent, strategies);
+        intent.putStringArray(Strategy1Intent, strategies);
 
-        intent.putStringArray(PlayerIntent, players);
+        intent.putStringArray(Player1Intent, players);
         intent.putString(LengthIntent, (String) lengthSpinner.getSelectedItem());
         intent.putBoolean(DiagonalIntent, diagonal.isChecked());
         intent.putInt(StraightIntent, straight.getLength());
         intent.putInt(XOfAKindIntent, xOfAKind.getLength());
     }
 
+    private void saveToSharedPreferences()
+    {
+        Logger.logInfo(LogKey, "Save to shared preferences");
+        String player1 = ((EditText) findViewById(R.id.player1_name)).getText().toString();
+        String player2 = ((EditText) findViewById(R.id.player2_name)).getText().toString();
+        String[] players = {player1, player2, "", ""};
+
+        ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
+        String s1 = p1.isChecked() ? Strategy.Human : Strategy.Simple;
+        ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
+        String s2 = p2.isChecked() ? Strategy.Human : Strategy.Simple;
+        String[] strategies = {s1, s2, Strategy.Human, Strategy.Human};
+
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharedPref.edit();
+
+        edit.putString(Strategy1Intent, strategies[0]);
+        edit.putString(Strategy2Intent, strategies[1]);
+
+        edit.putString(Player1Intent, players[0]);
+        edit.putString(Player2Intent, players[1]);
+        edit.putString(LengthIntent, (String) lengthSpinner.getSelectedItem());
+        Logger.logInfo(LogKey, (String) s1 + ", " + s2);
+        edit.putBoolean(DiagonalIntent, diagonal.isChecked());
+        edit.putInt(StraightIntent, straight.getLength());
+        edit.putInt(XOfAKindIntent, xOfAKind.getLength());
+        edit.commit();
+    }
+
+
+    private void loadSharedPreferences()
+    {
+        Logger.logInfo(LogKey, "Load shared prefs");
+        this.diagonal = (CheckBox) findViewById(R.id.checkbox_diagonal);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+
+        EditText player1 = (EditText) findViewById(R.id.player1_name);
+        EditText player2 = (EditText) findViewById(R.id.player2_name);
+
+        ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
+        ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
+
+        String[] strategies = new String[] { sharedPreferences.getString(Strategy1Intent, Strategy.Human),
+                sharedPreferences.getString(Strategy2Intent, Strategy.Human)};
+
+        Logger.logInfo(LogKey, (String) strategies[0] + ", " + strategies[1]);
+
+        p1.setChecked(strategies[0] == Strategy.Human);
+        p2.setChecked(strategies[1] == Strategy.Human);
+
+        player1.setText(sharedPreferences.getString(Player1Intent, "Player 1"));
+        player2.setText(sharedPreferences.getString(Player2Intent, "Player 2"));
+
+
+        String selectedItem = sharedPreferences.getString(LengthIntent, "Short");
+        int pos = 0;
+        switch (selectedItem)
+        {
+            case "Short":
+                pos = 0;
+                break;
+            case "Normal":
+                pos = 1;
+                break;
+            case "Long":
+                pos = 2;
+                break;
+        }
+
+        lengthSpinner.setSelection(pos);
+
+        diagonal.setChecked(sharedPreferences.getBoolean(DiagonalIntent, false));
+        straight.setLength(sharedPreferences.getInt(StraightIntent, 3));
+        xOfAKind.setLength(sharedPreferences.getInt(XOfAKindIntent, 3));
+    }
 
     public void clickPlay(final View v)
     {
@@ -249,8 +329,9 @@ public class OptionActivity extends Activity
                 b.putInt(PointLimitIntent, rules.getPointLimit());
 
                 intent.putExtras(b);
-                startActivity(intent);
                 v.setEnabled(true);
+                saveToSharedPreferences();
+                startActivity(intent);
             }
         }).execute();
 
@@ -295,6 +376,7 @@ public class OptionActivity extends Activity
     @Override
     protected void onStart()
     {
+        loadSharedPreferences();
         super.onStart();
         Logger.logInfo(LogKey, "On Start");
     }
@@ -302,6 +384,7 @@ public class OptionActivity extends Activity
     @Override
     protected void onStop()
     {
+        saveToSharedPreferences();
         super.onStop();
         Logger.logInfo(LogKey, "On Stop");
     }
@@ -309,6 +392,7 @@ public class OptionActivity extends Activity
     @Override
     protected void onPause()
     {
+        saveToSharedPreferences();
         super.onPause();
         Logger.logInfo(LogKey, "On Pause");
     }
@@ -342,43 +426,6 @@ public class OptionActivity extends Activity
         super.onRestoreInstanceState(savedInstanceState);
 
 
-        EditText player1 = (EditText) findViewById(R.id.player1_name);
-        EditText player2 = (EditText) findViewById(R.id.player2_name);
-
-        ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
-        ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
-
-        String[] strategies = savedInstanceState.getStringArray(StrategyIntent);
-
-        p1.setChecked(strategies[0] == Strategy.Human);
-        p2.setChecked(strategies[1] == Strategy.Human);
-
-        String[] players = savedInstanceState.getStringArray(PlayerIntent);
-
-        player1.setText(players[0]);
-        player2.setText(players[1]);
-
-
-        String selectedItem = savedInstanceState.getString(LengthIntent);
-        int pos = 0;
-        switch (selectedItem)
-        {
-            case "Short":
-                pos = 0;
-                break;
-            case "Middle":
-                pos = 1;
-                break;
-            case "Long":
-                pos = 2;
-                break;
-        }
-
-        lengthSpinner.setSelection(pos);
-
-        diagonal.setChecked(savedInstanceState.getBoolean(DiagonalIntent));
-        straight.setLength(savedInstanceState.getInt(StraightIntent));
-        xOfAKind.setLength(savedInstanceState.getInt(XOfAKindIntent));
         Logger.logInfo(LogKey, "On Restore");
     }
 }

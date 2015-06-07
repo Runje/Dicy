@@ -68,7 +68,7 @@ public class LocalGameActivity extends Activity
     {
         Bundle intent = getIntent().getExtras();
         boolean[] playing = intent.getBooleanArray(OptionActivity.PlayingIntent);
-        String[] players = intent.getStringArray(OptionActivity.PlayerIntent);
+        String[] players = intent.getStringArray(OptionActivity.Player1Intent);
         List<String> p = new ArrayList<>();
 
         for (int i = 0; i < OptionActivity.MaxPlayers; i++)
@@ -80,7 +80,7 @@ public class LocalGameActivity extends Activity
             }
         }
 
-        String[] strategies = intent.getStringArray(OptionActivity.StrategyIntent);
+        String[] strategies = intent.getStringArray(OptionActivity.Strategy1Intent);
         List<Strategy> s = new ArrayList<>();
 
         for (int i = 0; i < OptionActivity.MaxPlayers; i++)
