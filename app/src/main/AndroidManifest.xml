@@ -2,6 +2,7 @@
 <manifest
     package="games.runje.dicy"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
@@ -33,7 +34,7 @@
             android:theme="@style/FullscreenTheme">
         </activity>
         <activity
-            android:name=".NewOptionActivity"
+            android:name=".OptionActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_option"
             android:theme="@style/FullscreenTheme">

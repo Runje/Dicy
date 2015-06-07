@@ -8,7 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import games.runje.dicy.NewOptionActivity;
+import games.runje.dicy.OptionActivity;
 import games.runje.dicy.StartActivity;
 import games.runje.dicy.controller.AnimatedLogger;
 
@@ -49,7 +49,7 @@ public class FinishedDialog extends DialogFragment
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        Intent intent = new Intent(((Dialog) dialog).getContext(), NewOptionActivity.class);
+                        Intent intent = new Intent(((Dialog) dialog).getContext(), OptionActivity.class);
                         startActivity(intent);
                     }
                 })

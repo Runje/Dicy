@@ -11,6 +11,8 @@ import games.runje.dicymodel.data.PointElement;
  */
 public class Utilities
 {
+    private static int id;
+
     /**
      * Checks if a number is a square
      *
@@ -40,5 +42,11 @@ public class Utilities
     public static boolean coordsInBoard(Coords position, Board board)
     {
         return (position.column >= 0) && (position.row >= 0) && (position.row < board.getNumberOfRows()) && (position.column < board.getNumberOfColumns());
+    }
+
+    public static int generateViewId()
+    {
+        id++;
+        return id;
     }
 }

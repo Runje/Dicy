@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -25,7 +24,9 @@ import games.runje.dicy.controller.CalcPointLimit;
 import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.layouts.XOfAKindLayout;
 import games.runje.dicy.util.ViewUtilities;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Strategy;
 
 
@@ -35,7 +36,7 @@ import games.runje.dicymodel.ai.Strategy;
  *
  * @see games.runje.dicy.util.SystemUiHider
  */
-public class NewOptionActivity extends Activity
+public class OptionActivity extends Activity
 {
     public static final String PlayingIntent = "Playing";
     public static final String PlayerIntent = "Player";
@@ -56,9 +57,9 @@ public class NewOptionActivity extends Activity
     private XOfAKindLayout xOfAKind;
     private int size = 75;
 
-    public static Rules getRulesFromIntent(Intent intent)
+    public static Rules getRulesFromBundle(Bundle bundle)
     {
-        String length = intent.getStringExtra(NewOptionActivity.LengthIntent);
+        String length = bundle.getString(OptionActivity.LengthIntent);
         int f = 5;
         switch (length)
         {
@@ -73,15 +74,15 @@ public class NewOptionActivity extends Activity
                 break;
         }
 
-        boolean diagonal = intent.getBooleanExtra(NewOptionActivity.DiagonalIntent, false);
+        boolean diagonal = bundle.getBoolean(OptionActivity.DiagonalIntent, false);
 
         Rules rules = new Rules();
         rules.setDiagonalActive(diagonal);
-        rules.setMinStraight(intent.getIntExtra(NewOptionActivity.StraightIntent, 7));
-        rules.setMinXOfAKind(intent.getIntExtra(NewOptionActivity.XOfAKindIntent, 11));
+        rules.setMinStraight(bundle.getInt(OptionActivity.StraightIntent, 7));
+        rules.setMinXOfAKind(bundle.getInt(OptionActivity.XOfAKindIntent, 11));
         rules.initStraightPoints(4);
 
-        int pointLimit = intent.getIntExtra(PointLimitIntent, -1);
+        int pointLimit = bundle.getInt(PointLimitIntent, -1);
         rules.setPointLimit(pointLimit);
         return rules;
     }
@@ -90,6 +91,7 @@ public class NewOptionActivity extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Logger.logInfo(LogKey, "On Create");
 
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -122,7 +124,7 @@ public class NewOptionActivity extends Activity
         RelativeLayout l = new RelativeLayout(this);
         ImageView t = new ImageView(this);
         t.setImageResource(R.drawable.dice3droll);
-        t.setId(View.generateViewId());
+        t.setId(Utilities.generateViewId());
         l.addView(t, new ViewGroup.LayoutParams(size, size));
 
         // TODO: height of dices should be same as textview
@@ -145,7 +147,7 @@ public class NewOptionActivity extends Activity
             }
         });
 
-        l.setId(View.generateViewId());
+        l.setId(Utilities.generateViewId());
         return l;
     }
 
@@ -154,7 +156,7 @@ public class NewOptionActivity extends Activity
         RelativeLayout l = new RelativeLayout(this);
         ImageView t = new ImageView(this);
         t.setImageResource(R.drawable.straight);
-        t.setId(View.generateViewId());
+        t.setId(Utilities.generateViewId());
         l.addView(t, new ViewGroup.LayoutParams(this.size, size));
 
 
@@ -175,22 +177,7 @@ public class NewOptionActivity extends Activity
             }
         });
 
-        l.setId(View.generateViewId());
-        return l;
-    }
-
-    private View diagonal()
-    {
-        RelativeLayout l = new RelativeLayout(this);
-        diagonal = new CheckBox(this);
-        TextView t = new TextView(this);
-        t.setText("Diagonal");
-        t.setId(View.generateViewId());
-        l.addView(t);
-        RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
-        p.addRule(RelativeLayout.RIGHT_OF, t.getId());
-        l.addView(diagonal, p);
-        l.setId(View.generateViewId());
+        l.setId(Utilities.generateViewId());
         return l;
     }
 
@@ -202,21 +189,17 @@ public class NewOptionActivity extends Activity
         l.add("Short");
         l.add("Normal");
         l.add("Long");
-        int id = View.generateViewId();
+        int id = Utilities.generateViewId();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, l);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         lengthSpinner.setAdapter(adapter);
         return lengthSpinner;
     }
 
-    public void clickPlay(View v)
+    private void saveToBundle(Bundle intent)
     {
-
-        final Intent intent = new Intent(NewOptionActivity.this, LocalGameActivity.class);
         boolean[] playing = {true, true, false, false};
-        int numberPlayers = 2;
 
-        intent.putExtra(PlayingIntent, playing);
 
         String player1 = ((EditText) findViewById(R.id.player1_name)).getText().toString();
         String player2 = ((EditText) findViewById(R.id.player2_name)).getText().toString();
@@ -227,63 +210,51 @@ public class NewOptionActivity extends Activity
         ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
         String s2 = p2.isChecked() ? Strategy.Human : Strategy.Simple;
         String[] strategies = {s1, s2, Strategy.Human, Strategy.Human};
-        intent.putExtra(StrategyIntent, strategies);
 
-        intent.putExtra(PlayerIntent, players);
-        intent.putExtra(LengthIntent, (String) lengthSpinner.getSelectedItem());
-        intent.putExtra(DiagonalIntent, diagonal.isChecked());
-        intent.putExtra(StraightIntent, straight.getLength());
-        intent.putExtra(XOfAKindIntent, xOfAKind.getLength());
+        intent.putBooleanArray(PlayingIntent, playing);
+        intent.putStringArray(StrategyIntent, strategies);
+
+        intent.putStringArray(PlayerIntent, players);
+        intent.putString(LengthIntent, (String) lengthSpinner.getSelectedItem());
+        intent.putBoolean(DiagonalIntent, diagonal.isChecked());
+        intent.putInt(StraightIntent, straight.getLength());
+        intent.putInt(XOfAKindIntent, xOfAKind.getLength());
+    }
+
+
+    public void clickPlay(final View v)
+    {
+
+        final Intent intent = new Intent(OptionActivity.this, LocalGameActivity.class);
+        final Bundle b = new Bundle();
+        saveToBundle(b);
+
 
         if (straight.getLength() == straight.MaxLength + 1 && xOfAKind.getLength() == xOfAKind.MaxLength + 1)
         {
-            Toast.makeText(NewOptionActivity.this, "No Points possible", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OptionActivity.this, "No Points possible", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // TODO: show Loading screen
         v.setEnabled(false);
 
-        final Rules rules = getRulesFromIntent(intent);
+        final Rules rules = getRulesFromBundle(b);
 
         new CalcPointLimit(rules, new Runnable()
         {
             @Override
             public void run()
             {
-                intent.putExtra(PointLimitIntent, rules.getPointLimit());
+                b.putInt(PointLimitIntent, rules.getPointLimit());
+
+                intent.putExtras(b);
                 startActivity(intent);
+                v.setEnabled(true);
             }
         }).execute();
 
 
-    }
-
-    View createPlayers()
-    {
-        RelativeLayout l = new RelativeLayout(this);
-
-        int lastId = 0;
-        for (int i = 0; i < MaxPlayers; i++)
-        {
-            View player = createPlayerEdit(i);
-            player.setId(View.generateViewId());
-            if (lastId == 0)
-            {
-                l.addView(player);
-            }
-            else
-            {
-                RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
-                p.addRule(RelativeLayout.BELOW, lastId);
-                l.addView(player, p);
-            }
-
-            lastId = player.getId();
-        }
-
-        l.setId(View.generateViewId());
-        return l;
     }
 
     View createPlayerEdit(int number)
@@ -291,12 +262,12 @@ public class NewOptionActivity extends Activity
         RelativeLayout l = new RelativeLayout(this);
         EditText e = new EditText(this);
         e.setText("Player " + (number + 1));
-        e.setId(View.generateViewId());
+        e.setId(Utilities.generateViewId());
         l.addView(e);
 
         editPlayers[number] = e;
         CheckBox playing = new CheckBox(this);
-        playing.setId(View.generateViewId());
+        playing.setId(Utilities.generateViewId());
 
         RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
         p.addRule(RelativeLayout.RIGHT_OF, e.getId());
@@ -305,7 +276,7 @@ public class NewOptionActivity extends Activity
         playingCb[number] = playing;
 
         Spinner s = new Spinner(this);
-        s.setId(View.generateViewId());
+        s.setId(Utilities.generateViewId());
         List<String> list = new ArrayList<>();
         list.add(Strategy.Human);
         list.add(Strategy.Simple);
@@ -319,5 +290,95 @@ public class NewOptionActivity extends Activity
         pS.addRule(RelativeLayout.RIGHT_OF, playing.getId());
         l.addView(s, pS);
         return l;
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Logger.logInfo(LogKey, "On Start");
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        Logger.logInfo(LogKey, "On Stop");
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        Logger.logInfo(LogKey, "On Pause");
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Logger.logInfo(LogKey, "On Resume");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        Logger.logInfo(LogKey, "On Save");
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+
+        startActivity(new Intent(this, StartActivity.class));
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+
+        super.onRestoreInstanceState(savedInstanceState);
+
+
+        EditText player1 = (EditText) findViewById(R.id.player1_name);
+        EditText player2 = (EditText) findViewById(R.id.player2_name);
+
+        ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
+        ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
+
+        String[] strategies = savedInstanceState.getStringArray(StrategyIntent);
+
+        p1.setChecked(strategies[0] == Strategy.Human);
+        p2.setChecked(strategies[1] == Strategy.Human);
+
+        String[] players = savedInstanceState.getStringArray(PlayerIntent);
+
+        player1.setText(players[0]);
+        player2.setText(players[1]);
+
+
+        String selectedItem = savedInstanceState.getString(LengthIntent);
+        int pos = 0;
+        switch (selectedItem)
+        {
+            case "Short":
+                pos = 0;
+                break;
+            case "Middle":
+                pos = 1;
+                break;
+            case "Long":
+                pos = 2;
+                break;
+        }
+
+        lengthSpinner.setSelection(pos);
+
+        diagonal.setChecked(savedInstanceState.getBoolean(DiagonalIntent));
+        straight.setLength(savedInstanceState.getInt(StraightIntent));
+        xOfAKind.setLength(savedInstanceState.getInt(XOfAKindIntent));
+        Logger.logInfo(LogKey, "On Restore");
     }
 }

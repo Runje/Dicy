@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import games.runje.dicy.animatedData.AnimatedBoardElement;
+import games.runje.dicymodel.Utilities;
 
 /**
  * Created by Thomas on 02.02.2015.
@@ -24,7 +25,7 @@ public abstract class DicesLayout extends RelativeLayout
         MaxLength = maxLength;
         this.length = length;
         textView = new TextView(context);
-        textView.setId(View.generateViewId());
+        textView.setId(Utilities.generateViewId());
         addView(textView);
 
         dices = new ImageView[MaxLength];
@@ -33,7 +34,7 @@ public abstract class DicesLayout extends RelativeLayout
         for (int i = 0; i < MaxLength; i++)
         {
             ImageView iv = new ImageView(context);
-            iv.setId(View.generateViewId());
+            iv.setId(Utilities.generateViewId());
             dices[i] = iv;
             LayoutParams p = new LayoutParams(size, size);
             if (lastId != -1)
@@ -114,4 +115,17 @@ public abstract class DicesLayout extends RelativeLayout
         return length;
     }
 
+    public void setLength(int anInt)
+    {
+        if (length == MaxLength + 1)
+        {
+            length = 0;
+        }
+        else
+        {
+            length = anInt;
+        }
+
+        update();
+    }
 }

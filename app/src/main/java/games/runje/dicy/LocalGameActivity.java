@@ -2,7 +2,6 @@ package games.runje.dicy;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +52,7 @@ public class LocalGameActivity extends Activity
             @Override
             public void run()
             {
-                Rules rules = NewOptionActivity.getRulesFromIntent(getIntent());
+                Rules rules = OptionActivity.getRulesFromBundle(getIntent().getExtras());
                 List<Player> players = getPlayersFromIntent();
 
                 LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(players, rules, LocalGameActivity.this);
@@ -67,12 +66,12 @@ public class LocalGameActivity extends Activity
 
     private List<Player> getPlayersFromIntent()
     {
-        Intent intent = getIntent();
-        boolean[] playing = intent.getBooleanArrayExtra(NewOptionActivity.PlayingIntent);
-        String[] players = intent.getStringArrayExtra(NewOptionActivity.PlayerIntent);
+        Bundle intent = getIntent().getExtras();
+        boolean[] playing = intent.getBooleanArray(OptionActivity.PlayingIntent);
+        String[] players = intent.getStringArray(OptionActivity.PlayerIntent);
         List<String> p = new ArrayList<>();
 
-        for (int i = 0; i < NewOptionActivity.MaxPlayers; i++)
+        for (int i = 0; i < OptionActivity.MaxPlayers; i++)
         {
             if (playing[i])
             {
@@ -81,10 +80,10 @@ public class LocalGameActivity extends Activity
             }
         }
 
-        String[] strategies = intent.getStringArrayExtra(NewOptionActivity.StrategyIntent);
+        String[] strategies = intent.getStringArray(OptionActivity.StrategyIntent);
         List<Strategy> s = new ArrayList<>();
 
-        for (int i = 0; i < NewOptionActivity.MaxPlayers; i++)
+        for (int i = 0; i < OptionActivity.MaxPlayers; i++)
         {
             if (playing[i])
             {

@@ -32,7 +32,7 @@ public class StartActivity extends Activity
 
     public void clickPlay(View v)
     {
-        Intent intent = new Intent(this, NewOptionActivity.class);
+        Intent intent = new Intent(this, OptionActivity.class);
         startActivity(intent);
     }
 

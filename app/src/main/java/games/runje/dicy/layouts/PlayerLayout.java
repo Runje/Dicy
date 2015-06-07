@@ -227,7 +227,9 @@ public class PlayerLayout extends RelativeLayout
     {
         LinearLayout layout = new LinearLayout(this.getContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setLayoutDirection(LinearLayout.HORIZONTAL);
+        //params.setLayoutDirection(LinearLayout.HORIZONTAL);
+
+
         layout.setLayoutParams(params);
         View[] containers = {container.findViewById(R.id.skill1), container.findViewById(R.id.skill2), container.findViewById(R.id.skill3)};
         for (int i = 0; i < player.getSkills().size(); i++)
