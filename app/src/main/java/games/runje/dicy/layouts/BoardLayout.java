@@ -171,11 +171,7 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
         return getDiceSize() * (pos.row + YOffset + 1);
     }
 
-    public void setMaxWidth(double maxWidth)
-    {
-        diceSize = (int) maxWidth / (board.getNumberOfColumns() + 1);
-        createAbsoluteLayout();
-    }
+
 
     public Border getAboveBorder()
     {

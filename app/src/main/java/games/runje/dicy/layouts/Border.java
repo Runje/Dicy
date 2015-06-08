@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.view.View;
 
 import games.runje.dicy.R;
+import games.runje.dicymodel.Logger;
 
 /**
  * Created by Thomas on 26.03.2015.
@@ -15,13 +16,13 @@ public class Border extends View
 {
     private Paint paint;
     private boolean active;
+    public final static String LogKey = "Border";
 
     public Border(Context context)
     {
         super(context);
 
         paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
         paint.setColor(getResources().getColor(R.color.dicy_yellow));
         paint.setStrokeWidth(3);
     }
@@ -33,22 +34,19 @@ public class Border extends View
         super.onDraw(canvas);
         int x = getWidth();
         int y = getHeight();
-        int radius;
-        radius = 100;
         Paint paint = getPaint();
-        canvas.drawPaint(paint);
-        // Use Color.parseColor to define HTML colors
-        //paint.setColor(Color.parseColor("#CD5C5C"));
         if (active)
         {
+            Logger.logDebug(LogKey, "Active");
             paint.setStyle(Paint.Style.FILL);
         }
         else
         {
+            Logger.logDebug(LogKey, "Inactive");
             paint.setStyle(Paint.Style.STROKE);
         }
 
-        canvas.drawRect(0, radius, radius, 0, paint);
+        canvas.drawPaint(paint);
 
 
     }

@@ -10,6 +10,7 @@ import java.util.Map;
 import games.runje.dicy.animatedData.AnimatedBoardElementTL;
 import games.runje.dicy.animatedData.FallingAnimation;
 import games.runje.dicy.animatedData.PointsAnimation;
+import games.runje.dicy.layouts.Border;
 import games.runje.dicymodel.Logger;
 
 /**
@@ -17,6 +18,9 @@ import games.runje.dicymodel.Logger;
  */
 public class AnimatedLogger extends Logger
 {
+    /*protected static int Debug = 2;
+    protected static int Info = 3;
+    protected static int Error = 4;*/
     protected static Map<String, Integer> keyMap;
     private static HashMap<String, Integer> keyGroup;
     private static HashMap<String, List<String>> groupMap;
@@ -36,6 +40,7 @@ public class AnimatedLogger extends Logger
 
         // single keys
         keyMap.put(AnimatedBoardElementTL.LogKey, 3);
+        keyMap.put(Border.LogKey, 3);
 
 
         for(String key : keyGroup.keySet())

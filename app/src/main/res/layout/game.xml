@@ -35,7 +35,8 @@
             android:layout_height="30dp"
             android:src="@drawable/raceflag2"
             android:layout_marginLeft="20dp"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/goal_text"
@@ -44,7 +45,10 @@
             android:text="0"
             android:textSize="@dimen/player_text_size"
             android:layout_gravity="center_vertical"
-            android:textColor="@color/dicy_yellow" />
+            android:minEms="3"
+            android:maxEms="3"
+            android:textColor="@color/dicy_yellow"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/imageView3"
@@ -52,7 +56,8 @@
             android:layout_height="30dp"
             android:src="@drawable/dice3d"
             android:layout_marginLeft="30dp"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/switchPointsText"
@@ -61,13 +66,23 @@
             android:text="1"
             android:textSize="@dimen/player_text_size"
             android:layout_gravity="center_vertical"
-            android:textColor="@color/dicy_yellow" />
+            android:textColor="@color/dicy_yellow"
+            android:visibility="gone"/>
 
+        <games.runje.dicy.layouts.DicyProgress
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/dicy_progress"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
-            android:layout_weight="1" />
+            android:layout_weight="0" />
 
         <ImageView
             android:layout_width="100dp"

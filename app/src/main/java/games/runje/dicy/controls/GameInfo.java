@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.R;
+import games.runje.dicy.layouts.DicyProgress;
 import games.runje.dicy.layouts.PlayerLayout;
 import games.runje.dicy.layouts.PointList;
 import games.runje.dicymodel.Rules;
@@ -31,6 +32,7 @@ public class GameInfo
     private final Activity activity;
     private final ControlHandler handler;
     private final LocalGame game;
+    private final DicyProgress progress;
     private boolean enabled;
 
     public GameInfo(Activity activity, final ControlHandler handler, LocalGame game)
@@ -54,6 +56,9 @@ public class GameInfo
         //nextButton.setColorFilter(R.color.dicy_yellow);
 
         initPointListButton();
+
+        progress = (DicyProgress) activity.findViewById(R.id.dicy_progress);
+        progress.setMaxProgress(game.getPointsLimit());
     }
 
 
@@ -96,8 +101,11 @@ public class GameInfo
         String sLimit = Integer.toString(pointsLimit);
 
 
+
+
         this.movePointsText.setText("" + Integer.toString(game.getSwitchPoints()) + "\\" + sLimit);
 
+        progress.setProgress(game.getSwitchPoints());
 
         if (game.getSwitchPoints() >= game.getPointsLimit())
         {

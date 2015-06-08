@@ -1,6 +1,8 @@
 package games.runje.dicy.util;
 
 import android.app.Activity;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.TypedValue;
 import android.widget.RelativeLayout;
 
@@ -31,5 +33,15 @@ public class ViewUtilities
         return new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
     }
 
+    public static float getTextWidth(String text, android.graphics.Paint paint)
+    {
+        return paint.measureText(text);
+    }
 
+    public static float getTextHeight(String text, Paint paint)
+    {
+        Rect bounds = new Rect();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        return bounds.height();
+    }
 }
