@@ -324,4 +324,17 @@ public class LocalGame extends Game
 
         return true;
     }
+
+    public Player getOtherPlayer(Player player)
+    {
+        // assuming only 2 Players are playing
+        if (players.get(0).getId() == player.getId())
+        {
+            return players.get(1);
+        }
+        else
+        {
+            return players.get(0);
+        }
+    }
 }

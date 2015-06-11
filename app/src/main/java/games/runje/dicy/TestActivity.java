@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import games.runje.dicy.layouts.DicyProgress;
+import games.runje.dicy.layouts.DicyProgress2;
 
 /**
  * Created by Thomas on 08.06.2015.
@@ -14,7 +15,7 @@ import games.runje.dicy.layouts.DicyProgress;
 public class TestActivity extends Activity
 {
     private EditText editText;
-    private DicyProgress dicyProgress;
+    private DicyProgress2 dicyProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -23,14 +24,21 @@ public class TestActivity extends Activity
 
         setContentView(R.layout.test_activity);
         editText = (EditText) findViewById(R.id.editText);
-        dicyProgress = (DicyProgress) findViewById(R.id.view);
+        dicyProgress = (DicyProgress2) findViewById(R.id.view);
 
     }
 
     public void clickButton(View v)
     {
         int progress = Integer.parseInt(editText.getText().toString());
-        dicyProgress.setProgress(progress);
+        dicyProgress.setCurrentPoints(progress);
+        dicyProgress.invalidate();
+    }
+
+    public void clickButton2(View v)
+    {
+        int progress = Integer.parseInt(editText.getText().toString());
+        dicyProgress.setFuturePoints(progress);
         dicyProgress.invalidate();
     }
 }

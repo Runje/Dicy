@@ -13,12 +13,13 @@
 
         <ImageView
             android:id="@+id/player_icon"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:src="@drawable/bluewhitechip"/>
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/bluewhitechip"
+            android:visibility="gone"/>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:orientation="vertical">
 
@@ -69,6 +70,15 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <view
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            class="games.runje.dicy.layouts.DicyProgress2"
+            android:id="@+id/player_progress"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <LinearLayout

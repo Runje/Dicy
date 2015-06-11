@@ -40,6 +40,18 @@ public class Rules
      */
     private int minStraight;
     private int pointLimit;
+
+    public int getGameEndPoints()
+    {
+        return gameEndPoints;
+    }
+
+    public void setGameEndPoints(int gameEndPoints)
+    {
+        this.gameEndPoints = gameEndPoints;
+    }
+
+    private int gameEndPoints;
     /**
      * Creates standard Rules:
      * 6 Dices.

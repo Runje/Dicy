@@ -40,6 +40,7 @@ public class PlayerLayout extends RelativeLayout
     private final ImageView strike1;
     private final ImageView strike2;
     private final ImageView strike3;
+    private final DicyProgress2 progress;
     ImageView image;
     TextView name;
     //TextView strikes;
@@ -66,6 +67,9 @@ public class PlayerLayout extends RelativeLayout
         points = (TextView) container.findViewById(R.id.player_points);
         points.setText(Integer.toString(player.getPoints()));
 
+        progress = (DicyProgress2) container.findViewById(R.id.player_progress);
+        progress.setGoal(handler.getGame().getGameEndPoints());
+
         //strikes = (TextView) container.findViewById(R.id.player_strike);
         strike1 = (ImageView) container.findViewById(R.id.strike1);
         strike2 = (ImageView) container.findViewById(R.id.strike2);
@@ -83,11 +87,13 @@ public class PlayerLayout extends RelativeLayout
     {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
         image.startAnimation(animation);
+        skillView.startAnimation(animation);
     }
 
     public void stopTurnAnimation()
     {
         image.clearAnimation();
+        skillView.clearAnimation();
     }
 
     private void makeBorder()
@@ -107,6 +113,7 @@ public class PlayerLayout extends RelativeLayout
     public void updatePlayer(LocalGame game)
     {
         boolean isPlaying = game.hasTurn(player);
+
         Logger.logDebug(LogKey, player.getName() + " is playing: " + isPlaying);
         String pointColor = "";
         if (game.areMostPoints(player.getPoints()))
@@ -122,6 +129,9 @@ public class PlayerLayout extends RelativeLayout
             pointColor = HtmlWhite;
         }
 
+        Player opponent = game.getOtherPlayer(player);
+        progress.setOpponentPoints(opponent.getPoints());
+        progress.setCurrentPoints(player.getPoints());
         String pointString = "<font color=" + pointColor + ">" + Integer.toString(player.getPoints()) + "</font>";
 
         String playPoints = "";
@@ -131,6 +141,9 @@ public class PlayerLayout extends RelativeLayout
             name.setTextColor(getResources().getColor(R.color.dicy_yellow));
             String color = "";
             int sumPoints = game.getMovePoints() + player.getPoints() + game.getSwitchPoints();
+            progress.setFuturePoints(sumPoints);
+
+
             if (game.areMostPoints(sumPoints))
             {
                 color = HtmlBlue;
@@ -152,7 +165,7 @@ public class PlayerLayout extends RelativeLayout
             stopTurnAnimation();
         }
         points.setText(Html.fromHtml(pointString + playPoints));
-
+        progress.invalidate();
         //strikes.setText(strikesToString(player.getStrikes()));
         setStrikes(player.getStrikes());
     }

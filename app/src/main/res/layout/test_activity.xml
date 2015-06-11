@@ -15,7 +15,7 @@
     <view
         android:layout_width="100dp"
         android:layout_height="100dp"
-        class="games.runje.dicy.layouts.DicyProgress"
+        class="games.runje.dicy.layouts.DicyProgress2"
         android:id="@+id/view"
         android:layout_gravity="center"/>
 
@@ -26,4 +26,12 @@
         android:id="@+id/button5"
         android:layout_gravity="right|top"
         android:onClick="clickButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/button6"
+        android:layout_gravity="center_horizontal|top"
+        android:onClick="clickButton2"/>
 </FrameLayout>
