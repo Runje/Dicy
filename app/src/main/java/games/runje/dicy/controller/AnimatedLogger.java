@@ -11,6 +11,7 @@ import games.runje.dicy.animatedData.AnimatedBoardElementTL;
 import games.runje.dicy.animatedData.FallingAnimation;
 import games.runje.dicy.animatedData.PointsAnimation;
 import games.runje.dicy.layouts.Border;
+import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.Logger;
 
 /**
@@ -39,7 +40,9 @@ public class AnimatedLogger extends Logger
         initAnimationGroup();
 
         // single keys
-        keyMap.put(AnimatedBoardElementTL.LogKey, 3);
+        keyMap.put(AnimatedBoardElementTL.LogKey, 2);
+        keyMap.put(AbstractGamemaster.LogKey, 2);
+        keyMap.put(AnimatedGamemaster.LogKey, 2);
         keyMap.put(Border.LogKey, 3);
 
 

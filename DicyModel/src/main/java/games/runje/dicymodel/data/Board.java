@@ -588,13 +588,8 @@ public class Board
         }
     }
 
-    public void disable()
-    {
-        // for animated board
-    }
-
-    public void enable()
-    {
-        // for animated board
-    }
+   public void setEnabled(boolean enabled)
+   {
+       // for AnimatedBoard
+   }
 }

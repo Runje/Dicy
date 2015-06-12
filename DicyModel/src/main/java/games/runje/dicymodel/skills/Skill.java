@@ -18,6 +18,12 @@ public class Skill
     private int maxLoad;
     private int currentLoad;
     private String name;
+    protected boolean waiting;
+
+    public boolean isWaiting()
+    {
+        return waiting;
+    }
 
     public Skill(Skill skill)
     {

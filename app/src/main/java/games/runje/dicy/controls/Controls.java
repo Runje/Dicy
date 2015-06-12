@@ -10,9 +10,12 @@ import games.runje.dicy.R;
 import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.layouts.BoardLayout;
 import games.runje.dicy.layouts.PlayerLayout;
+import games.runje.dicy.layouts.SkillLayout;
 import games.runje.dicymodel.GameControls;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 27.04.2015.
@@ -28,6 +31,31 @@ public class Controls implements GameControls
 
     boolean enabled;
     public static String LogKey = "GameControls";
+    private boolean saveBoardEnabled;
+    private boolean saveGameInfoEnabled;
+    private boolean[] savePlayersEnabled = new boolean[2];
+
+    @Override
+    public void setSkillEnabled(Skill skill)
+    {
+        long id = game.getPlayingPlayer().getId();
+
+        for (PlayerLayout layout : playerLayouts)
+        {
+            if (layout.getPlayer().getId() == id)
+            {
+                for (SkillLayout skillLayout : layout.getSkills())
+                {
+                    if (skillLayout.getName().equals(skill.getName()))
+                    {
+                        skillLayout.setEnabled(true);
+                        Logger.logInfo(LogKey, "Setting Skill " + skill.getName() + " enabled");
+                        return;
+                    }
+                }
+            }
+        }
+    }
 
     public Controls(Activity activity, ControlHandler handler, LocalGame game)
     {
@@ -45,6 +73,38 @@ public class Controls implements GameControls
         this.boardLayout = handler.getBoardLayout();
         gameInfo = new GameInfo(activity, handler, game);
         setEnabledControls(true);
+    }
+
+    @Override
+    public void restore()
+    {
+        handler.setEnabledBoard(saveBoardEnabled);
+        boardLayout.setEnabledGravity(saveBoardEnabled);
+
+        gameInfo.setEnabled(saveGameInfoEnabled);
+
+        for (PlayerLayout playerLayout : playerLayouts)
+        {
+            playerLayout.restore();
+        }
+    }
+
+    @Override
+    public void save()
+    {
+        // Board
+        saveBoardEnabled = handler.isEnabledBoard();
+        Logger.logInfo(LogKey, "Board is enabled: " + saveBoardEnabled);
+
+        // GameInfo
+        saveGameInfoEnabled = gameInfo.isEnabled();
+
+        // Players
+        for (PlayerLayout playerLayout : playerLayouts)
+        {
+            playerLayout.save();
+        }
+
     }
 
     @Override

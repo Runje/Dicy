@@ -11,6 +11,7 @@ import java.util.List;
 import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.controller.BoardListener;
 import games.runje.dicy.layouts.BoardLayout;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
@@ -34,6 +35,7 @@ public class AnimatedBoard extends Board
 
     private BoardLayout gameLayout;
     private BoardListener boardListener;
+    private boolean enabled;
 
     public AnimatedBoard(int rows, int columns, Activity activity, BoardListener b)
     {
@@ -410,6 +412,8 @@ public class AnimatedBoard extends Board
                 this.animatedBoard.get(row).get(column).getTouchListener().setSwitchEnabled(false);
             }
         }
+
+
     }
 
     public void changeToSwitchListener()
@@ -419,28 +423,6 @@ public class AnimatedBoard extends Board
             for (int column = 0; column < this.columns; column++)
             {
                 this.animatedBoard.get(row).get(column).getTouchListener().setSwitchEnabled(true);
-            }
-        }
-    }
-
-    public void disable()
-    {
-        for (int row = 0; row < this.rows; row++)
-        {
-            for (int column = 0; column < this.columns; column++)
-            {
-                this.animatedBoard.get(row).get(column).getTouchListener().setDisabled(true);
-            }
-        }
-    }
-
-    public void enable()
-    {
-        for (int row = 0; row < this.rows; row++)
-        {
-            for (int column = 0; column < this.columns; column++)
-            {
-                this.animatedBoard.get(row).get(column).getTouchListener().setDisabled(false);
             }
         }
     }
@@ -480,4 +462,22 @@ public class AnimatedBoard extends Board
         }
     }
 
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        Logger.logInfo(LogKey, "Board Controls enabled: " + enabled);
+        this.enabled = enabled;
+
+        for (int row = 0; row < this.rows; row++)
+        {
+            for (int column = 0; column < this.columns; column++)
+            {
+                this.animatedBoard.get(row).get(column).getTouchListener().setDisabled(!enabled);
+            }
+        }
+    }
 }

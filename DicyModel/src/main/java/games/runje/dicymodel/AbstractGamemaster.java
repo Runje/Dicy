@@ -137,7 +137,7 @@ public abstract class AbstractGamemaster
             case Wait:
                 getGame().setStrikePossible(false);
                 // TODO: should handle the skill
-                board.enable();
+                board.setEnabled(true);
                 break;
             case Executed:
                 ArrayList<PointElement> pointElements = BoardChecker.getAll(board, rules);
@@ -209,6 +209,11 @@ public abstract class AbstractGamemaster
     {
         board.recreateElements(recreateElements);
         endRecreateAnimation();
+    }
+
+    public void cancelWaiting()
+    {
+        stateTransition(GameState.Normal);
     }
 
     public void endRecreateAnimation()

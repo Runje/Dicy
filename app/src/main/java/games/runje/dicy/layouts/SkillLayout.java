@@ -23,6 +23,7 @@ public class SkillLayout extends LinearLayout
     private ImageView image;
     private Skill skill;
     public static String LogKey = "SkillLayout";
+    private boolean saveEnabled;
 
     public SkillLayout(Context context, final Skill skill, final ControlHandler handler, View container)
     {
@@ -84,5 +85,15 @@ public class SkillLayout extends LinearLayout
     public String getName()
     {
         return skill.getName();
+    }
+
+    public void save()
+    {
+        saveEnabled = isEnabled();
+    }
+
+    public void restore()
+    {
+        setEnabled(saveEnabled);
     }
 }

@@ -9,6 +9,7 @@ public class AnimatedSkill extends Skill
 {
     private int imageId;
 
+
     public AnimatedSkill(int value, int max, String name)
     {
         super(value, max, name);

@@ -32,7 +32,7 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class AnimatedGamemaster extends AbstractGamemaster implements BoardListener, AIControllerHandler, ControlHandler
 {
-    private final String LogKey = "GamemasterAnimated";
+    public static final String LogKey = "GamemasterAnimated";
     protected Activity activity;
     AnimatedBoard animatedBoard;
 
@@ -76,14 +76,13 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     @Override
     public void setEnabledBoard(boolean enabled)
     {
-        if (enabled)
-        {
-            this.animatedBoard.enable();
-        }
-        else
-        {
-            this.animatedBoard.disable();
-        }
+        this.animatedBoard.setEnabled(enabled);
+    }
+
+    @Override
+    public boolean isEnabledBoard()
+    {
+        return this.animatedBoard.isEnabled();
     }
 
     public AnimatedBoard getAnimatedBoard()
@@ -123,9 +122,11 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
             SwitchAnimation s = new SwitchAnimation(firstImage, secondImage, this);
             s.start();
         }
-
-        // enabling controls
-        setAllEnabled(true);
+        else
+        {
+            // enabling controls
+            setAllEnabled(true);
+        }
     }
 
     @Override
@@ -223,13 +224,14 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
 
         getAnimatedBoard().getBoardLayout().updateGravity(gravity);
         board.setGravity(gravity);
+        controls.save();
         controls.setEnabledControls(false);
         AnimationHandler animationHandler = new AnimationHandler(new Runnable()
         {
             @Override
             public void run()
             {
-                getControls().setEnabledControls(true);
+                getControls().restore();
             }
         });
 

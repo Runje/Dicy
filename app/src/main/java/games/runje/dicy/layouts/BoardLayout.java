@@ -224,39 +224,27 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
 
     public void updateGravity(Gravity gravity)
     {
-        int colorInactive = Color.TRANSPARENT;
-        /*above.setBackgroundColor(colorInactive);
-        below.setBackgroundColor(colorInactive);
-        left.setBackgroundColor(colorInactive);
-        right.setBackgroundColor(colorInactive);*/
-
         above.setActive(false);
         below.setActive(false);
         right.setActive(false);
         left.setActive(false);
 
-        int yellow = R.color.dicy_yellow;
-
         switch (gravity)
         {
             case Up:
                 setYOffset(0);
-                //above.setBackgroundColor(yellow);
                 above.setActive(true);
                 break;
             case Down:
                 setYOffset(1);
-                //below.setBackgroundColor(yellow);
                 below.setActive(true);
                 break;
             case Right:
                 setXOffset(1);
-                //right.setBackgroundColor(yellow);
                 right.setActive(true);
                 break;
             case Left:
                 setXOffset(0);
-                //left.setBackgroundColor(yellow);
                 left.setActive(true);
                 break;
         }
@@ -269,4 +257,5 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
         getLeftBorder().setEnabled(enabled);
         getRightBorder().setEnabled(enabled);
     }
+
 }

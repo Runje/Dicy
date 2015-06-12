@@ -22,4 +22,6 @@ public interface ControlHandler
     void setEnabledBoard(boolean enabled);
 
     LocalGame getGame();
+
+    boolean isEnabledBoard();
 }

@@ -51,6 +51,11 @@ public class PlayerLayout extends RelativeLayout
     private Player player;
     public static String LogKey = "PlayerLayout";
 
+    public List<SkillLayout> getSkills()
+    {
+        return skills;
+    }
+
     public PlayerLayout(Activity activity, Player player, int imageId, int containerId, ControlHandler handler)
     {
         super(activity);
@@ -257,5 +262,21 @@ public class PlayerLayout extends RelativeLayout
 
         containers[2].setVisibility(View.GONE);
         return layout;
+    }
+
+    public void save()
+    {
+        for(SkillLayout skillLayout:skills)
+        {
+            skillLayout.save();
+        }
+    }
+
+    public void restore()
+    {
+        for(SkillLayout skillLayout:skills)
+        {
+            skillLayout.restore();
+        }
     }
 }
