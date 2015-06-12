@@ -76,6 +76,12 @@ public class Controls implements GameControls
     }
 
     @Override
+    public void setPointLimit(int i)
+    {
+        gameInfo.setPointLimit(i);
+    }
+
+    @Override
     public void restore()
     {
         handler.setEnabledBoard(saveBoardEnabled);

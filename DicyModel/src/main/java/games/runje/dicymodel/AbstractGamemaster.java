@@ -98,7 +98,8 @@ public abstract class AbstractGamemaster
                 int points = Utilities.getPointsFrom(elements);
                 Logger.logDebug(LogKey, "Points after switch: " + points);
                 Logger.logDebug(LogKey, "Board after switch: " + board);
-                game.addPointElements(elements, board);
+                game.addPointElements(elements, board, true);
+
                 if (points == 0)
                 {
                     switchback();
@@ -123,7 +124,7 @@ public abstract class AbstractGamemaster
             case Recreated:
                 elements = BoardChecker.getAll(board, rules);
                 points = Utilities.getPointsFrom(elements);
-                game.addPointElements(elements, board);
+                game.addPointElements(elements, board, true);
                 if (points == 0)
                 {
                     game.endSwitch();
@@ -136,13 +137,14 @@ public abstract class AbstractGamemaster
                 break;
             case Wait:
                 getGame().setStrikePossible(false);
+                controls.setPointLimit(0);
                 // TODO: should handle the skill
                 board.setEnabled(true);
                 break;
             case Executed:
                 ArrayList<PointElement> pointElements = BoardChecker.getAll(board, rules);
                 int Executedpoints = Utilities.getPointsFrom(pointElements);
-                game.addPointElements(pointElements, board);
+                game.addPointElements(pointElements, board, false);
                 if (Executedpoints == 0)
                 {
                     stateTransition(GameState.Normal);
@@ -166,6 +168,7 @@ public abstract class AbstractGamemaster
     protected void transitionToNormal()
     {
         getGame().setStrikePossible(true);
+        controls.setPointLimit(rules.getPointLimit());
     }
 
     private void startRecreateBoard()

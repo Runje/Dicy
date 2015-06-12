@@ -40,9 +40,9 @@ public class AnimatedLogger extends Logger
         initAnimationGroup();
 
         // single keys
-        keyMap.put(AnimatedBoardElementTL.LogKey, 2);
-        keyMap.put(AbstractGamemaster.LogKey, 2);
-        keyMap.put(AnimatedGamemaster.LogKey, 2);
+        keyMap.put(AnimatedBoardElementTL.LogKey, 3);
+        keyMap.put(AbstractGamemaster.LogKey, 3);
+        keyMap.put(AnimatedGamemaster.LogKey, 3);
         keyMap.put(Border.LogKey, 3);
 
 

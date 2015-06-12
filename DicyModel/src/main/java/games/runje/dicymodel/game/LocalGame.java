@@ -96,13 +96,16 @@ public class LocalGame extends Game
     }
 
     @Override
-    public void addPointElements(ArrayList<PointElement> elements, Board board)
+    public void addPointElements(ArrayList<PointElement> elements, Board board, boolean load)
     {
         int points = Utilities.getPointsFrom(elements);
         //Logger.logDebug(LogKey, "Add switch points: " + points);
         switchPoints += points;
 
-        loadSkills(elements, board);
+        if (load)
+        {
+            loadSkills(elements, board);
+        }
     }
 
     private void loadSkills(ArrayList<PointElement> elements, Board board)

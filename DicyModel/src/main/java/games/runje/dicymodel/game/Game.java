@@ -19,7 +19,7 @@ public abstract class Game
     abstract public boolean moveEnds();
 
 
-    public abstract void addPointElements(ArrayList<PointElement> elements, Board board);
+    public abstract void addPointElements(ArrayList<PointElement> elements, Board board, boolean load);
 
     public abstract void endSwitch();
 

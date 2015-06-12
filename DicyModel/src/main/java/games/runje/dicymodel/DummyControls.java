@@ -43,4 +43,10 @@ public class DummyControls implements GameControls
 
     }
 
+    @Override
+    public void setPointLimit(int i)
+    {
+
+    }
+
 }

@@ -18,4 +18,6 @@ public interface GameControls
     void restore();
 
     void save();
+
+    void setPointLimit(int i);
 }

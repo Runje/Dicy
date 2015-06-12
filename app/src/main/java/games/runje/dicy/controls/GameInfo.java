@@ -127,4 +127,9 @@ public class GameInfo
         this.enabled = enabled;
         this.nextButton.setEnabled(enabled);
     }
+
+    public void setPointLimit(int i)
+    {
+        progress.setMaxProgress(i);
+    }
 }
