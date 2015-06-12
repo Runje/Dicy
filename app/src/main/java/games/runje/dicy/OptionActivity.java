@@ -119,8 +119,6 @@ public class OptionActivity extends Activity
         {
             layout.addView(x, params);
         }
-
-
     }
 
     private View xOfAKind()
@@ -193,7 +191,6 @@ public class OptionActivity extends Activity
         l.add("Short");
         l.add("Normal");
         l.add("Long");
-        int id = Utilities.generateViewId();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, l);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         lengthSpinner.setAdapter(adapter);
@@ -273,8 +270,13 @@ public class OptionActivity extends Activity
 
         Logger.logInfo(LogKey, (String) strategies[0] + ", " + strategies[1]);
 
-        p1.setChecked(strategies[0] == Strategy.Human);
-        p2.setChecked(strategies[1] == Strategy.Human);
+        boolean p1Checked = strategies[0].equals(Strategy.Human);
+        boolean p2Checked = strategies[1].equals(Strategy.Human);
+
+        p1.setChecked(p1Checked);
+        p2.setChecked(p2Checked);
+        p1.invalidate();
+        p2.invalidate();
 
         player1.setText(sharedPreferences.getString(Player1Intent, "Player 1"));
         player2.setText(sharedPreferences.getString(Player2Intent, "Player 2"));
