@@ -2,9 +2,19 @@ package games.runje.dicy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import java.util.List;
+
+import games.runje.dicy.statistics.GameStatistic;
+import games.runje.dicy.statistics.PlayerStatistic;
+import games.runje.dicy.statistics.SQLiteHandler;
+import games.runje.dicy.statistics.StatisticManager;
+import games.runje.dicymodel.Logger;
 
 public class StartActivity extends Activity
 {
@@ -16,13 +26,37 @@ public class StartActivity extends Activity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_start);
+
+
+
     }
 
     public void clickTestarena(View v)
     {
         Intent intent = new Intent(this, TestActivity.class);
-        startActivity(intent);
+        //startActivity(intent);
+
+        Log.d("Start", "Adding Player Thomas");
+        StatisticManager manager = new SQLiteHandler(this);
+        //manager.recreate();
+        //manager.createPlayer(new PlayerStatistic(0, "Thomas", 5, 3));
+        Log.d("Start", "Adding Player Thomas");
+        //manager.createPlayer(new PlayerStatistic(1, "Milena", 5, 2));
+
+        PlayerStatistic Thomas = manager.getPlayer("Thomas");
+        PlayerStatistic Milena = manager.getPlayer("Milena");
+
+        manager.update(new GameStatistic(Thomas, Milena, 1));
+
+        List<PlayerStatistic> players = manager.getAllPlayers();
+
+        for(PlayerStatistic p : players)
+        {
+            Log.d("Start", p.toString());
+        }
     }
+
+
 
     public void clickOnlineGame(View v)
     {
