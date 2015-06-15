@@ -40,12 +40,11 @@
                 android:layout_marginLeft="20dp"
                 android:orientation="vertical">
 
-                <EditText
+                <Spinner
                     android:id="@+id/player1_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="textPersonName"
                     android:text="Player1"
                     />
 
@@ -82,12 +81,11 @@
                 android:layout_marginLeft="20dp"
                 android:orientation="vertical">
 
-                <EditText
+                <Spinner
                     android:id="@+id/player2_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="textPersonName"
                     android:text="Player2"/>
 
                 <ToggleButton

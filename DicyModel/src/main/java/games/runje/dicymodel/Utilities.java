@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
+import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
 
 /**
@@ -49,4 +50,6 @@ public class Utilities
         id++;
         return id;
     }
+
+
 }

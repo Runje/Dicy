@@ -25,6 +25,9 @@ import java.util.List;
 import games.runje.dicy.controller.CalcPointLimit;
 import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.layouts.XOfAKindLayout;
+import games.runje.dicy.statistics.PlayerStatistic;
+import games.runje.dicy.statistics.SQLiteHandler;
+import games.runje.dicy.statistics.StatisticManager;
 import games.runje.dicy.util.ViewUtilities;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
@@ -55,6 +58,8 @@ public class OptionActivity extends Activity
     private CheckBox[] playingCb = new CheckBox[MaxPlayers];
     private Spinner[] strategySpinner = new Spinner[MaxPlayers];
     private Spinner lengthSpinner;
+    private Spinner player1Spinner;
+    private Spinner player2Spinner;
     public static String LogKey = "Options";
     private CheckBox diagonal;
     private StraightLayout straight;
@@ -103,6 +108,8 @@ public class OptionActivity extends Activity
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_option);
+
+        names();
         lengthSpinner();
         View straightView = straight();
         LinearLayout layout = (LinearLayout) findViewById(R.id.rules_layout);
@@ -119,6 +126,33 @@ public class OptionActivity extends Activity
         {
             layout.addView(x, params);
         }
+    }
+
+    private void names()
+    {
+        player1Spinner = (Spinner) findViewById(R.id.player1_name);
+        StatisticManager manager = new SQLiteHandler(this);
+        List<PlayerStatistic> players = manager.getAllPlayers();
+        List<String> l = new ArrayList<>();
+        for (PlayerStatistic player: players)
+        {
+            l.add(player.getName());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, l);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        player1Spinner.setAdapter(adapter);
+
+        player2Spinner = (Spinner) findViewById(R.id.player2_name);
+        List<String> l2 = new ArrayList<>();
+        for (PlayerStatistic player: players)
+        {
+            l2.add(player.getName());
+        }
+
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, l);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        player2Spinner.setAdapter(adapter2);
     }
 
     private View xOfAKind()
@@ -202,9 +236,7 @@ public class OptionActivity extends Activity
         boolean[] playing = {true, true, false, false};
 
 
-        String player1 = ((EditText) findViewById(R.id.player1_name)).getText().toString();
-        String player2 = ((EditText) findViewById(R.id.player2_name)).getText().toString();
-        String[] players = {player1, player2, "", ""};
+        String[] players = {(String) player1Spinner.getSelectedItem(), (String) player2Spinner.getSelectedItem(), "", ""};
 
         ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
         String s1 = p1.isChecked() ? Strategy.Human : Strategy.Simple;
@@ -225,9 +257,7 @@ public class OptionActivity extends Activity
     private void saveToSharedPreferences()
     {
         Logger.logInfo(LogKey, "Save to shared preferences");
-        String player1 = ((EditText) findViewById(R.id.player1_name)).getText().toString();
-        String player2 = ((EditText) findViewById(R.id.player2_name)).getText().toString();
-        String[] players = {player1, player2, "", ""};
+        String[] players = {(String) player1Spinner.getSelectedItem(), (String) player2Spinner.getSelectedItem(), "", ""};
 
         ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
         String s1 = p1.isChecked() ? Strategy.Human : Strategy.Simple;
@@ -259,8 +289,6 @@ public class OptionActivity extends Activity
 
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
-        EditText player1 = (EditText) findViewById(R.id.player1_name);
-        EditText player2 = (EditText) findViewById(R.id.player2_name);
 
         ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
         ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
@@ -278,8 +306,10 @@ public class OptionActivity extends Activity
         p1.invalidate();
         p2.invalidate();
 
-        player1.setText(sharedPreferences.getString(Player1Intent, "Player 1"));
-        player2.setText(sharedPreferences.getString(Player2Intent, "Player 2"));
+        //player1.setText(sharedPreferences.getString(Player1Intent, "Player 1"));
+        // TODO:
+        player1Spinner.setSelection(getIndex(player1Spinner, sharedPreferences.getString(Player1Intent, "Player 1")));
+        player2Spinner.setSelection(getIndex(player1Spinner, sharedPreferences.getString(Player2Intent, "Player 2")));
 
 
         String selectedItem = sharedPreferences.getString(LengthIntent, "Short");
@@ -302,6 +332,19 @@ public class OptionActivity extends Activity
         diagonal.setChecked(sharedPreferences.getBoolean(DiagonalIntent, false));
         straight.setLength(sharedPreferences.getInt(StraightIntent, 3));
         xOfAKind.setLength(sharedPreferences.getInt(XOfAKindIntent, 3));
+    }
+
+    private int getIndex(Spinner spinner, String myString)
+    {
+        int index = 0;
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
     public void clickPlay(final View v)

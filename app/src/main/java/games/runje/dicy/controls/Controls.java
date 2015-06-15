@@ -11,8 +11,13 @@ import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.layouts.BoardLayout;
 import games.runje.dicy.layouts.PlayerLayout;
 import games.runje.dicy.layouts.SkillLayout;
+import games.runje.dicy.statistics.GameStatistic;
+import games.runje.dicy.statistics.PlayerStatistic;
+import games.runje.dicy.statistics.SQLiteHandler;
+import games.runje.dicy.statistics.StatisticManager;
 import games.runje.dicymodel.GameControls;
 import games.runje.dicymodel.Logger;
+import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
@@ -145,6 +150,10 @@ public class Controls implements GameControls
         if (game.isGameOver())
         {
             setEnabledControls(false);
+            StatisticManager manager = new SQLiteHandler(activity);
+            PlayerStatistic player1 = manager.getPlayer(game.getPlayers().get(0).getName());
+            PlayerStatistic player2 = manager.getPlayer(game.getPlayers().get(1).getName());
+            manager.update(new GameStatistic(player1, player2, game.getWinningIndex()));
             FinishedDialog d = new FinishedDialog();
             d.setContext(activity);
             d.setName(game.getWinner());

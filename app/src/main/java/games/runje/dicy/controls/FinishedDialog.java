@@ -8,9 +8,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import java.util.List;
+
 import games.runje.dicy.OptionActivity;
 import games.runje.dicy.StartActivity;
 import games.runje.dicy.controller.AnimatedLogger;
+import games.runje.dicy.statistics.PlayerStatistic;
+import games.runje.dicy.statistics.SQLiteHandler;
+import games.runje.dicy.statistics.StatisticManager;
 
 /**
  * Created by Thomas on 18.01.2015.
@@ -44,7 +49,15 @@ public class FinishedDialog extends DialogFragment
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setMessage(name + " wins the game.")
+        StatisticManager manager = new SQLiteHandler(context);
+        List<PlayerStatistic> players = manager.getAllPlayers();
+        String statistics = "";
+        for (PlayerStatistic playerStatistic: players)
+        {
+            statistics += playerStatistic + "\n";
+        }
+
+        builder.setMessage(statistics + name + " wins the game.")
                 .setPositiveButton("Again", new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)

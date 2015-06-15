@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import games.runje.dicymodel.Logger;
+import games.runje.dicymodel.data.Player;
 
 /**
  * Created by Thomas on 15.06.2015.

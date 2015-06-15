@@ -35,6 +35,7 @@ public class LocalGame extends Game
     private String winner;
     private boolean cancelled = false;
     private int length;
+    private int winIndex = -1;
 
     public LocalGame(int p, int pLimit, int length)
     {
@@ -287,6 +288,7 @@ public class LocalGame extends Game
         {
             enoughPoints = true;
             winner = getPlayingPlayer().getName();
+            winIndex = turn;
         }
 
         //Logger.logDebug(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
@@ -307,6 +309,11 @@ public class LocalGame extends Game
     public String getWinner()
     {
         return winner;
+    }
+
+    public int getWinningIndex()
+    {
+        return winIndex;
     }
 
     public int getLastLeadingPlayer()
