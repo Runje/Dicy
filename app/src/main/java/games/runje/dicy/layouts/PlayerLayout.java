@@ -140,6 +140,7 @@ public class PlayerLayout extends RelativeLayout
         String pointString = "<font color=" + pointColor + ">" + Integer.toString(player.getPoints()) + "</font>";
 
         String playPoints = "";
+        progress.setFuturePoints(0);
         if (isPlaying)
         {
             startTurnAnimation();

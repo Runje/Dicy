@@ -14,6 +14,9 @@ import java.util.List;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
+import games.runje.dicy.statistics.PlayerStatistic;
+import games.runje.dicy.statistics.SQLiteHandler;
+import games.runje.dicy.statistics.StatisticManager;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
@@ -67,43 +70,32 @@ public class LocalGameActivity extends Activity
     private List<Player> getPlayersFromIntent()
     {
         Bundle intent = getIntent().getExtras();
-        boolean[] playing = intent.getBooleanArray(OptionActivity.PlayingIntent);
         String[] players = intent.getStringArray(OptionActivity.Player1Intent);
         List<String> p = new ArrayList<>();
 
         for (int i = 0; i < OptionActivity.MaxPlayers; i++)
         {
-            if (playing[i])
-            {
                 p.add(players[i]);
                 AnimatedLogger.logDebug("LocalGameActivity", "adding " + players[i]);
-            }
-        }
-
-        String[] strategies = intent.getStringArray(OptionActivity.Strategy1Intent);
-        List<Strategy> s = new ArrayList<>();
-
-        for (int i = 0; i < OptionActivity.MaxPlayers; i++)
-        {
-            if (playing[i])
-            {
-                s.add(Strategy.makeStrategy(strategies[i]));
-                AnimatedLogger.logDebug("LocalGameActivity", "adding " + strategies[i]);
-            }
         }
 
         List<Player> playerList = new ArrayList<>();
-        for (int i = 0; i < p.size(); i++)
+        StatisticManager manager = new SQLiteHandler(this);
+        for (int i = 0; i < 2; i++)
         {
             String name = p.get(i);
-            Strategy strategy = s.get(i);
-            playerList.add(new Player(name, strategy, i));
+            PlayerStatistic player = manager.getPlayer(name);
+
+            playerList.add(playerStatisticsToPlayer(player));
         }
 
         return playerList;
     }
 
-
+    static Player playerStatisticsToPlayer(PlayerStatistic statistic)
+    {
+        return new Player(statistic.getName(), Strategy.makeStrategy(statistic.getStrategy()), statistic.getId());
+    }
 
     @Override
     public void onBackPressed()

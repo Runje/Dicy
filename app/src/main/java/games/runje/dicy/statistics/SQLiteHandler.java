@@ -10,7 +10,6 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import games.runje.dicymodel.Logger;
-import games.runje.dicymodel.data.Player;
 
 /**
  * Created by Thomas on 15.06.2015.
@@ -18,7 +17,7 @@ import games.runje.dicymodel.data.Player;
 public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
 {
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "dicy.db";
@@ -31,15 +30,18 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     private static final String KEY_GAMES = "games";
     private static final String KEY_WINS = "wins";
     private static final String KEY_ID = "id";
+    private static final String KEY_STRATEGY = "strategy";
     private static final String CREATE_PLAYERS_TABLE = "CREATE TABLE " + TABLE_PLAYERS + "("
             + KEY_ID + " LONG,"
             + KEY_NAME + " TEXT,"
-            + KEY_GAMES + " LONG," + KEY_WINS + " LONG"+
-            ");";
+            + KEY_GAMES + " LONG,"
+            + KEY_WINS + " LONG,"
+            + KEY_STRATEGY + " TEXT"
+            + ");";
     private String LogKey = "DB";
 
     private static final String[] Player = new String[] {
-            KEY_ID, KEY_NAME, KEY_GAMES, KEY_WINS};
+            KEY_ID, KEY_NAME, KEY_GAMES, KEY_WINS, KEY_STRATEGY};
 
     public SQLiteHandler(Context context) {
         this(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -51,21 +53,22 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     }
 
 
+
     @Override
-    public void createPlayer(PlayerStatistic player)
+    public PlayerStatistic createPlayer(String name, String strategy)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "select count(*) from " + TABLE_PLAYERS + " where " + KEY_ID + " = " + player.getId();
-        Cursor c = db.rawQuery(query, null);
+        PlayerStatistic player = new PlayerStatistic(getNextId(), name, 0,0, strategy);
+        String query = "select count(*) from " + TABLE_PLAYERS + " where " + KEY_NAME + " = ?";
+        Cursor c = db.rawQuery(query, new String[] { name });
         if (c.moveToFirst())
         {
             if (c.getInt(0) != 0)
             {
                 Log.d("DBHandler", player.getName() + " is already in DB: " + c.getInt(0));
                 c.close();
-                return;
+                return getPlayer(name);
             }
-
         }
 
         c.close();
@@ -74,6 +77,24 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
         // Inserting Row
         db.insert(TABLE_PLAYERS, null, values);
         db.close(); // Closing database connection
+
+        return player;
+    }
+
+    private long getNextId()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT MAX(" + KEY_ID + ") from " + TABLE_PLAYERS;
+        Cursor c = db.rawQuery(query, null);
+        long id = -1;
+        if (c.moveToFirst())
+        {
+           id = c.getLong(0) + 1;
+        }
+
+        c.close();
+
+        return id;
     }
 
     @Override
@@ -110,6 +131,7 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
         values.put(KEY_NAME, player.getName());
         values.put(KEY_GAMES, player.getGames());
         values.put(KEY_WINS, player.getWins());
+        values.put(KEY_STRATEGY, player.getStrategy());
         return values;
     }
 
@@ -155,6 +177,8 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion)
     {
         Logger.logInfo(LogKey, "On Upgrade from " + oldVersion + " to " + newVersion);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PLAYERS);
+        onCreate(sqLiteDatabase);
     }
 
     public ArrayList<PlayerStatistic> getAllPlayers()
@@ -180,6 +204,6 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
 
     private PlayerStatistic createPlayerFromCursor(Cursor cursor)
     {
-        return new PlayerStatistic(cursor.getLong(0), cursor.getString(1), cursor.getLong(2), cursor.getLong(3));
+        return new PlayerStatistic(cursor.getLong(0), cursor.getString(1), cursor.getLong(2), cursor.getLong(3), cursor.getString(4));
     }
 }

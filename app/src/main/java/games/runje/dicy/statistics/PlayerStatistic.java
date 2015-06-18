@@ -1,10 +1,18 @@
 package games.runje.dicy.statistics;
 
+import games.runje.dicymodel.ai.Strategy;
+
 /**
  * Created by Thomas on 15.06.2015.
  */
 public class PlayerStatistic
 {
+    public String getStrategy()
+    {
+        return strategy;
+    }
+
+    private final String strategy;
     private long games;
 
     private long wins;
@@ -34,11 +42,11 @@ public class PlayerStatistic
         this.id = id;
     }
 
-    public PlayerStatistic(long id, String name, long games, long wins)
+    public PlayerStatistic(long id, String name, long games, long wins, String strategy)
     {
         this.name = name;
         this.id = id;
-
+        this.strategy = strategy;
         this.games = games;
         this.wins = wins;
     }
@@ -68,7 +76,8 @@ public class PlayerStatistic
     public String toString()
     {
         return "PlayerStatistic{" +
-                "games=" + games +
+                "strategy='" + strategy + '\'' +
+                ", games=" + games +
                 ", wins=" + wins +
                 ", name='" + name + '\'' +
                 ", id=" + id +

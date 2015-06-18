@@ -15,6 +15,7 @@ import games.runje.dicy.statistics.PlayerStatistic;
 import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
 import games.runje.dicymodel.Logger;
+import games.runje.dicymodel.ai.Strategy;
 
 public class StartActivity extends Activity
 {
@@ -39,14 +40,15 @@ public class StartActivity extends Activity
         Log.d("Start", "Adding Player Thomas");
         StatisticManager manager = new SQLiteHandler(this);
         //manager.recreate();
-        //manager.createPlayer(new PlayerStatistic(0, "Thomas", 5, 3));
+        manager.createPlayer("Thomas", Strategy.Human);
         Log.d("Start", "Adding Player Thomas");
-        //manager.createPlayer(new PlayerStatistic(1, "Milena", 5, 2));
+        manager.createPlayer("Milena", Strategy.Human);
+        manager.createPlayer("Max", Strategy.Simple);
 
         PlayerStatistic Thomas = manager.getPlayer("Thomas");
         PlayerStatistic Milena = manager.getPlayer("Milena");
 
-        manager.update(new GameStatistic(Thomas, Milena, 1));
+        //manager.update(new GameStatistic(Thomas, Milena, 1));
 
         List<PlayerStatistic> players = manager.getAllPlayers();
 

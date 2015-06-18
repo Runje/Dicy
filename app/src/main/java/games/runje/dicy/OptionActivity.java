@@ -1,7 +1,9 @@
 package games.runje.dicy;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.controller.CalcPointLimit;
+import games.runje.dicy.layouts.NamesArrayAdapter;
 import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.layouts.XOfAKindLayout;
 import games.runje.dicy.statistics.PlayerStatistic;
@@ -43,20 +47,14 @@ import games.runje.dicymodel.ai.Strategy;
  */
 public class OptionActivity extends Activity
 {
-    public static final String PlayingIntent = "Playing";
     public static final String Player1Intent = "Player1";
     public static final String Player2Intent = "Player2";
     public static final String LengthIntent = "Length";
     public static final String DiagonalIntent = "Diagonal";
     public static final String StraightIntent = "Straight";
     public static final String XOfAKindIntent = "XOfAKind";
-    public static final String Strategy1Intent = "Strategy1";
-    public static final String Strategy2Intent = "Strategy2";
     final static int MaxPlayers = 4;
     private static String PointLimitIntent = "PointLimit";
-    private EditText[] editPlayers = new EditText[MaxPlayers];
-    private CheckBox[] playingCb = new CheckBox[MaxPlayers];
-    private Spinner[] strategySpinner = new Spinner[MaxPlayers];
     private Spinner lengthSpinner;
     private Spinner player1Spinner;
     private Spinner player2Spinner;
@@ -65,6 +63,8 @@ public class OptionActivity extends Activity
     private StraightLayout straight;
     private XOfAKindLayout xOfAKind;
     private int size = 75;
+    private NamesArrayAdapter player1Adapter;
+    private NamesArrayAdapter player2Adapter;
 
     public static Rules getRulesFromBundle(Bundle bundle)
     {
@@ -133,28 +133,80 @@ public class OptionActivity extends Activity
         player1Spinner = (Spinner) findViewById(R.id.player1_name);
         StatisticManager manager = new SQLiteHandler(this);
         List<PlayerStatistic> players = manager.getAllPlayers();
-        List<String> l = new ArrayList<>();
-        for (PlayerStatistic player: players)
+        List<PlayerStatistic> players2 = new ArrayList<>();
+        for (int i = 0; i < players.size(); i++)
         {
-            l.add(player.getName());
+            PlayerStatistic playerStatistic = players.get(i);
+            players2.add(playerStatistic);
+
         }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, l);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        player1Spinner.setAdapter(adapter);
-
+        player1Adapter = new NamesArrayAdapter(this, players, 1);
+        player2Adapter = new NamesArrayAdapter(this, players2, 0);
+        player1Spinner.setAdapter(player1Adapter);
         player2Spinner = (Spinner) findViewById(R.id.player2_name);
-        List<String> l2 = new ArrayList<>();
-        for (PlayerStatistic player: players)
-        {
-            l2.add(player.getName());
-        }
+        player2Spinner.setAdapter(player2Adapter);
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, l);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        player2Spinner.setAdapter(adapter2);
+        player1Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                player2Adapter.setSelectedOther(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView)
+            {
+
+            }
+        });
+
+
+        player2Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                player1Adapter.setSelectedOther(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView)
+            {
+
+            }
+        });
     }
 
+    public void click_createPlayer(View v)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View view = getLayoutInflater().inflate(R.layout.create_player_dialog, null);
+        builder.setView(view);
+// Add the buttons
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                EditText editText = (EditText) view.findViewById(R.id.editText2);
+                String name = editText.getText().toString();
+                StatisticManager manager = new SQLiteHandler(OptionActivity.this);
+                PlayerStatistic player = manager.createPlayer(name, Strategy.Human);
+                player1Adapter.addPlayer(player);
+                player2Adapter.addPlayer(player);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
+    }
     private View xOfAKind()
     {
         RelativeLayout l = new RelativeLayout(this);
@@ -233,19 +285,7 @@ public class OptionActivity extends Activity
 
     private void saveToBundle(Bundle intent)
     {
-        boolean[] playing = {true, true, false, false};
-
-
-        String[] players = {(String) player1Spinner.getSelectedItem(), (String) player2Spinner.getSelectedItem(), "", ""};
-
-        ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
-        String s1 = p1.isChecked() ? Strategy.Human : Strategy.Simple;
-        ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
-        String s2 = p2.isChecked() ? Strategy.Human : Strategy.Simple;
-        String[] strategies = {s1, s2, Strategy.Human, Strategy.Human};
-
-        intent.putBooleanArray(PlayingIntent, playing);
-        intent.putStringArray(Strategy1Intent, strategies);
+        String[] players = {((PlayerStatistic) player1Spinner.getSelectedItem()).getName(), ((PlayerStatistic) player2Spinner.getSelectedItem()).getName(), "", ""};
 
         intent.putStringArray(Player1Intent, players);
         intent.putString(LengthIntent, (String) lengthSpinner.getSelectedItem());
@@ -257,24 +297,14 @@ public class OptionActivity extends Activity
     private void saveToSharedPreferences()
     {
         Logger.logInfo(LogKey, "Save to shared preferences");
-        String[] players = {(String) player1Spinner.getSelectedItem(), (String) player2Spinner.getSelectedItem(), "", ""};
-
-        ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
-        String s1 = p1.isChecked() ? Strategy.Human : Strategy.Simple;
-        ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
-        String s2 = p2.isChecked() ? Strategy.Human : Strategy.Simple;
-        String[] strategies = {s1, s2, Strategy.Human, Strategy.Human};
+        String[] players = {((PlayerStatistic) player1Spinner.getSelectedItem()).getName(), ((PlayerStatistic) player2Spinner.getSelectedItem()).getName(), "", ""};
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
 
-        edit.putString(Strategy1Intent, strategies[0]);
-        edit.putString(Strategy2Intent, strategies[1]);
-
         edit.putString(Player1Intent, players[0]);
         edit.putString(Player2Intent, players[1]);
         edit.putString(LengthIntent, (String) lengthSpinner.getSelectedItem());
-        Logger.logInfo(LogKey, (String) s1 + ", " + s2);
         edit.putBoolean(DiagonalIntent, diagonal.isChecked());
         edit.putInt(StraightIntent, straight.getLength());
         edit.putInt(XOfAKindIntent, xOfAKind.getLength());
@@ -289,27 +319,14 @@ public class OptionActivity extends Activity
 
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
+        int p1 = getIndex(player1Spinner, sharedPreferences.getString(Player1Intent, "Player 1"));
+        int p2 = getIndex(player2Spinner, sharedPreferences.getString(Player2Intent, "Player 2"));
+        player1Spinner.setSelection(p1);
+        player2Spinner.setSelection(p2);
 
-        ToggleButton p1 = (ToggleButton) findViewById(R.id.player1_strategy);
-        ToggleButton p2 = (ToggleButton) findViewById(R.id.player2_strategy);
+        //player1Adapter.setSelectedOther(p2);
+        //player2Adapter.setSelectedOther(p1);
 
-        String[] strategies = new String[] { sharedPreferences.getString(Strategy1Intent, Strategy.Human),
-                sharedPreferences.getString(Strategy2Intent, Strategy.Human)};
-
-        Logger.logInfo(LogKey, (String) strategies[0] + ", " + strategies[1]);
-
-        boolean p1Checked = strategies[0].equals(Strategy.Human);
-        boolean p2Checked = strategies[1].equals(Strategy.Human);
-
-        p1.setChecked(p1Checked);
-        p2.setChecked(p2Checked);
-        p1.invalidate();
-        p2.invalidate();
-
-        //player1.setText(sharedPreferences.getString(Player1Intent, "Player 1"));
-        // TODO:
-        player1Spinner.setSelection(getIndex(player1Spinner, sharedPreferences.getString(Player1Intent, "Player 1")));
-        player2Spinner.setSelection(getIndex(player1Spinner, sharedPreferences.getString(Player2Intent, "Player 2")));
 
 
         String selectedItem = sharedPreferences.getString(LengthIntent, "Short");
@@ -339,7 +356,7 @@ public class OptionActivity extends Activity
         int index = 0;
 
         for (int i=0;i<spinner.getCount();i++){
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
+            if (((PlayerStatistic) spinner.getItemAtPosition(i)).getName().equals(myString)){
                 index = i;
                 break;
             }
@@ -383,40 +400,6 @@ public class OptionActivity extends Activity
 
     }
 
-    View createPlayerEdit(int number)
-    {
-        RelativeLayout l = new RelativeLayout(this);
-        EditText e = new EditText(this);
-        e.setText("Player " + (number + 1));
-        e.setId(Utilities.generateViewId());
-        l.addView(e);
-
-        editPlayers[number] = e;
-        CheckBox playing = new CheckBox(this);
-        playing.setId(Utilities.generateViewId());
-
-        RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
-        p.addRule(RelativeLayout.RIGHT_OF, e.getId());
-
-        l.addView(playing, p);
-        playingCb[number] = playing;
-
-        Spinner s = new Spinner(this);
-        s.setId(Utilities.generateViewId());
-        List<String> list = new ArrayList<>();
-        list.add(Strategy.Human);
-        list.add(Strategy.Simple);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        s.setAdapter(adapter);
-        strategySpinner[number] = s;
-
-        RelativeLayout.LayoutParams pS = ViewUtilities.createRelativeLayoutParams();
-        pS.addRule(RelativeLayout.RIGHT_OF, playing.getId());
-        l.addView(s, pS);
-        return l;
-    }
 
     @Override
     protected void onStart()
@@ -460,7 +443,6 @@ public class OptionActivity extends Activity
     @Override
     public void onBackPressed()
     {
-
         startActivity(new Intent(this, StartActivity.class));
     }
 
@@ -469,8 +451,6 @@ public class OptionActivity extends Activity
     {
 
         super.onRestoreInstanceState(savedInstanceState);
-
-
         Logger.logInfo(LogKey, "On Restore");
     }
 }

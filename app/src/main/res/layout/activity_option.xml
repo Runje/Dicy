@@ -48,17 +48,6 @@
                     android:text="Player1"
                     />
 
-                <ToggleButton
-                    android:id="@+id/player1_strategy"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/toggle_human_pc"
-                    android:checked="true"
-                    android:text="New ToggleButton"
-                    android:textOff=""
-                    android:textOn=""/>
-
             </LinearLayout>
         </LinearLayout>
 
@@ -88,20 +77,16 @@
                     android:ems="10"
                     android:text="Player2"/>
 
-                <ToggleButton
-                    android:id="@+id/player2_strategy"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/toggle_human_pc"
-                    android:checked="true"
-                    android:text="New ToggleButton"
-                    android:textOff=""
-                    android:textOn=""/>
-
             </LinearLayout>
 
         </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Player"
+            android:id="@+id/button_add"
+            android:onClick="click_createPlayer"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -149,6 +134,7 @@
             android:layout_gravity="bottom|right"
             android:onClick="clickPlay"
             android:text="Play"/>
+
     </LinearLayout>
 
 </FrameLayout>
