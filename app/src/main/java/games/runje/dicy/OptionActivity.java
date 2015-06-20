@@ -130,6 +130,7 @@ public class OptionActivity extends Activity
 
     private void names()
     {
+        Logger.logInfo(LogKey, "Init names");
         player1Spinner = (Spinner) findViewById(R.id.player1_name);
         StatisticManager manager = new SQLiteHandler(this);
         List<PlayerStatistic> players = manager.getAllPlayers();
@@ -297,7 +298,21 @@ public class OptionActivity extends Activity
     private void saveToSharedPreferences()
     {
         Logger.logInfo(LogKey, "Save to shared preferences");
-        String[] players = {((PlayerStatistic) player1Spinner.getSelectedItem()).getName(), ((PlayerStatistic) player2Spinner.getSelectedItem()).getName(), "", ""};
+        PlayerStatistic player1 = (PlayerStatistic) player1Spinner.getSelectedItem();
+        PlayerStatistic player2 = (PlayerStatistic) player2Spinner.getSelectedItem();
+
+        String player1Name = "";
+        if (player1 != null)
+        {
+            player1Name = player1.getName();
+        }
+
+        String player2Name = "";
+        if (player2 != null)
+        {
+            player2Name = player2.getName();
+        }
+        String[] players = {player1Name, player2Name};
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
@@ -322,6 +337,10 @@ public class OptionActivity extends Activity
         int p1 = getIndex(player1Spinner, sharedPreferences.getString(Player1Intent, "Player 1"));
         int p2 = getIndex(player2Spinner, sharedPreferences.getString(Player2Intent, "Player 2"));
         player1Spinner.setSelection(p1);
+        if (p2 == p1)
+        {
+            p2++;
+        }
         player2Spinner.setSelection(p2);
 
         //player1Adapter.setSelectedOther(p2);
@@ -391,9 +410,16 @@ public class OptionActivity extends Activity
                 b.putInt(PointLimitIntent, rules.getPointLimit());
 
                 intent.putExtras(b);
-                v.setEnabled(true);
                 saveToSharedPreferences();
                 startActivity(intent);
+                v.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        v.setEnabled(true);
+                    }
+                }, 2000);
             }
         }).execute();
 

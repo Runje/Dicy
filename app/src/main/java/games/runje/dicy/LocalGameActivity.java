@@ -2,6 +2,9 @@ package games.runje.dicy;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +70,69 @@ public class LocalGameActivity extends Activity
 
     }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Logger.logInfo(LogKey, "On Start");
+    }
+
+    @Override
+    protected void onResume()
+    {
+        Logger.logInfo(LogKey, "On Resume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        Logger.logInfo(LogKey, "On Pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        Logger.logInfo(LogKey, "On Stop");
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        Logger.logInfo(LogKey, "On Destroy");
+    }
+
+    void showQuitDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Quit Game?");
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+
+            }
+        });
+
+        builder.setPositiveButton("Quit Game", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                gmAnimated.getGame().cancel();
+                Intent intent = new Intent(LocalGameActivity.this, OptionActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        builder.create().show();
+    }
+
     private List<Player> getPlayersFromIntent()
     {
         Bundle intent = getIntent().getExtras();
@@ -100,8 +166,7 @@ public class LocalGameActivity extends Activity
     @Override
     public void onBackPressed()
     {
-        gmAnimated.getGame().cancel();
-        super.onBackPressed();
+        showQuitDialog();
     }
 
 }

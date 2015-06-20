@@ -10,6 +10,8 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import games.runje.dicymodel.Logger;
+import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.data.Player;
 
 /**
  * Created by Thomas on 15.06.2015.
@@ -53,12 +55,9 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     }
 
 
-
-    @Override
-    public PlayerStatistic createPlayer(String name, String strategy)
+    public PlayerStatistic createPlayer(String name, String strategy, SQLiteDatabase db)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
-        PlayerStatistic player = new PlayerStatistic(getNextId(), name, 0,0, strategy);
+        PlayerStatistic player = new PlayerStatistic(getNextId(db), name, 0,0, strategy);
         String query = "select count(*) from " + TABLE_PLAYERS + " where " + KEY_NAME + " = ?";
         Cursor c = db.rawQuery(query, new String[] { name });
         if (c.moveToFirst())
@@ -76,14 +75,22 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
         ContentValues values = PlayerToValues(player);
         // Inserting Row
         db.insert(TABLE_PLAYERS, null, values);
-        db.close(); // Closing database connection
+
 
         return player;
     }
 
-    private long getNextId()
+    @Override
+    public PlayerStatistic createPlayer(String name, String strategy)
     {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
+        PlayerStatistic p = createPlayer(name, strategy, db);
+        db.close(); // Closing database connection
+        return p;
+    }
+
+    private long getNextId(SQLiteDatabase db)
+    {
         String query = "SELECT MAX(" + KEY_ID + ") from " + TABLE_PLAYERS;
         Cursor c = db.rawQuery(query, null);
         long id = -1;
@@ -138,6 +145,7 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     @Override
     public void update(GameStatistic game)
     {
+        Logger.logInfo(LogKey, "Update");
         PlayerStatistic player1 = game.getPlayer1();
         PlayerStatistic player2 = game.getPlayer2();
 
@@ -171,6 +179,9 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     {
         Logger.logInfo(LogKey, "On Create DB");
         sqLiteDatabase.execSQL(CREATE_PLAYERS_TABLE);
+        createPlayer("Thomas", Strategy.Human, sqLiteDatabase);
+        createPlayer("Milena", Strategy.Human, sqLiteDatabase);
+        createPlayer("Max", Strategy.Simple, sqLiteDatabase);
     }
 
     @Override
