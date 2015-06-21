@@ -12,6 +12,8 @@ public class Skill
 {
     public static final String Help = "Help";
     public static final String Change = "Change";
+    public static final String Shuffle = "Shuffle";
+    public static final String[] AllSkills =  { Help, Change, Shuffle};
     protected int imageId;
     protected Coords pos;
     private int loadValue;
@@ -115,5 +117,22 @@ public class Skill
     public void setImageId(int imageId)
     {
         this.imageId = imageId;
+    }
+
+    public static Skill createSkill(String skill, int skillValue)
+    {
+        int max = 6;
+        switch(skill)
+        {
+            case Skill.Help:
+                return new HelpSkill(skillValue, max);
+
+            case Skill.Change:
+                return new ChangeSkill(skillValue, max);
+            case Skill.Shuffle:
+                return new ShuffleSkill(skillValue, max);
+        }
+
+        return null;
     }
 }

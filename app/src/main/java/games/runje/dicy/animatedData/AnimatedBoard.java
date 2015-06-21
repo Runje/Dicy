@@ -120,9 +120,9 @@ public class AnimatedBoard extends Board
     }
 
     @Override
-    public void recreateBoard()
+    public void shuffle(boolean pointsPossible, Rules rules)
     {
-        super.recreateBoard();
+        super.shuffle(pointsPossible, rules);
         updateBoard();
     }
 

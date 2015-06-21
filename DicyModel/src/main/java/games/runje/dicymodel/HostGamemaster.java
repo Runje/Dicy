@@ -112,7 +112,7 @@ public class HostGamemaster extends AbstractGamemaster
     protected void startRecreateBoardAnimation()
     {
         Logger.logDebug(LogKey, "Old board: " + board.toString());
-        board.recreateBoard();
+        board.shuffle(false, rules);
         Logger.logDebug(LogKey, "New board: " + board.toString());
         sendMessageToBoth(new RecreateBoardMessage(board));
         endRecreateBoardAnimation();

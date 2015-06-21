@@ -77,7 +77,7 @@ public class SkillLayout extends LinearLayout
 
     public void update()
     {
-        AnimatedLogger.logDebug(LogKey, "Updating skill: " + skill.getName());
+        AnimatedLogger.logDebug(LogKey, "Updating skill_game: " + skill.getName());
         loadText.setText(skill.getCurrentLoad() + "/" + skill.getMaxLoad());
     }
 

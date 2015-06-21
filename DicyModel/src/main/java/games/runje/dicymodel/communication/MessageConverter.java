@@ -13,6 +13,7 @@ import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 14.02.2015.
@@ -49,7 +50,8 @@ public class MessageConverter
     {
         String name = byteToString(buffer, playerNameLength);
         long id = buffer.getLong();
-        return new Player(name, null, id);
+        // TODO: skills
+        return new Player(name, null, id, new ArrayList<Skill>());
     }
 
     public static byte[] gameToByte(LocalGame game)

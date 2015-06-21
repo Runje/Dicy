@@ -23,8 +23,8 @@ public class ChangeSkill extends Skill
     protected void startExecute(Board board, AbstractGamemaster gm)
     {
         // TODO
-        board.getElement(pos).setValue(6);
-        Logger.logDebug("ChangeSkill", "Setting value = 6 of " + pos);
+        board.getElement(pos).setValue(this.getLoadValue());
+        Logger.logDebug("ChangeSkill", "Setting value = " + getLoadValue() + " of " + pos);
         super.startExecute(board, gm);
     }
 }

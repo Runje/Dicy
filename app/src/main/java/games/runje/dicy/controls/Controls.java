@@ -155,7 +155,6 @@ public class Controls implements GameControls
             PlayerStatistic player2 = manager.getPlayer(game.getPlayers().get(1).getName());
             manager.update(new GameStatistic(player1, player2, game.getWinningIndex()));
             FinishedDialog d = new FinishedDialog();
-            d.setContext(activity);
             d.setName(game.getWinner());
             AnimatedLogger.logDebug(LogKey, "Before show");
             d.show(activity.getFragmentManager(), "Game is finished");

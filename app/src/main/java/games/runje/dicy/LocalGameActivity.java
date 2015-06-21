@@ -17,6 +17,7 @@ import java.util.List;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
+import games.runje.dicy.layouts.SkillChooser;
 import games.runje.dicy.statistics.PlayerStatistic;
 import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
@@ -25,6 +26,7 @@ import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.skills.Skill;
 
 
 /**
@@ -139,28 +141,47 @@ public class LocalGameActivity extends Activity
         String[] players = intent.getStringArray(OptionActivity.Player1Intent);
         List<String> p = new ArrayList<>();
 
-        for (int i = 0; i < OptionActivity.MaxPlayers; i++)
+        for (int i = 0; i < 2; i++)
         {
                 p.add(players[i]);
                 AnimatedLogger.logDebug("LocalGameActivity", "adding " + players[i]);
         }
 
+        SkillChooser skillChooser1 = new SkillChooser();
+        SkillChooser skillChooser2 = new SkillChooser();
+        skillChooser1.setName(intent.getString(OptionActivity.Player1Skill1Intent, Skill.Help), 0);
+        skillChooser1.setName(intent.getString(OptionActivity.Player1Skill2Intent, Skill.Change),1);
+        skillChooser1.setName(intent.getString(OptionActivity.Player1Skill3Intent, Skill.Shuffle), 2);
+        skillChooser2.setName(intent.getString(OptionActivity.Player2Skill1Intent, Skill.Help), 0);
+        skillChooser2.setName(intent.getString(OptionActivity.Player2Skill2Intent, Skill.Change), 1);
+        skillChooser2.setName(intent.getString(OptionActivity.Player2Skill3Intent, Skill.Shuffle), 2);
+
+        skillChooser1.setValue(intent.getInt(OptionActivity.Player1Skill1ValueIntent, 1), 0);
+        skillChooser1.setValue(intent.getInt(OptionActivity.Player1Skill2ValueIntent, 2), 1);
+        skillChooser1.setValue(intent.getInt(OptionActivity.Player1Skill3ValueIntent, 3), 2);
+        skillChooser2.setValue(intent.getInt(OptionActivity.Player2Skill1ValueIntent, 1), 0);
+        skillChooser2.setValue(intent.getInt(OptionActivity.Player2Skill2ValueIntent, 2), 1);
+        skillChooser2.setValue(intent.getInt(OptionActivity.Player2Skill3ValueIntent, 3), 2);
+
         List<Player> playerList = new ArrayList<>();
         StatisticManager manager = new SQLiteHandler(this);
-        for (int i = 0; i < 2; i++)
-        {
-            String name = p.get(i);
-            PlayerStatistic player = manager.getPlayer(name);
 
-            playerList.add(playerStatisticsToPlayer(player));
-        }
+        PlayerStatistic player = manager.getPlayer(players[0]);
+
+        List<Skill> skills = skillChooser1.getSkills();
+        playerList.add(playerStatisticsToPlayer(player, skills));
+
+        PlayerStatistic player2 = manager.getPlayer(players[1]);
+
+        List<Skill> skills2 = skillChooser2.getSkills();
+        playerList.add(playerStatisticsToPlayer(player2, skills2));
 
         return playerList;
     }
 
-    static Player playerStatisticsToPlayer(PlayerStatistic statistic)
+    static Player playerStatisticsToPlayer(PlayerStatistic statistic, List<Skill> skills)
     {
-        return new Player(statistic.getName(), Strategy.makeStrategy(statistic.getStrategy()), statistic.getId());
+        return new Player(statistic.getName(), Strategy.makeStrategy(statistic.getStrategy()), statistic.getId(), skills);
     }
 
     @Override

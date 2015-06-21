@@ -576,20 +576,29 @@ public class Board
         getElement(position).setValue(newValue);
     }
 
-    public void recreateBoard()
-    {
-        for (ArrayList<BoardElement> row : this.board)
-        {
-            for (BoardElement element : row)
-            {
-                // TODO: make method shuffle or somethin
-                element.setValue(new Dice().getValue());
-            }
-        }
-    }
-
    public void setEnabled(boolean enabled)
    {
        // for AnimatedBoard
    }
+
+    public void shuffle(boolean pointsPossible, Rules rules)
+    {
+        Board b;
+        if (pointsPossible)
+        {
+            b =  new Board(rows, columns);
+        }
+        else
+        {
+            b = createBoardNoPoints(rules);
+        }
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                getElement(i,j).setValue(b.getElement(i,j).getValue());
+            }
+        }
+    }
 }

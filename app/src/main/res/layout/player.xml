@@ -97,21 +97,21 @@
 
             <include
                 android:id="@+id/skill1"
-                layout="@layout/skill"
+                layout="@layout/skill_game"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
             <include
                 android:id="@+id/skill2"
-                layout="@layout/skill"
+                layout="@layout/skill_game"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
             <include
                 android:id="@+id/skill3"
-                layout="@layout/skill"
+                layout="@layout/skill_game"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>

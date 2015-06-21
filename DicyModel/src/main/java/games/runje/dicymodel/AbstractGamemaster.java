@@ -2,6 +2,7 @@ package games.runje.dicymodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
@@ -39,7 +40,7 @@ public abstract class AbstractGamemaster
         this.board = board;
         this.rules = rules;
         // TODO: starting player
-        this.game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, 0);
+        this.game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, new Random().nextInt(2));
     }
 
     public void switchElements(Coords first, Coords second)
@@ -142,6 +143,8 @@ public abstract class AbstractGamemaster
                 board.setEnabled(true);
                 break;
             case Executed:
+                getGame().setStrikePossible(false);
+                controls.setPointLimit(0);
                 ArrayList<PointElement> pointElements = BoardChecker.getAll(board, rules);
                 int Executedpoints = Utilities.getPointsFrom(pointElements);
                 game.addPointElements(pointElements, board, false);
@@ -187,7 +190,7 @@ public abstract class AbstractGamemaster
     protected void startRecreateBoardAnimation()
     {
         Logger.logDebug(LogKey, "Old board: " + board.toString());
-        board.recreateBoard();
+        board.shuffle(false, rules);
         Logger.logDebug(LogKey, "New board: " + board.toString());
         endRecreateBoardAnimation();
     }

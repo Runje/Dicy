@@ -30,8 +30,8 @@
 
             <ImageView
                 android:id="@+id/player1_image"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/blueyellowchip"/>
 
             <LinearLayout
@@ -49,6 +49,36 @@
                     />
 
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp">
+
+            <include
+                layout="@layout/skill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/player1_skill1"/>
+
+            <include
+                layout="@layout/skill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/player1_skill2"/>
+
+            <include
+                layout="@layout/skill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/player1_skill3"/>
         </LinearLayout>
 
         <LinearLayout
@@ -60,8 +90,8 @@
 
             <ImageView
                 android:id="@+id/player2_view"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/bluewhitechip"/>
 
             <LinearLayout
@@ -79,6 +109,35 @@
 
             </LinearLayout>
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp">
+
+            <include
+                layout="@layout/skill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/player2_skill1"/>
+
+            <include
+                layout="@layout/skill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/player2_skill2"/>
+
+            <include
+                layout="@layout/skill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/player2_skill3"/>
         </LinearLayout>
 
         <Button

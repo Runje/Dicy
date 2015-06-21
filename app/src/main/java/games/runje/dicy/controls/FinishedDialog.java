@@ -23,18 +23,12 @@ import games.runje.dicy.statistics.StatisticManager;
 public class FinishedDialog extends DialogFragment
 {
 
+    // TODO: back to menu on stop/pause
     private String name = "Unknown";
-
-    private Context context;
 
     public FinishedDialog()
     {
 
-    }
-
-    public void setContext(Context context)
-    {
-        this.context = context;
     }
 
     public void setName(String name)
@@ -47,9 +41,9 @@ public class FinishedDialog extends DialogFragment
     {
         AnimatedLogger.logInfo("Finished", "Creating dialog");
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        StatisticManager manager = new SQLiteHandler(context);
+        StatisticManager manager = new SQLiteHandler(getActivity());
         List<PlayerStatistic> players = manager.getAllPlayers();
         String statistics = "";
         for (PlayerStatistic playerStatistic: players)

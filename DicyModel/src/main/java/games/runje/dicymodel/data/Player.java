@@ -20,16 +20,17 @@ public class Player
     private boolean lastMoveWasStrike = false;
     private List<Skill> skills = new ArrayList<>();
 
-    public Player(String n, Strategy strategy, long id)
+    public Player(String n, Strategy strategy, long id, List<Skill> skills)
     {
         this.strategy = strategy;
         name = n;
         this.id = id;
+        this.skills = skills;
     }
 
     public Player(String name, long id)
     {
-        this(name, null, id);
+        this(name, null, id, new ArrayList<Skill>());
     }
 
     public long getId()

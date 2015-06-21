@@ -19,14 +19,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicy.controller.CalcPointLimit;
 import games.runje.dicy.layouts.NamesArrayAdapter;
+import games.runje.dicy.layouts.SimpleObserver;
+import games.runje.dicy.layouts.SkillChooser;
 import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.layouts.XOfAKindLayout;
 import games.runje.dicy.statistics.PlayerStatistic;
@@ -37,6 +39,7 @@ import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.skills.Skill;
 
 
 /**
@@ -45,7 +48,7 @@ import games.runje.dicymodel.ai.Strategy;
  *
  * @see games.runje.dicy.util.SystemUiHider
  */
-public class OptionActivity extends Activity
+public class OptionActivity extends Activity implements SimpleObserver
 {
     public static final String Player1Intent = "Player1";
     public static final String Player2Intent = "Player2";
@@ -53,6 +56,18 @@ public class OptionActivity extends Activity
     public static final String DiagonalIntent = "Diagonal";
     public static final String StraightIntent = "Straight";
     public static final String XOfAKindIntent = "XOfAKind";
+    public static final String Player1Skill1Intent = "Player1Skill1";
+    public static final String Player1Skill2Intent = "Player1Skill2";
+    public static final String Player1Skill3Intent = "Player1Skill3";
+    public static final String Player2Skill1Intent = "Player2Skill1";
+    public static final String Player2Skill2Intent = "Player2Skill2";
+    public static final String Player2Skill3Intent = "Player2Skill3";
+    public static final String Player1Skill1ValueIntent = "Player1Skill1Value";
+    public static final String Player1Skill2ValueIntent = "Player1Skill2Value";
+    public static final String Player1Skill3ValueIntent = "Player1Skill3Value";
+    public static final String Player2Skill1ValueIntent = "Player2Skill1Value";
+    public static final String Player2Skill2ValueIntent = "Player2Skill2Value";
+    public static final String Player2Skill3ValueIntent = "Player2Skill3Value";
     final static int MaxPlayers = 4;
     private static String PointLimitIntent = "PointLimit";
     private Spinner lengthSpinner;
@@ -65,6 +80,10 @@ public class OptionActivity extends Activity
     private int size = 75;
     private NamesArrayAdapter player1Adapter;
     private NamesArrayAdapter player2Adapter;
+    private SkillChooser skillChooser1;
+    private int[] player1Skills = { R.id.player1_skill1, R.id.player1_skill2, R.id.player1_skill3};
+    private SkillChooser skillChooser2;
+    private int[] player2Skills = { R.id.player2_skill1, R.id.player2_skill2, R.id.player2_skill3};;
 
     public static Rules getRulesFromBundle(Bundle bundle)
     {
@@ -109,6 +128,8 @@ public class OptionActivity extends Activity
 
         setContentView(R.layout.activity_option);
 
+        initSkills();
+
         names();
         lengthSpinner();
         View straightView = straight();
@@ -126,6 +147,43 @@ public class OptionActivity extends Activity
         {
             layout.addView(x, params);
         }
+    }
+
+    private void initSkills()
+    {
+        skillChooser1 = new SkillChooser(this, Skill.AllSkills, new int[] { 1, 2, 3});
+        for (int i = 0; i < player1Skills.length; i++)
+        {
+            View skill = findViewById(player1Skills[i]);
+
+            final int finalI = i;
+            skill.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    skillChooser1.showDialog(OptionActivity.this, finalI);
+                }
+            });
+        }
+
+        skillChooser2 = new SkillChooser(this, Skill.AllSkills, new int[] { 1, 2, 3});
+        for (int i = 0; i < player1Skills.length; i++)
+        {
+            View skill = findViewById(player2Skills[i]);
+
+            final int finalI = i;
+            skill.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    skillChooser2.showDialog(OptionActivity.this, finalI);
+                }
+            });
+        }
+
+        update();
     }
 
     private void names()
@@ -185,8 +243,10 @@ public class OptionActivity extends Activity
         final View view = getLayoutInflater().inflate(R.layout.create_player_dialog, null);
         builder.setView(view);
 // Add the buttons
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
                 // User clicked OK button
                 EditText editText = (EditText) view.findViewById(R.id.editText2);
                 String name = editText.getText().toString();
@@ -293,6 +353,19 @@ public class OptionActivity extends Activity
         intent.putBoolean(DiagonalIntent, diagonal.isChecked());
         intent.putInt(StraightIntent, straight.getLength());
         intent.putInt(XOfAKindIntent, xOfAKind.getLength());
+        intent.putString(Player1Skill1Intent, skillChooser1.getName(0));
+        intent.putString(Player1Skill2Intent, skillChooser1.getName(1));
+        intent.putString(Player1Skill3Intent, skillChooser1.getName(2));
+        intent.putString(Player2Skill1Intent, skillChooser2.getName(0));
+        intent.putString(Player2Skill2Intent, skillChooser2.getName(1));
+        intent.putString(Player2Skill3Intent, skillChooser2.getName(2));
+
+        intent.putInt(Player1Skill1ValueIntent, skillChooser1.getValue(0));
+        intent.putInt(Player1Skill2ValueIntent, skillChooser1.getValue(1));
+        intent.putInt(Player1Skill3ValueIntent, skillChooser1.getValue(2));
+        intent.putInt(Player2Skill1ValueIntent, skillChooser2.getValue(0));
+        intent.putInt(Player2Skill2ValueIntent, skillChooser2.getValue(1));
+        intent.putInt(Player2Skill3ValueIntent, skillChooser2.getValue(2));
     }
 
     private void saveToSharedPreferences()
@@ -323,9 +396,27 @@ public class OptionActivity extends Activity
         edit.putBoolean(DiagonalIntent, diagonal.isChecked());
         edit.putInt(StraightIntent, straight.getLength());
         edit.putInt(XOfAKindIntent, xOfAKind.getLength());
+        edit.putString(Player1Skill1Intent, skillChooser1.getName(0));
+        edit.putString(Player1Skill2Intent, skillChooser1.getName(1));
+        edit.putString(Player1Skill3Intent, skillChooser1.getName(2));
+        edit.putString(Player2Skill1Intent, skillChooser2.getName(0));
+        edit.putString(Player2Skill2Intent, skillChooser2.getName(1));
+        edit.putString(Player2Skill3Intent, skillChooser2.getName(2));
+
+        edit.putInt(Player1Skill1ValueIntent, skillChooser1.getValue(0));
+        edit.putInt(Player1Skill2ValueIntent, skillChooser1.getValue(1));
+        edit.putInt(Player1Skill3ValueIntent, skillChooser1.getValue(2));
+        edit.putInt(Player2Skill1ValueIntent, skillChooser2.getValue(0));
+        edit.putInt(Player2Skill2ValueIntent, skillChooser2.getValue(1));
+        edit.putInt(Player2Skill3ValueIntent, skillChooser2.getValue(2));
         edit.commit();
     }
 
+
+    public void clickSkill1(View v)
+    {
+        skillChooser1.showDialog(this, 1);
+    }
 
     private void loadSharedPreferences()
     {
@@ -342,11 +433,6 @@ public class OptionActivity extends Activity
             p2++;
         }
         player2Spinner.setSelection(p2);
-
-        //player1Adapter.setSelectedOther(p2);
-        //player2Adapter.setSelectedOther(p1);
-
-
 
         String selectedItem = sharedPreferences.getString(LengthIntent, "Short");
         int pos = 0;
@@ -368,6 +454,21 @@ public class OptionActivity extends Activity
         diagonal.setChecked(sharedPreferences.getBoolean(DiagonalIntent, false));
         straight.setLength(sharedPreferences.getInt(StraightIntent, 3));
         xOfAKind.setLength(sharedPreferences.getInt(XOfAKindIntent, 3));
+
+        skillChooser1.setName(sharedPreferences.getString(Player1Skill1Intent, Skill.Help), 0);
+        skillChooser1.setName(sharedPreferences.getString(Player1Skill2Intent, Skill.Change),1);
+        skillChooser1.setName(sharedPreferences.getString(Player1Skill3Intent, Skill.Shuffle), 2);
+        skillChooser2.setName(sharedPreferences.getString(Player2Skill1Intent, Skill.Help), 0);
+        skillChooser2.setName(sharedPreferences.getString(Player2Skill2Intent, Skill.Change), 1);
+        skillChooser2.setName(sharedPreferences.getString(Player2Skill3Intent, Skill.Shuffle), 2);
+
+        skillChooser1.setValue(sharedPreferences.getInt(Player1Skill1ValueIntent, 1), 0);
+        skillChooser1.setValue(sharedPreferences.getInt(Player1Skill2ValueIntent, 2), 1);
+        skillChooser1.setValue(sharedPreferences.getInt(Player1Skill3ValueIntent, 3), 2);
+        skillChooser2.setValue(sharedPreferences.getInt(Player2Skill1ValueIntent, 1), 0);
+        skillChooser2.setValue(sharedPreferences.getInt(Player2Skill2ValueIntent, 2), 1);
+        skillChooser2.setValue(sharedPreferences.getInt(Player2Skill3ValueIntent, 3), 2);
+        update();
     }
 
     private int getIndex(Spinner spinner, String myString)
@@ -478,5 +579,37 @@ public class OptionActivity extends Activity
 
         super.onRestoreInstanceState(savedInstanceState);
         Logger.logInfo(LogKey, "On Restore");
+    }
+
+    @Override
+    public void update()
+    {
+        for (int i = 0; i < player1Skills.length; i++)
+        {
+            View skill = findViewById(player1Skills[i]);
+
+            TextView name = (TextView) skill.findViewById(R.id.skill_name);
+            ImageView image = (ImageView) skill.findViewById(R.id.skill_image);
+            ImageView value = (ImageView) skill.findViewById(R.id.skill_value);
+
+            name.setText(skillChooser1.getName(i));
+
+            image.setImageResource(skillChooser1.getImageId(i));
+            value.setImageResource(skillChooser1.getLoadId(i));
+        }
+
+        for (int i = 0; i < player2Skills.length; i++)
+        {
+            View skill = findViewById(player2Skills[i]);
+
+            TextView name = (TextView) skill.findViewById(R.id.skill_name);
+            ImageView image = (ImageView) skill.findViewById(R.id.skill_image);
+            ImageView value = (ImageView) skill.findViewById(R.id.skill_value);
+
+            name.setText(skillChooser2.getName(i));
+
+            image.setImageResource(skillChooser2.getImageId(i));
+            value.setImageResource(skillChooser2.getLoadId(i));
+        }
     }
 }

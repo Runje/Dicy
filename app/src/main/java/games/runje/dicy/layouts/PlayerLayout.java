@@ -254,14 +254,14 @@ public class PlayerLayout extends RelativeLayout
         for (int i = 0; i < player.getSkills().size(); i++)
         {
             Skill skill = player.getSkills().get(i);
-            AnimatedLogger.logDebug(LogKey, "Adding skill: " + skill.getName() + ", animatedHelp: " + (skill instanceof AnimatedHelpSkill));
+            AnimatedLogger.logDebug(LogKey, "Adding skill_game: " + skill.getName() + ", animatedHelp: " + (skill instanceof AnimatedHelpSkill));
 
 
             SkillLayout sl = new SkillLayout(activity, skill, handler, containers[i]);
             skills.add(sl);
         }
 
-        containers[2].setVisibility(View.GONE);
+        //containers[2].setVisibility(View.GONE);
         return layout;
     }
 

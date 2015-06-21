@@ -37,22 +37,6 @@ public class LocalGame extends Game
     private int length;
     private int winIndex = -1;
 
-    public LocalGame(int p, int pLimit, int length)
-    {
-        pointsLimit = pLimit;
-        this.length = length;
-        this.gameEndPoints = length * pointsLimit;
-        players = new ArrayList<>();
-        for (int i = 0; i < p; i++)
-        {
-            players.add(new Player("Player " + (i + 1), strategies.get(i), 0));
-        }
-
-        // random starting player
-        lastLeadingPlayer = new Random().nextInt(p);
-        turn = lastLeadingPlayer;
-    }
-
     public LocalGame(int pointLimit, int length, List<Player> playerList, int startingPlayer)
     {
         pointsLimit = pointLimit;
@@ -61,20 +45,6 @@ public class LocalGame extends Game
 
         this.players = playerList;
 
-        for (int i = 0; i < playerList.size(); i++)
-        {
-            Player p = playerList.get(i);
-            // TODO: skills
-            if (p.getSkills().size() < 2)
-            {
-                p.addSkill(new HelpSkill(1, 6));
-                p.addSkill(new ChangeSkill(6, 6));
-            }
-            //Logger.logDebug(LogKey, playerNames.get(i) + " is AI: " + p.isAi() + ", StrategyIsNull: " + (strategies.get(i) == null));
-        }
-
-        // random starting player
-        //lastLeadingPlayer = new Random().nextInt(playerNames.size());
         this.lastLeadingPlayer = startingPlayer;
         turn = startingPlayer;
     }

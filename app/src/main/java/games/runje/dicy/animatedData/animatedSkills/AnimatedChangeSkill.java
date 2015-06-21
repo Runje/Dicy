@@ -16,12 +16,6 @@ public class AnimatedChangeSkill extends Skill
 
     private String LogKey = "AnimatedChangeSkill";
 
-    public AnimatedChangeSkill(int value, int max, String name)
-    {
-        super(value, max, name);
-        setImageId(R.drawable.bluewhitechip);
-    }
-
     public AnimatedChangeSkill(Skill skill)
     {
         super(skill);
@@ -53,7 +47,7 @@ public class AnimatedChangeSkill extends Skill
     protected void startExecute(Board board, AbstractGamemaster gm)
     {
         waiting = false;
-        int newValue = 6;
+        int newValue = this.getLoadValue();
         board.changeElement(getPos(), newValue);
         AnimatedBoard b = (AnimatedBoard) board;
         b.changeToSwitchListener();
