@@ -3,7 +3,6 @@ package games.runje.dicy.controller;
 import android.app.Activity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import games.runje.dicymodel.ClientGamemaster;
 import games.runje.dicymodel.Logger;
@@ -18,7 +17,6 @@ import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
-import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.GameState;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
@@ -32,9 +30,9 @@ public class AnimatedClientGamemaster extends AnimatedGamemaster implements Clie
     private boolean messageInProcess = false;
     private boolean waitForMessage = true;
 
-    public AnimatedClientGamemaster(Board board, Rules rules, Activity activity, List<Player> players)
+    public AnimatedClientGamemaster(Board board, Rules rules, Activity activity, LocalGame game)
     {
-        super(players, rules, activity, board);
+        super(game, rules, activity, board);
     }
 
     @Override

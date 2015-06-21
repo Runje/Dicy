@@ -11,12 +11,14 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.LocalGame;
 
 
 /**
@@ -65,7 +67,8 @@ public class GameActivity extends Activity
 
                 Rules rules = new Rules();
                 Board bb = Board.createBoardNoPoints(rules);
-                AnimatedGamemaster gmAnimated = new AnimatedGamemaster(playerList, rules, GameActivity.this);
+                LocalGame game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), playerList, new Random().nextInt(2));
+                AnimatedGamemaster gmAnimated = new AnimatedGamemaster(game, rules, GameActivity.this);
                 LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
                 boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }

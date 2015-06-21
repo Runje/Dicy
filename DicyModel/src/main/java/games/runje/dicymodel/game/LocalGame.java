@@ -2,35 +2,29 @@ package games.runje.dicymodel.game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Utilities;
-import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
-import games.runje.dicymodel.skills.ChangeSkill;
-import games.runje.dicymodel.skills.HelpSkill;
 
 /**
  * Created by Thomas on 17.01.2015.
  */
 public class LocalGame extends Game
 {
+    public static String LogKey = "LocalGame";
     int gameEndPoints;
     private int lastLeadingPlayer;
-    private List<Strategy> strategies;
     private List<Player> players;
-
     /**
      * Which players turn it is.
      */
     private int turn;
     private int movePoints;
     private int switchPoints;
-    public static String LogKey = "LocalGame";
     private int pointsLimit;
     private String winner;
     private boolean cancelled = false;

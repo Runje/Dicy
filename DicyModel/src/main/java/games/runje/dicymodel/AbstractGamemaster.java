@@ -1,15 +1,12 @@
 package games.runje.dicymodel;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Move;
-import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
 import games.runje.dicymodel.game.GameState;
 import games.runje.dicymodel.game.LocalGame;
@@ -20,6 +17,7 @@ import games.runje.dicymodel.skills.Skill;
  */
 public abstract class AbstractGamemaster
 {
+    public static String LogKey = "AbstractGamemaster";
     protected Board board;
     protected GameState state;
     protected Rules rules;
@@ -28,19 +26,17 @@ public abstract class AbstractGamemaster
     protected LocalGame game;
     protected Skill activeSkill;
     protected ArrayList<BoardElement> recreateElements;
-    public static String LogKey = "AbstractGamemaster";
 
-    protected AbstractGamemaster(Rules rules, List<Player> players)
+    protected AbstractGamemaster(Rules rules, LocalGame game)
     {
-        this(rules, players, Board.createBoardNoPoints(rules));
+        this(rules, game, Board.createBoardNoPoints(rules));
     }
 
-    protected AbstractGamemaster(Rules rules, List<Player> players, Board board)
+    protected AbstractGamemaster(Rules rules, LocalGame game, Board board)
     {
         this.board = board;
         this.rules = rules;
-        // TODO: starting player
-        this.game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, new Random().nextInt(2));
+        this.game = game;
     }
 
     public void switchElements(Coords first, Coords second)

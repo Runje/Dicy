@@ -25,6 +25,7 @@ import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
+import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
 /**
@@ -36,14 +37,14 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     protected Activity activity;
     AnimatedBoard animatedBoard;
 
-    public AnimatedGamemaster(List<Player> players, Rules rules, Activity activity)
+    public AnimatedGamemaster(LocalGame game, Rules rules, Activity activity)
     {
-        this(players, rules, activity, Board.createBoardNoPoints(rules));
+        this(game, rules, activity, Board.createBoardNoPoints(rules));
     }
 
-    public AnimatedGamemaster(List<Player> players, Rules rules, Activity activity, Board board)
+    public AnimatedGamemaster(LocalGame game, Rules rules, Activity activity, Board board)
     {
-        super(rules, players, board);
+        super(rules, game, board);
         this.activity = activity;
 
         // start AI
@@ -74,15 +75,15 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     }
 
     @Override
-    public void setEnabledBoard(boolean enabled)
-    {
-        this.animatedBoard.setEnabled(enabled);
-    }
-
-    @Override
     public boolean isEnabledBoard()
     {
         return this.animatedBoard.isEnabled();
+    }
+
+    @Override
+    public void setEnabledBoard(boolean enabled)
+    {
+        this.animatedBoard.setEnabled(enabled);
     }
 
     public AnimatedBoard getAnimatedBoard()

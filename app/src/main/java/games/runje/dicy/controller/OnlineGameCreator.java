@@ -20,9 +20,9 @@ import games.runje.dicymodel.data.Player;
  */
 public class OnlineGameCreator implements MessageHandler
 {
+    public static String LogKey = "OnlineGameCreator";
     AnimatedClientGamemaster gamemaster;
     Activity activity;
-    public static String LogKey = "OnlineGameCreator";
 
     public OnlineGameCreator(Activity activity)
     {
@@ -73,7 +73,7 @@ public class OnlineGameCreator implements MessageHandler
                     {
 
                         // TODO: rules
-                        gamemaster = new AnimatedClientGamemaster(msg.getBoard(), new Rules(), activity, msg.getGame().getPlayers());
+                        gamemaster = new AnimatedClientGamemaster(msg.getBoard(), new Rules(), activity, msg.getGame());
                         LinearLayout boardContainer = (LinearLayout) activity.findViewById(R.id.board);
                         boardContainer.addView(gamemaster.getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     }

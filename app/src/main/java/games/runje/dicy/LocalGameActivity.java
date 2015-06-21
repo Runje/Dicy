@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
@@ -26,6 +27,7 @@ import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
 
@@ -39,6 +41,11 @@ public class LocalGameActivity extends Activity
 {
     public static String LogKey = "LocalGameActivity";
     private AnimatedGamemaster gmAnimated;
+
+    static Player playerStatisticsToPlayer(PlayerStatistic statistic, List<Skill> skills)
+    {
+        return new Player(statistic.getName(), Strategy.makeStrategy(statistic.getStrategy()), statistic.getId(), skills);
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
@@ -63,7 +70,8 @@ public class LocalGameActivity extends Activity
                 Rules rules = OptionActivity.getRulesFromBundle(getIntent().getExtras());
                 List<Player> players = getPlayersFromIntent();
 
-                LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(players, rules, LocalGameActivity.this);
+                LocalGame game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, new Random().nextInt(2));
+                LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(game, rules, LocalGameActivity.this);
                 LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
                 boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -153,6 +161,7 @@ public class LocalGameActivity extends Activity
         skillChooser1.setName(intent.getString(OptionActivity.Player1Skill2Intent, Skill.Change),1);
         skillChooser1.setName(intent.getString(OptionActivity.Player1Skill3Intent, Skill.Shuffle), 2);
         skillChooser2.setName(intent.getString(OptionActivity.Player2Skill1Intent, Skill.Help), 0);
+        Logger.logInfo(LogKey, intent.getString(OptionActivity.Player2Skill1Intent, Skill.Help));
         skillChooser2.setName(intent.getString(OptionActivity.Player2Skill2Intent, Skill.Change), 1);
         skillChooser2.setName(intent.getString(OptionActivity.Player2Skill3Intent, Skill.Shuffle), 2);
 
@@ -177,11 +186,6 @@ public class LocalGameActivity extends Activity
         playerList.add(playerStatisticsToPlayer(player2, skills2));
 
         return playerList;
-    }
-
-    static Player playerStatisticsToPlayer(PlayerStatistic statistic, List<Skill> skills)
-    {
-        return new Player(statistic.getName(), Strategy.makeStrategy(statistic.getStrategy()), statistic.getId(), skills);
     }
 
     @Override

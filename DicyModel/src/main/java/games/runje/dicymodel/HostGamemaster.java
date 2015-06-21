@@ -2,7 +2,6 @@ package games.runje.dicymodel;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 
 import games.runje.dicymodel.communication.messages.GravityMessage;
 import games.runje.dicymodel.communication.messages.Message;
@@ -14,7 +13,7 @@ import games.runje.dicymodel.communication.messages.SwitchMessage;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
-import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
 /**
@@ -22,15 +21,15 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class HostGamemaster extends AbstractGamemaster
 {
+    public static String LogKey = "HostGamemaster";
     private final Socket firstClient;
     private final Socket secondClient;
     private final long firstId;
     private final long secondId;
-    public static String LogKey = "HostGamemaster";
 
-    public HostGamemaster(Board board, Rules rules, List<Player> player, Socket firstClient, long firstId, Socket secondClient, long secondId)
+    public HostGamemaster(Board board, Rules rules, LocalGame game, Socket firstClient, long firstId, Socket secondClient, long secondId)
     {
-        super(rules, player, board);
+        super(rules, game, board);
         this.firstClient = firstClient;
         this.secondClient = secondClient;
         this.firstId = firstId;

@@ -68,12 +68,11 @@ public class OptionActivity extends Activity implements SimpleObserver
     public static final String Player2Skill1ValueIntent = "Player2Skill1Value";
     public static final String Player2Skill2ValueIntent = "Player2Skill2Value";
     public static final String Player2Skill3ValueIntent = "Player2Skill3Value";
-    final static int MaxPlayers = 4;
+    public static String LogKey = "Options";
     private static String PointLimitIntent = "PointLimit";
     private Spinner lengthSpinner;
     private Spinner player1Spinner;
     private Spinner player2Spinner;
-    public static String LogKey = "Options";
     private CheckBox diagonal;
     private StraightLayout straight;
     private XOfAKindLayout xOfAKind;
@@ -357,6 +356,7 @@ public class OptionActivity extends Activity implements SimpleObserver
         intent.putString(Player1Skill2Intent, skillChooser1.getName(1));
         intent.putString(Player1Skill3Intent, skillChooser1.getName(2));
         intent.putString(Player2Skill1Intent, skillChooser2.getName(0));
+        Logger.logInfo(LogKey, skillChooser2.getName(0));
         intent.putString(Player2Skill2Intent, skillChooser2.getName(1));
         intent.putString(Player2Skill3Intent, skillChooser2.getName(2));
 

@@ -2,13 +2,11 @@ package games.runje.dicy.tutorial;
 
 import android.app.Activity;
 
-import java.util.List;
-
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.data.Board;
-import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.LocalGame;
 
 /**
  * Created by Thomas on 04.04.2015.
@@ -17,9 +15,9 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
 {
     public static String LogKey = "SwitchTutorialGamemaster";
 
-    public SwitchTutorialGamemaster(Board board, Rules rules, Activity activity, List<Player> players)
+    public SwitchTutorialGamemaster(Board board, Rules rules, Activity activity, LocalGame game)
     {
-        super(players, rules, activity, board);
+        super(game, rules, activity, board);
     }
 
     public void startGame()

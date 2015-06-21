@@ -2,7 +2,6 @@ package games.runje.dicy.layouts;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,8 +9,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoardElement;
@@ -31,7 +28,13 @@ public class SkillChooser
     public SkillChooser(SimpleObserver handler, String[] skills, int[] skillValues)
     {
         this.handler = handler;
-        this.skills = skills;
+        // copy
+        this.skills = new String[skills.length];
+        for (int i = 0; i < skills.length; i++)
+        {
+            this.skills[i] = skills[i];
+        }
+
         this.skillValues = skillValues;
     }
 
