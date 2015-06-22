@@ -267,4 +267,11 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     {
         switchElementsFromUser(first, second);
     }
+
+    @Override
+    public void executeSkill(Skill s)
+    {
+        Logger.logInfo(LogKey, "AI is Executing skill: " + s.getName());
+        executeSkillFromUser(s);
+    }
 }

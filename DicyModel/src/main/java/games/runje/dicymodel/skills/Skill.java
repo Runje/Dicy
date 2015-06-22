@@ -40,7 +40,7 @@ public class Skill
 
     public static Skill createSkill(String skill, int skillValue)
     {
-        int max = 0;
+        int max = 8;
         switch (skill)
         {
             case Skill.Help:

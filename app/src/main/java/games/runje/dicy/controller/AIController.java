@@ -6,16 +6,17 @@ import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.Game;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.Skill;
 
 /**
  * Created by Thomas on 05.02.2015.
  */
 public class AIController
 {
+    public static String LogKey = "AIController";
     private final Player player;
     private final Activity activity;
     private AIControllerHandler handler;
-    public static String LogKey = "AIController";
 
     public AIController(Player p, Activity a, AIControllerHandler handler)
     {
@@ -73,8 +74,29 @@ public class AIController
                             }
                         }
 
+
                         boolean nextMoveSurePoints = getPointsOfNextMove() >= l.getPointsLimit();
-                        if (l.getMovePoints() == 0 || someOneIsWinning || nextMoveSurePoints)
+
+                        if (!nextMoveSurePoints)
+                        {
+                            for (final Skill s : player.getSkills())
+                            {
+                                if (s.getName().equals(Skill.Shuffle) && s.isExecutable())
+                                {
+                                    activity.runOnUiThread(new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            handler.executeSkill(s);
+                                        }
+                                    });
+
+                                    break;
+                                }
+                            }
+                        }
+                        else if (l.getMovePoints() == 0 || someOneIsWinning || nextMoveSurePoints)
                         {
                             activity.runOnUiThread(new Runnable()
                             {
