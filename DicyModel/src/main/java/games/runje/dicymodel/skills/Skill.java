@@ -16,16 +16,12 @@ public class Skill
     public static final String[] AllSkills =  { Help, Change, Shuffle};
     protected int imageId;
     protected Coords pos;
+    protected boolean waiting;
+    protected boolean switchSkill = false;
     private int loadValue;
     private int maxLoad;
     private int currentLoad;
     private String name;
-    protected boolean waiting;
-
-    public boolean isWaiting()
-    {
-        return waiting;
-    }
 
     public Skill(Skill skill)
     {
@@ -40,6 +36,34 @@ public class Skill
         currentLoad = 0;
         this.name = name;
 
+    }
+
+    public static Skill createSkill(String skill, int skillValue)
+    {
+        int max = 0;
+        switch (skill)
+        {
+            case Skill.Help:
+                return new HelpSkill(skillValue, max);
+
+            case Skill.Change:
+                return new ChangeSkill(skillValue, max);
+            case Skill.Shuffle:
+                return new ShuffleSkill(skillValue, max);
+        }
+
+        return null;
+    }
+
+    public boolean isWaiting()
+    {
+        return waiting;
+    }
+
+    public void setWaiting(boolean waiting)
+    {
+        Logger.logInfo(name, "set waiting " + waiting);
+        this.waiting = waiting;
     }
 
     public int getLoadValue()
@@ -119,20 +143,13 @@ public class Skill
         this.imageId = imageId;
     }
 
-    public static Skill createSkill(String skill, int skillValue)
+    public boolean isSwitchSkill()
     {
-        int max = 6;
-        switch(skill)
-        {
-            case Skill.Help:
-                return new HelpSkill(skillValue, max);
+        return switchSkill;
+    }
 
-            case Skill.Change:
-                return new ChangeSkill(skillValue, max);
-            case Skill.Shuffle:
-                return new ShuffleSkill(skillValue, max);
-        }
-
-        return null;
+    public void setSwitchSkill(boolean switchSkill)
+    {
+        this.switchSkill = switchSkill;
     }
 }

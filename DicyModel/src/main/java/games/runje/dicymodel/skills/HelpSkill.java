@@ -15,4 +15,10 @@ public class HelpSkill extends Skill
     {
         super(skill);
     }
+
+    @Override
+    public boolean isSwitchSkill()
+    {
+        return true;
+    }
 }

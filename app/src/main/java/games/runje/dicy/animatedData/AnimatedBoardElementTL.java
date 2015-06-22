@@ -3,7 +3,6 @@ package games.runje.dicy.animatedData;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,7 +175,6 @@ public class AnimatedBoardElementTL implements View.OnTouchListener
                 break;
             case (MotionEvent.ACTION_UP):
             {
-
                 // remove highlighting
                 ColorMatrix cm = new ColorMatrix();
                 ColorFilter normal = new ColorMatrixColorFilter(cm);

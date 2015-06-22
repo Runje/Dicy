@@ -19,13 +19,15 @@ public abstract class AbstractGamemaster
 {
     public static String LogKey = "AbstractGamemaster";
     protected Board board;
-    protected GameState state;
+    protected GameState state = GameState.Normal;
     protected Rules rules;
     protected Move lastMove;
     protected GameControls controls;
     protected LocalGame game;
     protected Skill activeSkill;
     protected ArrayList<BoardElement> recreateElements;
+    private GameState oldState = GameState.Normal;
+    private boolean switchback = false;
 
     protected AbstractGamemaster(Rules rules, LocalGame game)
     {
@@ -79,7 +81,7 @@ public abstract class AbstractGamemaster
     public void stateTransition(GameState state)
     {
         Logger.logInfo(LogKey, "State Transition to " + state.toString());
-        GameState oldState = this.state;
+        oldState = this.state;
         this.state = state;
 
         // disable controls
@@ -99,10 +101,12 @@ public abstract class AbstractGamemaster
 
                 if (points == 0)
                 {
+                    switchback = true;
                     switchback();
                 }
                 else
                 {
+                    switchback = false;
                     startPointAnimation(elements);
                 }
                 break;
@@ -146,10 +150,21 @@ public abstract class AbstractGamemaster
                 game.addPointElements(pointElements, board, false);
                 if (Executedpoints == 0)
                 {
-                    stateTransition(GameState.Normal);
+                    if (activeSkill.isSwitchSkill())
+                    {
+                        switchback = true;
+                        switchback();
+                    }
+                    else
+                    {
+                        switchback = false;
+                        stateTransition(GameState.Normal);
+                    }
                 }
                 else
                 {
+                    switchback = false;
+                    activeSkill.setWaiting(false);
                     startPointAnimation(pointElements);
                 }
                 break;
@@ -255,14 +270,19 @@ public abstract class AbstractGamemaster
 
     public void endSwitchAnimation()
     {
-        if (this.state == GameState.Switched)
+        if (switchback)
         {
-            // back to normal, was a switchback
-            stateTransition(GameState.Normal);
+            // back to last state, was a switchback
+            stateTransition(oldState);
+        }
+        else if (state == GameState.Wait)
+        {
+            stateTransition(GameState.Executed);
         }
         else
         {
             stateTransition(GameState.Switched);
+
         }
     }
 

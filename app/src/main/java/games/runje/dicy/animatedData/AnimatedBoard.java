@@ -412,8 +412,6 @@ public class AnimatedBoard extends Board
                 this.animatedBoard.get(row).get(column).getTouchListener().setSwitchEnabled(false);
             }
         }
-
-
     }
 
     public void changeToSwitchListener()

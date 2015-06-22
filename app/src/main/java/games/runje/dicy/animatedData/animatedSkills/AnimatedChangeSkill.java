@@ -37,7 +37,6 @@ public class AnimatedChangeSkill extends Skill
         else
         {
             waiting = true;
-
             animatedBoard.changeToSelectListener();
             animatedBoard.getBoardLayout().setEnabledGravity(true);
             gm.getControls().setSkillEnabled(this);

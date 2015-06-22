@@ -1,8 +1,9 @@
 package games.runje.dicy.animatedData.animatedSkills;
 
-import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicymodel.AbstractGamemaster;
+import games.runje.dicymodel.Logger;
+import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Move;
@@ -14,17 +15,35 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class AnimatedHelpSkill extends HelpSkill
 {
+    private String LogKey = "AnimatedHelpSkill";
+
     public AnimatedHelpSkill(Skill skill)
     {
         super(skill);
-        setImageId(R.drawable.blueyellowchip);
     }
 
     @Override
+    public void startWaiting(Board board, AbstractGamemaster gm)
+    {
+        AnimatedBoard animatedBoard = ((AnimatedBoard) board);
+        if (waiting)
+        {
+            Logger.logInfo(LogKey, "Reverting Help Skill Waiting");
+            // Do nothing, can not be reverted
+            // revert action
+        }
+        else
+        {
+            waiting = true;
+            Move move = Strategy.getBestSwitchMove(BoardChecker.getPossiblePointMoves(board, gm.getRules()));
+            ((AnimatedBoard) board).highlightElements(move);
+            animatedBoard.getBoardLayout().setEnabledGravity(true);
+        }
+    }
+
     protected void startExecute(Board board, AbstractGamemaster gm)
     {
-        Move move = BoardChecker.getPossiblePointMoves(board, gm.getRules()).get(0);
-        ((AnimatedBoard) board).highlightElements(move);
+        waiting = false;
         gm.endExecuteSkill();
     }
 }
