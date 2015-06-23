@@ -77,6 +77,7 @@ public class AIController
 
                         boolean nextMoveSurePoints = getPointsOfNextMove() >= l.getPointsLimit();
 
+                        boolean skillExecuted = false;
                         if (!nextMoveSurePoints)
                         {
                             for (final Skill s : player.getSkills())
@@ -92,11 +93,18 @@ public class AIController
                                         }
                                     });
 
+                                    skillExecuted = true;
                                     break;
                                 }
                             }
                         }
-                        else if (l.getMovePoints() == 0 || someOneIsWinning || nextMoveSurePoints)
+
+                        if (skillExecuted)
+                        {
+                            continue;
+                        }
+
+                        if (l.getMovePoints() == 0 || someOneIsWinning || nextMoveSurePoints)
                         {
                             activity.runOnUiThread(new Runnable()
                             {
