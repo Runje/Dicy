@@ -17,7 +17,6 @@ import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
 import games.runje.dicymodel.GameControls;
 import games.runje.dicymodel.Logger;
-import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
@@ -27,18 +26,36 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class Controls implements GameControls
 {
+    public static String LogKey = "GameControls";
     private final Activity activity;
     private final ControlHandler handler;
     GameInfo gameInfo;
     List<PlayerLayout> playerLayouts;
     BoardLayout boardLayout;
     LocalGame game;
-
     boolean enabled;
-    public static String LogKey = "GameControls";
     private boolean saveBoardEnabled;
     private boolean saveGameInfoEnabled;
     private boolean[] savePlayersEnabled = new boolean[2];
+    private boolean gameEnded = false;
+
+    public Controls(Activity activity, ControlHandler handler, LocalGame game)
+    {
+        this.activity = activity;
+        this.handler = handler;
+        this.game = game;
+        this.playerLayouts = new ArrayList<>();
+        RelativeLayout l = new RelativeLayout(activity);
+        List<Player> players = game.getPlayers();
+        PlayerLayout pl = new PlayerLayout(activity, players.get(0), R.drawable.blueyellowchip, R.id.player1, handler);
+        this.playerLayouts.add(pl);
+
+        PlayerLayout pl2 = new PlayerLayout(activity, players.get(1), R.drawable.bluewhitechip, R.id.player2, handler);
+        this.playerLayouts.add(pl2);
+        this.boardLayout = handler.getBoardLayout();
+        gameInfo = new GameInfo(activity, handler, game);
+        setEnabledControls(true);
+    }
 
     @Override
     public void setSkillEnabled(Skill skill)
@@ -60,24 +77,6 @@ public class Controls implements GameControls
                 }
             }
         }
-    }
-
-    public Controls(Activity activity, ControlHandler handler, LocalGame game)
-    {
-        this.activity = activity;
-        this.handler = handler;
-        this.game = game;
-        this.playerLayouts = new ArrayList<>();
-        RelativeLayout l = new RelativeLayout(activity);
-        List<Player> players = game.getPlayers();
-        PlayerLayout pl = new PlayerLayout(activity, players.get(0), R.drawable.blueyellowchip, R.id.player1, handler);
-        this.playerLayouts.add(pl);
-
-        PlayerLayout pl2 = new PlayerLayout(activity, players.get(1), R.drawable.bluewhitechip, R.id.player2, handler);
-        this.playerLayouts.add(pl2);
-        this.boardLayout = handler.getBoardLayout();
-        gameInfo = new GameInfo(activity, handler, game);
-        setEnabledControls(true);
     }
 
     @Override
@@ -147,8 +146,9 @@ public class Controls implements GameControls
 
     private void gameOver()
     {
-        if (game.isGameOver())
+        if (game.isGameOver() && !gameEnded)
         {
+            gameEnded = true;
             setEnabledControls(false);
             StatisticManager manager = new SQLiteHandler(activity);
             PlayerStatistic player1 = manager.getPlayer(game.getPlayers().get(0).getName());

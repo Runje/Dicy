@@ -74,6 +74,11 @@ public class Skill
     public void load(int number)
     {
         currentLoad += number;
+
+        if (currentLoad > maxLoad)
+        {
+            currentLoad = maxLoad;
+        }
     }
 
     public boolean isExecutable()

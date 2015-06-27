@@ -48,9 +48,9 @@ public class LocalGameActivity extends Activity
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState)
     {
-        super.onPostCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -59,7 +59,7 @@ public class LocalGameActivity extends Activity
 
         Logger.setInstance(new AnimatedLogger());
         Logger.init();
-        Logger.logInfo(LogKey, "On Post Create");
+        Logger.logInfo(LogKey, "On Create");
         setContentView(R.layout.game);
         View mainView = findViewById(R.id.board);
         mainView.post(new Runnable()
@@ -74,10 +74,8 @@ public class LocalGameActivity extends Activity
                 LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(game, rules, LocalGameActivity.this);
                 LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
                 boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
             }
         });
-
     }
 
     @Override

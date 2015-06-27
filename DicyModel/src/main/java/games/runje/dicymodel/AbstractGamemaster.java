@@ -165,6 +165,10 @@ public abstract class AbstractGamemaster
                 {
                     switchback = false;
                     activeSkill.setWaiting(false);
+                    if (activeSkill.isSwitchSkill())
+                    {
+                        activeSkill.pay();
+                    }
                     startPointAnimation(pointElements);
                 }
                 break;
