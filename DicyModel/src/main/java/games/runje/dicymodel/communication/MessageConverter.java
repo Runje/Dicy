@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
@@ -30,19 +31,30 @@ public class MessageConverter
     public static final int gravityLength = 5;
     public static final int boardLength = 2 * rowSizeLength + allBoardElementsLength + gravityLength;
     public static final int nameLength = 20;
-    public static final int skillLength = 15;
+    public static final int skillNameLength = 15;
     public static final int idLength = 8;
     public static final int playerNameLength = 20;
-    public static final int playerLength = playerNameLength + idLength;
+    public static final int skillLength = coordsLength + 1 + 4 + 4 + 4 + skillNameLength;
+    public static final int strategyLength = 15;
+    public static final int playerLength = playerNameLength + idLength + 4 + strategyLength + 2 + 3 * skillLength;
     public static final int gameLength = 4 + 4 + 4 + 4 + 4 * playerLength;
 
 
     public static byte[] playerToByte(Player player)
     {
         ByteBuffer buffer = ByteBuffer.allocate(playerLength);
-        buffer.put(stringToByte(player.getName()));
-        fillBufferWithZero(buffer, playerNameLength - player.getName().length());
+        buffer.put(stringToByte(player.getName(), playerNameLength));
         buffer.putLong(player.getId());
+        buffer.putInt(player.getPoints());
+        buffer.put(strategyToByte(player.getStrategy()));
+        short numberSkills = (short) player.getSkills().size();
+        buffer.putShort(numberSkills);
+        for (Skill skill : player.getSkills())
+        {
+            buffer.put(skillToByte(skill));
+        }
+
+        fillBufferWithZero(buffer, (3 - numberSkills) * skillLength);
         return buffer.array();
     }
 
@@ -50,8 +62,77 @@ public class MessageConverter
     {
         String name = byteToString(buffer, playerNameLength);
         long id = buffer.getLong();
-        // TODO: skills
-        return new Player(name, null, id, new ArrayList<Skill>());
+        int points = buffer.getInt();
+        String strategy = byteToSrategy(buffer);
+        short numberSkills = buffer.getShort();
+        List<Skill> skills = new ArrayList<>();
+        for (int i = 0; i < numberSkills; i++)
+        {
+            Skill skill = byteToSkill(buffer);
+            skills.add(skill);
+        }
+
+        Player player = new Player(name, Strategy.makeStrategy(strategy), id, skills);
+        player.setPoints(points);
+        return player;
+    }
+
+    private static String byteToSrategy(ByteBuffer buffer)
+    {
+        return byteToString(buffer, strategyLength);
+    }
+
+    private static byte[] skillToByte(Skill skill)
+    {
+        ByteBuffer buffer = ByteBuffer.allocate(skillLength);
+        buffer.put(coordsToByte(skill.getPos()));
+        buffer.put(booleanToByte(skill.isWaiting()));
+        buffer.putInt(skill.getLoadValue());
+        buffer.putInt(skill.getMaxLoad());
+        buffer.putInt(skill.getCurrentLoad());
+        buffer.put(stringToByte(skill.getName(), skillNameLength));
+        return buffer.array();
+    }
+
+    public static Skill byteToSkill(ByteBuffer buffer)
+    {
+        Coords pos = byteToCoords(buffer);
+        boolean waiting = byteToBoolean(buffer.get());
+        int loadValue = buffer.getInt();
+        int maxLoad = buffer.getInt();
+        int currentLoad = buffer.getInt();
+        String name = byteToString(buffer, skillNameLength);
+
+        Skill skill = Skill.createSkill(name, loadValue, maxLoad);
+        skill.setPos(pos);
+        skill.setWaiting(waiting);
+        skill.setCurrentLoad(currentLoad);
+        return skill;
+    }
+
+    private static byte booleanToByte(boolean waiting)
+    {
+        return (byte) (waiting ? 1 : 0);
+    }
+
+    public static boolean byteToBoolean(Byte b)
+    {
+        return b == (byte) 1;
+    }
+
+    private static byte[] strategyToByte(Strategy strategy)
+    {
+        String name;
+        if (strategy == null)
+        {
+            name = Strategy.Human;
+        }
+        else
+        {
+            name = Strategy.Simple;
+        }
+
+        return stringToByte(name, strategyLength);
     }
 
     public static byte[] gameToByte(LocalGame game)
@@ -108,10 +189,8 @@ public class MessageConverter
 
         // TODO: kann ich das auch weglassen?
         fillBufferWithZero(buffer, allBoardElementsLength - (rows * columns * 4));
-        byte[] bytes = stringToByte(board.getGravity().toString());
+        byte[] bytes = stringToByte(board.getGravity().toString(), gravityLength);
         buffer.put(bytes);
-        fillBufferWithZero(buffer, gravityLength - bytes.length);
-
         return buffer.array();
     }
 
@@ -174,11 +253,14 @@ public class MessageConverter
         return buffer.array();
     }
 
-    public static byte[] stringToByte(String string)
+    public static byte[] stringToByte(String string, int maxLength)
     {
         try
         {
-            return string.getBytes(encoding);
+            ByteBuffer buffer = ByteBuffer.allocate(maxLength);
+            buffer.put(string.getBytes(encoding));
+            buffer.put(new byte[maxLength - string.length()]);
+            return buffer.array();
         }
         catch (UnsupportedEncodingException e)
         {

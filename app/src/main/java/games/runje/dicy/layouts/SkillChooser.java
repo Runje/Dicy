@@ -175,7 +175,7 @@ public class SkillChooser
         List<Skill> result = new ArrayList<>();
         for (int i = 0; i < skills.length; i++)
         {
-            result.add(Skill.createSkill(skills[i], skillValues[i]));
+            result.add(Skill.createSkill(skills[i], skillValues[i], 8));
         }
 
         return result;

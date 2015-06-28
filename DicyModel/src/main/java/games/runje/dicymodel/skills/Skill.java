@@ -38,9 +38,8 @@ public class Skill
 
     }
 
-    public static Skill createSkill(String skill, int skillValue)
+    public static Skill createSkill(String skill, int skillValue, int max)
     {
-        int max = 8;
         switch (skill)
         {
             case Skill.Help:
@@ -109,6 +108,11 @@ public class Skill
     public int getCurrentLoad()
     {
         return currentLoad;
+    }
+
+    public void setCurrentLoad(int currentLoad)
+    {
+        this.currentLoad = currentLoad;
     }
 
     public Coords getPos()

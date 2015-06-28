@@ -35,8 +35,7 @@ public abstract class Message
         int size = MessageConverter.sizeLength + MessageConverter.nameLength;
         ByteBuffer buffer = ByteBuffer.allocate(size);
         buffer.putInt(getTotalLength());
-        buffer.put(MessageConverter.stringToByte(getName()));
-        MessageConverter.fillBufferWithZero(buffer, MessageConverter.nameLength - getName().length());
+        buffer.put(MessageConverter.stringToByte(getName(), MessageConverter.nameLength));
         return buffer.array();
     }
 
