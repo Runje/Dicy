@@ -12,5 +12,6 @@
     <string name="pointlist_button_text">Pointlist</string>
     <string name="next_button_text">Next</string>
     <string name="preference_file_key">games.runje.dicy.option_activity_preference</string>
+    <string name="game_file_key">gamefilekey</string>
 
 </resources>

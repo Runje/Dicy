@@ -40,18 +40,8 @@ public class Rules
      */
     private int minStraight;
     private int pointLimit;
-
-    public int getGameEndPoints()
-    {
-        return gameEndPoints;
-    }
-
-    public void setGameEndPoints(int gameEndPoints)
-    {
-        this.gameEndPoints = gameEndPoints;
-    }
-
     private int gameEndPoints;
+
     /**
      * Creates standard Rules:
      * 6 Dices.
@@ -75,6 +65,33 @@ public class Rules
         // TODO: Calculate
         this.pointLimit = -1;
         this.pointLimitSetManually = false;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Rules{" +
+                "rows=" + rows +
+                ", columns=" + columns +
+                ", lengthFactor=" + lengthFactor +
+                ", pointLimitSetManually=" + pointLimitSetManually +
+                ", diagonal=" + diagonal +
+                ", numberOfDices=" + numberOfDices +
+                ", minXOfAKind=" + minXOfAKind +
+                ", minStraight=" + minStraight +
+                ", pointLimit=" + pointLimit +
+                ", gameEndPoints=" + gameEndPoints +
+                '}';
+    }
+
+    public int getGameEndPoints()
+    {
+        return gameEndPoints;
+    }
+
+    public void setGameEndPoints(int gameEndPoints)
+    {
+        this.gameEndPoints = gameEndPoints;
     }
 
     public int getLengthFactor()

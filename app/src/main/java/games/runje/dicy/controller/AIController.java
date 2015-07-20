@@ -114,7 +114,6 @@ public class AIController
                                     makeMove();
                                 }
                             });
-
                         }
                         else
                         {
@@ -127,7 +126,6 @@ public class AIController
                                     handler.next();
                                 }
                             });
-
                         }
                     }
                 }

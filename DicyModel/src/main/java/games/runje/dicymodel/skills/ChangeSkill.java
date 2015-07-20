@@ -16,7 +16,7 @@ public class ChangeSkill extends Skill
 
     public ChangeSkill(int value, int max)
     {
-        super(value, max, Skill.Change);
+        super(value, max, Skill.Change, 0);
     }
 
 

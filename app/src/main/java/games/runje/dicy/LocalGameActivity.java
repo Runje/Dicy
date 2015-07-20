@@ -5,13 +5,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,7 +28,10 @@ import games.runje.dicy.statistics.StatisticManager;
 import games.runje.dicy.util.SystemUiHider;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.SavedGame;
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.communication.MessageConverter;
+import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
@@ -39,8 +45,12 @@ import games.runje.dicymodel.skills.Skill;
  */
 public class LocalGameActivity extends Activity
 {
+    public static final String KEY_RESUME_GAME = "resume game";
+    public static final String KEY_RULES = "rules";
     public static String LogKey = "LocalGameActivity";
     private AnimatedGamemaster gmAnimated;
+    private String KEY_GAME = "game";
+    private String KEY_BOARD = "board";
 
     static Player playerStatisticsToPlayer(PlayerStatistic statistic, List<Skill> skills)
     {
@@ -62,16 +72,52 @@ public class LocalGameActivity extends Activity
         Logger.logInfo(LogKey, "On Create");
         setContentView(R.layout.game);
         View mainView = findViewById(R.id.board);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.game_file_key), MODE_PRIVATE);
+        boolean resumeGame = sharedPreferences.getBoolean(KEY_RESUME_GAME, false);
+
+        final LocalGame game;
+        final Rules rules;
+        final Board board;
+        final SavedGame savedGame;
+
+        if (resumeGame)
+        {
+            Logger.logInfo(LogKey, "Resuming Game");
+            String gameString = sharedPreferences.getString(KEY_GAME, "");
+            byte[] bytes = Base64.decode(gameString, Base64.NO_WRAP);
+            savedGame = MessageConverter.byteToSavedGame(ByteBuffer.wrap(bytes));
+            game = savedGame.getGame();
+            rules = savedGame.getRules();
+            board = savedGame.getBoard();
+
+            Logger.logDebug(LogKey, "Rules: " + rules);
+            Logger.logDebug(LogKey, "Game: " + game);
+        }
+        else
+        {
+            savedGame = null;
+            Logger.logInfo(LogKey, "New Game");
+            rules = OptionActivity.getRulesFromBundle(getIntent().getExtras());
+            List<Player> players = getPlayersFromIntent();
+
+            game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, new Random().nextInt(2));
+            board = Board.createBoardNoPoints(rules);
+        }
+
         mainView.post(new Runnable()
         {
             @Override
             public void run()
             {
-                Rules rules = OptionActivity.getRulesFromBundle(getIntent().getExtras());
-                List<Player> players = getPlayersFromIntent();
-
-                LocalGame game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, new Random().nextInt(2));
-                LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(game, rules, LocalGameActivity.this);
+                if (savedGame == null)
+                {
+                    LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(game, rules, LocalGameActivity.this, board);
+                }
+                else
+                {
+                    LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(savedGame, LocalGameActivity.this);
+                }
                 LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
                 boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
@@ -89,6 +135,7 @@ public class LocalGameActivity extends Activity
     protected void onResume()
     {
         Logger.logInfo(LogKey, "On Resume");
+
         super.onResume();
     }
 
@@ -96,6 +143,15 @@ public class LocalGameActivity extends Activity
     protected void onPause()
     {
         Logger.logInfo(LogKey, "On Pause");
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.game_file_key), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_GAME, Base64.encodeToString(MessageConverter.savedGameToByte(gmAnimated.getSavedGame()), Base64.NO_WRAP));
+        editor.putBoolean(KEY_RESUME_GAME, true);
+        Logger.logDebug(LogKey, "Rules: " + gmAnimated.getGame());
+        Logger.logDebug(LogKey, "Game: " + gmAnimated.getRules());
+        editor.commit();
+
+
         super.onPause();
     }
 

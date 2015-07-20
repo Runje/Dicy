@@ -8,9 +8,69 @@ public class GameStatistic
     private PlayerStatistic player1;
 
     private PlayerStatistic player2;
-
+    private long id;
+    private int p2Points;
+    private int p1Points;
+    private boolean p1Started;
     // 0 or 1
-    private int wonIndex = -1;
+    private boolean p1Won;
+
+    public GameStatistic(long id, String player1, String player2, boolean p1started, boolean p1won, int p1Points, int p2Points)
+    {
+        this.id = id;
+        this.player1 = new PlayerStatistic(player1);
+        this.player2 = new PlayerStatistic(player2);
+        this.p1Started = p1started;
+        this.p1Won = p1won;
+        this.p1Points = p1Points;
+        this.p2Points = p2Points;
+    }
+
+    public GameStatistic(PlayerStatistic player1, PlayerStatistic player2, boolean p1Won)
+    {
+        this.player1 = player1;
+        this.player2 = player2;
+        this.p1Won = p1Won;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "GameStatistic{" +
+                "player1=" + player1 +
+                ", player2=" + player2 +
+                ", id=" + id +
+                ", p2Points=" + p2Points +
+                ", p1Points=" + p1Points +
+                ", p1Started=" + p1Started +
+                ", p1Won=" + p1Won +
+                '}';
+    }
+
+    public boolean isP1Started()
+    {
+        return p1Started;
+    }
+
+    public void setP1Started(boolean p1Started)
+    {
+        this.p1Started = p1Started;
+    }
+
+    public boolean isP1Won()
+    {
+        return p1Won;
+    }
+
+    public void setP1Won(boolean p1Won)
+    {
+        this.p1Won = p1Won;
+    }
+
+    public boolean hasP1Won()
+    {
+        return p1Won;
+    }
 
     public PlayerStatistic getPlayer1()
     {
@@ -32,21 +92,38 @@ public class GameStatistic
         this.player2 = player2;
     }
 
-    public int getWonIndex()
+    public long getId()
     {
-        return wonIndex;
+        return id;
     }
 
-    public void setWonIndex(short wonIndex)
+    public void setId(long id)
     {
-        this.wonIndex = wonIndex;
+        this.id = id;
     }
 
-    public GameStatistic(PlayerStatistic player1, PlayerStatistic player2, int wonIndex)
+    public boolean hasP1Started()
     {
+        return p1Started;
+    }
 
-        this.player1 = player1;
-        this.player2 = player2;
-        this.wonIndex = wonIndex;
+    public int getP2Points()
+    {
+        return p2Points;
+    }
+
+    public void setP2Points(int p2Points)
+    {
+        this.p2Points = p2Points;
+    }
+
+    public int getP1Points()
+    {
+        return p1Points;
+    }
+
+    public void setP1Points(int p1Points)
+    {
+        this.p1Points = p1Points;
     }
 }

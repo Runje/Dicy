@@ -1,6 +1,7 @@
 package games.runje.dicymodel.game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import games.runje.dicymodel.Logger;
@@ -46,7 +47,6 @@ public class LocalGame extends Game
     public void setLength(int length)
     {
         this.length = length;
-
     }
 
     public int getGameEndPoints()
@@ -57,7 +57,6 @@ public class LocalGame extends Game
     public void setGameEndPoints(int gameEndPoints)
     {
         this.gameEndPoints = gameEndPoints;
-
     }
 
     @Override
@@ -71,6 +70,24 @@ public class LocalGame extends Game
         {
             loadSkills(elements, board);
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "LocalGame{" +
+                "gameEndPoints=" + gameEndPoints +
+                ", lastLeadingPlayer=" + lastLeadingPlayer +
+                ", players=" + Arrays.toString(players.toArray()) +
+                ", turn=" + turn +
+                ", movePoints=" + movePoints +
+                ", switchPoints=" + switchPoints +
+                ", pointsLimit=" + pointsLimit +
+                ", winner='" + winner + '\'' +
+                ", cancelled=" + cancelled +
+                ", length=" + length +
+                ", winIndex=" + winIndex +
+                '}';
     }
 
     private void loadSkills(ArrayList<PointElement> elements, Board board)

@@ -28,6 +28,7 @@ public abstract class AbstractGamemaster
     protected ArrayList<BoardElement> recreateElements;
     private GameState oldState = GameState.Normal;
     private boolean switchback = false;
+    private SavedGame savedGame;
 
     protected AbstractGamemaster(Rules rules, LocalGame game)
     {
@@ -39,21 +40,33 @@ public abstract class AbstractGamemaster
         this.board = board;
         this.rules = rules;
         this.game = game;
+        saveGame(GameState.Normal);
+    }
+
+    public AbstractGamemaster(SavedGame savedGame)
+    {
+        this(savedGame.getRules(), savedGame.getGame(), savedGame.getBoard());
+        this.lastMove = savedGame.getLastMove();
+        if (savedGame.getActiveSkillIndex() != -1)
+        {
+            this.activeSkill = getGame().getPlayingPlayer().getSkills().get(savedGame.getActiveSkillIndex());
+        }
     }
 
     public void switchElements(Coords first, Coords second)
     {
-        controls.setEnabledControls(false);
         Logger.logDebug(LogKey, "Switching elements");
+        controls.setEnabledControls(false);
         this.lastMove = new Move(first, second);
+        saveGame(GameState.Switched);
         startSwitchAnimation(first, second);
     }
 
     public void executeSkillFromUser(Skill s)
     {
         this.activeSkill = s;
+        saveGame(GameState.Wait);
         stateTransition(GameState.Wait);
-        s.startWaiting(board, this);
     }
 
     public void endWait(Coords pos)
@@ -76,6 +89,11 @@ public abstract class AbstractGamemaster
     public GameState getState()
     {
         return state;
+    }
+
+    public Skill getActiveSkill()
+    {
+        return activeSkill;
     }
 
     public void stateTransition(GameState state)
@@ -141,6 +159,7 @@ public abstract class AbstractGamemaster
                 controls.setPointLimit(0);
                 // TODO: should handle the skill
                 board.setEnabled(true);
+                activeSkill.startWaiting(board, this);
                 break;
             case Executed:
                 getGame().setStrikePossible(false);
@@ -157,6 +176,7 @@ public abstract class AbstractGamemaster
                     }
                     else
                     {
+                        activeSkill.pay();
                         switchback = false;
                         stateTransition(GameState.Normal);
                     }
@@ -164,6 +184,7 @@ public abstract class AbstractGamemaster
                 else
                 {
                     switchback = false;
+                    activeSkill.pay();
                     activeSkill.setWaiting(false);
                     if (activeSkill.isSwitchSkill())
                     {
@@ -173,6 +194,7 @@ public abstract class AbstractGamemaster
                 }
                 break;
         }
+
 
         // enable
         if (this.state == GameState.Normal)
@@ -206,6 +228,7 @@ public abstract class AbstractGamemaster
     {
         Logger.logDebug(LogKey, "Old board: " + board.toString());
         board.shuffle(false, rules);
+        saveGame(GameState.Normal);
         Logger.logDebug(LogKey, "New board: " + board.toString());
         endRecreateBoardAnimation();
     }
@@ -229,6 +252,7 @@ public abstract class AbstractGamemaster
     protected void startRecreateAnimation()
     {
         board.recreateElements(recreateElements);
+        saveGame(GameState.Recreated);
         endRecreateAnimation();
     }
 
@@ -319,6 +343,7 @@ public abstract class AbstractGamemaster
 
     public void endExecuteSkill()
     {
+        saveGame(GameState.Executed);
         stateTransition(GameState.Executed);
     }
 
@@ -326,5 +351,20 @@ public abstract class AbstractGamemaster
     public Board getBoard()
     {
         return board;
+    }
+
+    public SavedGame getSavedGame()
+    {
+        return savedGame;
+    }
+
+    private void saveGame(GameState nextState)
+    {
+        int i = 0;
+        if (activeSkill != null)
+        {
+            i = getGame().getPlayingPlayer().getSkills().indexOf(activeSkill);
+        }
+        savedGame = new SavedGame(rules, game, board, nextState, lastMove, i);
     }
 }

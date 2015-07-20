@@ -1,7 +1,6 @@
 package games.runje.dicymodel.skills;
 
 import games.runje.dicymodel.AbstractGamemaster;
-import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.data.Board;
 
 /**
@@ -16,7 +15,7 @@ public class ShuffleSkill extends Skill
 
     public ShuffleSkill(int value, int max)
     {
-        super(value, max, Skill.Shuffle);
+        super(value, max, Skill.Shuffle, 0);
     }
 
     protected void startExecute(Board board, AbstractGamemaster gm)

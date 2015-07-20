@@ -68,7 +68,7 @@ public class SkillMessage extends Message
     public void executeAtClient(ClientGamemaster gamemaster)
     {
         // TODO
-        Skill s = new Skill(1, 1, skill);
+        Skill s = new Skill(1, 1, skill, 0);
         s.setPos(pos);
         Logger.logDebug(LogKey, "Pos: " + pos);
         gamemaster.executeSkillFromHost(s);

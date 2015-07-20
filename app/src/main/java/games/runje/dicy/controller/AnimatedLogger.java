@@ -7,10 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import games.runje.dicy.LocalGameActivity;
 import games.runje.dicy.animatedData.AnimatedBoardElementTL;
 import games.runje.dicy.animatedData.FallingAnimation;
 import games.runje.dicy.animatedData.PointsAnimation;
 import games.runje.dicy.layouts.Border;
+import games.runje.dicy.statistics.GameTable;
+import games.runje.dicy.statistics.PlayerTable;
 import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.Logger;
 
@@ -43,6 +46,9 @@ public class AnimatedLogger extends Logger
         keyMap.put(AnimatedBoardElementTL.LogKey, 3);
         keyMap.put(AbstractGamemaster.LogKey, 3);
         keyMap.put(AnimatedGamemaster.LogKey, 3);
+        keyMap.put(PlayerTable.LogKey, 3);
+        keyMap.put(GameTable.LogKey, 2);
+        keyMap.put(LocalGameActivity.LogKey, 2);
         keyMap.put(Border.LogKey, 3);
 
 

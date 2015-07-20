@@ -7,24 +7,19 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import games.runje.dicy.R;
 import games.runje.dicy.util.ViewUtilities;
 import games.runje.dicymodel.Logger;
-import games.runje.dicymodel.Utilities;
 
 /**
  * Created by Thomas on 31.05.2015.
  */
 public class DicyProgress extends View
 {
-    private int progress;
-
-    private int maxProgress = 100;
-
-    private int fillColor = Color.YELLOW;
-
-    private int warnColor = Color.RED;
     public final static String LogKey = "DicyProgress";
+    private int progress;
+    private int maxProgress = 100;
+    private int fillColor = Color.YELLOW;
+    private int warnColor = Color.RED;
 
     public DicyProgress(Context context)
     {
@@ -49,7 +44,7 @@ public class DicyProgress extends View
     public void setProgress(int progress)
     {
         this.progress = progress;
-        Logger.logInfo(LogKey, "Setting Progress: " + progress);
+        Logger.logDebug(LogKey, "Setting Progress: " + progress);
         postInvalidate();
     }
 
@@ -90,12 +85,8 @@ public class DicyProgress extends View
 
         Paint paint = new Paint();
         paint.setAlpha(255);
-
-
-
         paint.setTextSize(40);
         paint.setColor(warnColor);
-
 
         // max value
         String text = Integer.toString(maxProgress);
@@ -119,8 +110,6 @@ public class DicyProgress extends View
         paint.setColor(fillColor);
         float progressPercent = progress / (float) maxProgress;
         progressPercent = Math.min(progressPercent, 1);
-
-
 
         String progressText = Integer.toString(progress);
         float progressWidth = ViewUtilities.getTextWidth(progressText, paint);
@@ -152,8 +141,6 @@ public class DicyProgress extends View
             canvas.drawRect(widthMaxCurrent + textPadding, canvas.getHeight() - barHeight, widthMaxCurrent + textPadding + progressPercentWidth, barHeight, paint);
         }
 
-        Logger.logInfo(LogKey, String.format("Canvas.height: %d, canvas.width: %d", canvas.getHeight(), canvas.getWidth()));
-
-
+        Logger.logDebug(LogKey, String.format("Canvas.height: %d, canvas.width: %d", canvas.getHeight(), canvas.getWidth()));
     }
 }

@@ -2,20 +2,14 @@ package games.runje.dicy;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.List;
-
 import games.runje.dicy.statistics.GameStatistic;
-import games.runje.dicy.statistics.PlayerStatistic;
 import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
-import games.runje.dicymodel.Logger;
-import games.runje.dicymodel.ai.Strategy;
 
 public class StartActivity extends Activity
 {
@@ -28,7 +22,11 @@ public class StartActivity extends Activity
 
         setContentView(R.layout.activity_start);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.game_file_key), MODE_PRIVATE);
+        boolean resumeGame = sharedPreferences.getBoolean(LocalGameActivity.KEY_RESUME_GAME, false);
 
+        View resumeButton = findViewById(R.id.button_resume);
+        resumeButton.setEnabled(resumeGame);
 
     }
 
@@ -37,25 +35,12 @@ public class StartActivity extends Activity
         Intent intent = new Intent(this, TestActivity.class);
         //startActivity(intent);
 
-        Log.d("Start", "Adding Player Thomas");
         StatisticManager manager = new SQLiteHandler(this);
-        //manager.recreate();
-        manager.createPlayer("Thomas", Strategy.Human);
-        Log.d("Start", "Adding Player Thomas");
-        manager.createPlayer("Milena", Strategy.Human);
-        manager.createPlayer("Max", Strategy.Simple);
 
-        PlayerStatistic Thomas = manager.getPlayer("Thomas");
-        PlayerStatistic Milena = manager.getPlayer("Milena");
+        manager.update(new GameStatistic(0, "Thomas", "Milena", true, false, 100, 200));
+        manager.update(new GameStatistic(1, "Max", "Thomas", false, true, 400, 9900));
 
-        //manager.update(new GameStatistic(Thomas, Milena, 1));
-
-        List<PlayerStatistic> players = manager.getAllPlayers();
-
-        for(PlayerStatistic p : players)
-        {
-            Log.d("Start", p.toString());
-        }
+        manager.getAllGames();
     }
 
 
@@ -73,4 +58,9 @@ public class StartActivity extends Activity
         startActivity(intent);
     }
 
+    public void clickResume(View v)
+    {
+        Intent intent = new Intent(this, LocalGameActivity.class);
+        startActivity(intent);
+    }
 }

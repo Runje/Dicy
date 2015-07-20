@@ -15,7 +15,9 @@ public class Skill
     public static final String Shuffle = "Shuffle";
     public static final String[] AllSkills =  { Help, Change, Shuffle};
     protected int imageId;
-    protected Coords pos;
+
+    // TODO: POS?
+    protected Coords pos = new Coords(-100, -100);
     protected boolean waiting;
     protected boolean switchSkill = false;
     private int loadValue;
@@ -25,15 +27,15 @@ public class Skill
 
     public Skill(Skill skill)
     {
-        this(skill.getLoadValue(), skill.getMaxLoad(), skill.getName());
+        this(skill.getLoadValue(), skill.getMaxLoad(), skill.getName(), skill.getCurrentLoad());
     }
 
-    public Skill(int value, int max, String name)
+    public Skill(int value, int max, String name, int currentLoad)
     {
         loadValue = value;
         maxLoad = max;
 
-        currentLoad = 0;
+        this.currentLoad = currentLoad;
         this.name = name;
 
     }
@@ -47,6 +49,7 @@ public class Skill
 
             case Skill.Change:
                 return new ChangeSkill(skillValue, max);
+
             case Skill.Shuffle:
                 return new ShuffleSkill(skillValue, max);
         }
@@ -132,7 +135,6 @@ public class Skill
 
     public void execute(Board board, AbstractGamemaster gm)
     {
-        pay();
         startExecute(board, gm);
     }
 
@@ -160,5 +162,20 @@ public class Skill
     public void setSwitchSkill(boolean switchSkill)
     {
         this.switchSkill = switchSkill;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Skill{" +
+                "imageId=" + imageId +
+                ", pos=" + pos +
+                ", waiting=" + waiting +
+                ", switchSkill=" + switchSkill +
+                ", loadValue=" + loadValue +
+                ", maxLoad=" + maxLoad +
+                ", currentLoad=" + currentLoad +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

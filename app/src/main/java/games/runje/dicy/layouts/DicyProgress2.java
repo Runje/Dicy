@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import games.runje.dicy.util.ViewUtilities;
 import games.runje.dicymodel.Logger;
 
 /**
@@ -15,19 +14,14 @@ import games.runje.dicymodel.Logger;
  */
 public class DicyProgress2 extends View
 {
+    public final static String LogKey = "DicyProgress";
     private int currentPoints;
     private int futurePoints;
-
     private int opponentPoints = 0;
-
-
     private int goal = 100;
-
     private int fillColor = Color.YELLOW;
-
     private int warnColor = Color.RED;
     private int goodColor = Color.BLUE;
-    public final static String LogKey = "DicyProgress";
 
     public DicyProgress2(Context context)
     {
@@ -52,7 +46,7 @@ public class DicyProgress2 extends View
     public void setCurrentPoints(int currentPoints)
     {
         this.currentPoints = currentPoints;
-        Logger.logInfo(LogKey, "Setting Progress: " + currentPoints);
+        Logger.logDebug(LogKey, "Setting Progress: " + currentPoints);
         postInvalidate();
     }
 
@@ -98,9 +92,6 @@ public class DicyProgress2 extends View
 
         Paint paint = new Paint();
         paint.setAlpha(255);
-
-
-
         paint.setTextSize(40);
         int color = fillColor;
 
@@ -139,10 +130,5 @@ public class DicyProgress2 extends View
         // red line
         paint.setColor(warnColor);
         canvas.drawLine(paint.getStrokeWidth() / 2, redLine, canvas.getWidth() - paint.getStrokeWidth() / 2, redLine, paint);
-
-
-
-
-
     }
 }

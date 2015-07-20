@@ -7,7 +7,7 @@ public class HelpSkill extends Skill
 {
     public HelpSkill(int value, int max)
     {
-        super(value, max, Skill.Help);
+        super(value, max, Skill.Help, 0);
     }
 
 

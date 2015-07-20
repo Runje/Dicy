@@ -153,7 +153,7 @@ public class Controls implements GameControls
             StatisticManager manager = new SQLiteHandler(activity);
             PlayerStatistic player1 = manager.getPlayer(game.getPlayers().get(0).getName());
             PlayerStatistic player2 = manager.getPlayer(game.getPlayers().get(1).getName());
-            manager.update(new GameStatistic(player1, player2, game.getWinningIndex()));
+            manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0));
             FinishedDialog d = new FinishedDialog();
             d.setName(game.getWinner());
             AnimatedLogger.logDebug(LogKey, "Before show");

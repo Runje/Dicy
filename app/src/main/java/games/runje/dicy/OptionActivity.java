@@ -512,6 +512,10 @@ public class OptionActivity extends Activity implements SimpleObserver
 
                 intent.putExtras(b);
                 saveToSharedPreferences();
+                SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.game_file_key), MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(LocalGameActivity.KEY_RESUME_GAME, false);
+                editor.commit();
                 startActivity(intent);
                 v.postDelayed(new Runnable()
                 {

@@ -1,6 +1,7 @@
 package games.runje.dicymodel.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import games.runje.dicymodel.ai.OnlineStrategy;
@@ -153,5 +154,19 @@ public class Player
     public void setSkills(List<Skill> skills)
     {
         this.skills = skills;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Player{" +
+                "id=" + id +
+                ", points=" + points +
+                ", strikes=" + strikes +
+                ", name='" + name + '\'' +
+                ", strategy=" + strategy +
+                ", lastMoveWasStrike=" + lastMoveWasStrike +
+                ", skills=" + Arrays.toString(skills.toArray()) +
+                '}';
     }
 }

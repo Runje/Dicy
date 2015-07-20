@@ -1,8 +1,5 @@
 package games.runje.dicy.animatedData.animatedSkills;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import games.runje.dicy.R;
 import games.runje.dicymodel.skills.Skill;
 
@@ -16,7 +13,7 @@ public class AnimatedSkill extends Skill
 
     public AnimatedSkill(int value, int max, String name)
     {
-        super(value, max, name);
+        super(value, max, name, 0);
     }
 
     public static Skill create(Skill skill)

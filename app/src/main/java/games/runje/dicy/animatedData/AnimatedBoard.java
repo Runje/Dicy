@@ -467,7 +467,7 @@ public class AnimatedBoard extends Board
 
     public void setEnabled(boolean enabled)
     {
-        Logger.logInfo(LogKey, "Board Controls enabled: " + enabled);
+        Logger.logDebug(LogKey, "Board Controls enabled: " + enabled);
         this.enabled = enabled;
 
         for (int row = 0; row < this.rows; row++)

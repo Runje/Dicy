@@ -27,8 +27,8 @@
                 android:layout_height="230dp"
                 android:layout_gravity="left|center_vertical"
                 android:layout_weight="1"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -45,6 +45,15 @@
                         android:layout_gravity="center"
                         android:onClick="clickPlay"
                         android:text="Play"/>
+
+                    <Button
+                        android:id="@+id/button_resume"
+                        style="@style/chipbutton"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:onClick="clickResume"
+                        android:text="Resume"/>
                 </FrameLayout>
 
                 <FrameLayout

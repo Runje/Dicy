@@ -18,6 +18,7 @@ import games.runje.dicy.layouts.BoardLayout;
 import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.SavedGame;
 import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
@@ -47,6 +48,23 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         super(rules, game, board);
         this.activity = activity;
 
+        init();
+    }
+
+    public AnimatedGamemaster(SavedGame savedGame, Activity activity)
+    {
+        super(savedGame);
+        this.activity = activity;
+        init();
+        if (savedGame.getActiveSkillIndex() != -1)
+        {
+            this.activeSkill = getGame().getPlayingPlayer().getSkills().get(savedGame.getActiveSkillIndex());
+        }
+        stateTransition(savedGame.getNextGameState());
+    }
+
+    private void init()
+    {
         // start AI
         for (Player pl : game.getPlayers())
         {

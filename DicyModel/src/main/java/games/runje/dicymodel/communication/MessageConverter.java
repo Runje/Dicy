@@ -7,12 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import games.runje.dicymodel.Rules;
+import games.runje.dicymodel.SavedGame;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
+import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.GameState;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
@@ -34,10 +37,14 @@ public class MessageConverter
     public static final int skillNameLength = 15;
     public static final int idLength = 8;
     public static final int playerNameLength = 20;
-    public static final int skillLength = coordsLength + 1 + 4 + 4 + 4 + skillNameLength;
+    public static final int rulesLength = 4 * 4 + 1;
+    public static final int skillLength = coordsLength + 1 + 3 * 4 + skillNameLength;
     public static final int strategyLength = 15;
-    public static final int playerLength = playerNameLength + idLength + 4 + strategyLength + 2 + 3 * skillLength;
-    public static final int gameLength = 4 + 4 + 4 + 4 + 4 * playerLength;
+    public static final int playerLength = playerNameLength + idLength + 4 + strategyLength + 4 + 2 + 3 * skillLength;
+    public static final int gameLength = 4 * 4 + 4 * playerLength + 3 * 4;
+    public static final int moveLength = 2 * coordsLength;
+    public static final int gameStateLength = 14;
+    public static final int savedGameLength = boardLength + gameLength + rulesLength + gameStateLength + moveLength + 4;
 
 
     public static byte[] playerToByte(Player player)
@@ -47,6 +54,7 @@ public class MessageConverter
         buffer.putLong(player.getId());
         buffer.putInt(player.getPoints());
         buffer.put(strategyToByte(player.getStrategy()));
+        buffer.putInt(player.getStrikes());
         short numberSkills = (short) player.getSkills().size();
         buffer.putShort(numberSkills);
         for (Skill skill : player.getSkills())
@@ -64,6 +72,7 @@ public class MessageConverter
         long id = buffer.getLong();
         int points = buffer.getInt();
         String strategy = byteToSrategy(buffer);
+        int strikes = buffer.getInt();
         short numberSkills = buffer.getShort();
         List<Skill> skills = new ArrayList<>();
         for (int i = 0; i < numberSkills; i++)
@@ -74,6 +83,7 @@ public class MessageConverter
 
         Player player = new Player(name, Strategy.makeStrategy(strategy), id, skills);
         player.setPoints(points);
+        player.setStrikes(strikes);
         return player;
     }
 
@@ -110,9 +120,9 @@ public class MessageConverter
         return skill;
     }
 
-    private static byte booleanToByte(boolean waiting)
+    private static byte booleanToByte(boolean b)
     {
-        return (byte) (waiting ? 1 : 0);
+        return (byte) (b ? 1 : 0);
     }
 
     public static boolean byteToBoolean(Byte b)
@@ -150,6 +160,9 @@ public class MessageConverter
 
         fillBufferWithZero(buffer, (4 - players.size()) * playerLength);
 
+        buffer.putInt(game.getMovePoints());
+        buffer.putInt(game.getSwitchPoints());
+        buffer.putInt(game.getTurn());
         return buffer.array();
     }
 
@@ -157,7 +170,7 @@ public class MessageConverter
     {
         int pointsLimit = buffer.getInt();
         int gameEndPoints = buffer.getInt();
-        int startingPlayer = buffer.getInt();
+        int lastLeadingPlayer = buffer.getInt();
         int numberPlayer = buffer.getInt();
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < numberPlayer; i++)
@@ -165,10 +178,24 @@ public class MessageConverter
             players.add(byteToPlayer(buffer));
         }
 
-        LocalGame game = new LocalGame(pointsLimit, gameEndPoints, players, startingPlayer);
+        int oldPosition = buffer.position();
+        buffer.position(oldPosition + (4 - players.size()) * playerLength);
+        LocalGame game = new LocalGame(pointsLimit, gameEndPoints, players, lastLeadingPlayer);
+        int movePoints = buffer.getInt();
+        int switchPoints = buffer.getInt();
+        int turn = buffer.getInt();
+        game.setGameEndPoints(gameEndPoints);
+        game.setMovePoints(movePoints);
+        game.setSwitchPoints(switchPoints);
+        game.setTurn(turn);
         return game;
     }
 
+    public static void fillBufferWithZero(ByteBuffer buffer, int numberOfFills)
+    {
+        assert numberOfFills >= 0;
+        buffer.put(new byte[numberOfFills]);
+    }
 
     public static byte[] boardToByte(Board board)
     {
@@ -194,14 +221,6 @@ public class MessageConverter
         return buffer.array();
     }
 
-
-    public static void fillBufferWithZero(ByteBuffer buffer, int numberOfFills)
-    {
-        assert numberOfFills >= 0;
-        buffer.put(new byte[numberOfFills]);
-    }
-
-
     public static Board byteToBoard(ByteBuffer buffer)
     {
         int rows = buffer.getInt();
@@ -218,7 +237,6 @@ public class MessageConverter
 
         int oldPosition = buffer.position();
         buffer.position(oldPosition + allBoardElementsLength - (rows * columns * 4));
-        byte[] gravityBytes = new byte[gravityLength];
         Gravity gravity = Gravity.valueOf(byteToString(buffer, gravityLength));
         result.setGravity(gravity);
         return result;
@@ -281,5 +299,87 @@ public class MessageConverter
         return new Coords(buffer.getInt(), buffer.getInt());
     }
 
+    public static Rules byteToRules(ByteBuffer buffer)
+    {
+        int pointLimit = buffer.getInt();
+        int gameEndPoints = buffer.getInt();
+        int minStraight = buffer.getInt();
+        int minXOfAkInd = buffer.getInt();
+        boolean diagonal = byteToBoolean(buffer.get());
 
+        Rules rules = new Rules();
+        rules.setPointLimit(pointLimit);
+        rules.setGameEndPoints(gameEndPoints);
+        rules.setMinStraight(minStraight);
+        rules.setMinXOfAKind(minXOfAkInd);
+        rules.setDiagonalActive(diagonal);
+        return rules;
+    }
+
+    public static byte[] rulesToByte(Rules rules)
+    {
+        ByteBuffer buffer = ByteBuffer.allocate(rulesLength);
+        // TODO: Points
+        buffer.putInt(rules.getPointLimit());
+        buffer.putInt(rules.getGameEndPoints());
+        buffer.putInt(rules.getMinStraight());
+        buffer.putInt(rules.getMinXOfAKind());
+        buffer.put(booleanToByte(rules.isDiagonalActive()));
+        return buffer.array();
+    }
+
+    public static byte[] savedGameToByte(SavedGame game)
+    {
+        ByteBuffer buffer = ByteBuffer.allocate(savedGameLength);
+        buffer.put(boardToByte(game.getBoard()));
+        buffer.put(gameToByte(game.getGame()));
+        buffer.put(rulesToByte(game.getRules()));
+        buffer.put(gameStateToByte(game.getNextGameState()));
+        buffer.put(moveToByte(game.getLastMove()));
+        buffer.putInt(game.getActiveSkillIndex());
+        return buffer.array();
+    }
+
+    public static SavedGame byteToSavedGame(ByteBuffer buffer)
+    {
+        Board b = byteToBoard(buffer);
+        LocalGame game = byteToGame(buffer);
+        Rules rules = byteToRules(buffer);
+        GameState state = byteToGameState(buffer);
+        Move move = byteToMove(buffer);
+        int i = buffer.getInt();
+        return new SavedGame(rules, game, b, state, move, i);
+    }
+
+    private static byte[] gameStateToByte(GameState state)
+    {
+        ByteBuffer buffer = ByteBuffer.allocate(gameStateLength);
+        buffer.put(stringToByte(state.toString(), gameStateLength));
+        return buffer.array();
+    }
+
+    private static GameState byteToGameState(ByteBuffer buffer)
+    {
+        String string = byteToString(buffer, gameStateLength);
+        return GameState.valueOf(string);
+    }
+
+    private static byte[] moveToByte(Move lastMove)
+    {
+        ByteBuffer buffer = ByteBuffer.allocate(moveLength);
+        if (lastMove == null)
+        {
+            lastMove = new Move(new Coords(0, 0), new Coords(0, 0));
+        }
+        buffer.put(coordsToByte(lastMove.getFirst()));
+        buffer.put(coordsToByte(lastMove.getSecond()));
+        return buffer.array();
+    }
+
+    private static Move byteToMove(ByteBuffer buffer)
+    {
+        Coords first = byteToCoords(buffer);
+        Coords second = byteToCoords(buffer);
+        return new Move(first, second);
+    }
 }

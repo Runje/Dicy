@@ -2,8 +2,6 @@ package games.runje.dicy.statistics;
 
 import java.util.ArrayList;
 
-import games.runje.dicymodel.ai.Strategy;
-
 /**
  * Created by Thomas on 15.06.2015.
  */
@@ -19,4 +17,6 @@ public interface StatisticManager
     PlayerStatistic getPlayer(String name);
 
     PlayerStatistic createPlayer(String name, String strategy);
+
+    void getAllGames();
 }
