@@ -1,6 +1,7 @@
 package games.runje.dicy.statistics;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Thomas on 15.06.2015.
@@ -18,5 +19,7 @@ public interface StatisticManager
 
     PlayerStatistic createPlayer(String name, String strategy);
 
-    void getAllGames();
+    List<GameStatistic> getAllGames();
+
+    List<GameStatistic> getGames(String player1, String player2);
 }

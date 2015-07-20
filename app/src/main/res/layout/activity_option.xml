@@ -35,7 +35,7 @@
                 android:src="@drawable/blueyellowchip"/>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:orientation="vertical">
@@ -50,35 +50,49 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/text_player1_stats1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:id="@+id/text_player1_stats2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="25sp"/>
+
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
             <include
+                android:id="@+id/player1_skill1"
                 layout="@layout/skill"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/player1_skill1"/>
+                android:layout_weight="1"/>
 
             <include
+                android:id="@+id/player1_skill2"
                 layout="@layout/skill"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/player1_skill2"/>
+                android:layout_weight="1"/>
 
             <include
+                android:id="@+id/player1_skill3"
                 layout="@layout/skill"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/player1_skill3"/>
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <LinearLayout
@@ -95,7 +109,7 @@
                 android:src="@drawable/bluewhitechip"/>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:orientation="vertical">
@@ -109,43 +123,57 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/text_player2_stats1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:id="@+id/text_player2_stats2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="25sp"/>
+
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
             <include
+                android:id="@+id/player2_skill1"
                 layout="@layout/skill"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/player2_skill1"/>
+                android:layout_weight="1"/>
 
             <include
+                android:id="@+id/player2_skill2"
                 layout="@layout/skill"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/player2_skill2"/>
+                android:layout_weight="1"/>
 
             <include
+                android:id="@+id/player2_skill3"
                 layout="@layout/skill"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/player2_skill3"/>
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <Button
+            android:id="@+id/button_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Player"
-            android:id="@+id/button_add"
-            android:onClick="click_createPlayer"/>
+            android:onClick="click_createPlayer"
+            android:text="Create Player"/>
 
         <LinearLayout
             android:layout_width="fill_parent"

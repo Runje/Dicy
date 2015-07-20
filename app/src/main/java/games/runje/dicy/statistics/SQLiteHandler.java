@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import games.runje.dicymodel.Logger;
 
@@ -76,10 +77,17 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     }
 
     @Override
-    public void getAllGames()
+    public List<GameStatistic> getAllGames()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        GameTable.getAll(db);
+        return GameTable.getAll(db);
+    }
+
+    @Override
+    public List<GameStatistic> getGames(String player1, String player2)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return GameTable.getGames(db, player1, player2);
     }
 
     @Override

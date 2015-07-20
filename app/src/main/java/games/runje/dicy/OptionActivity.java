@@ -31,6 +31,7 @@ import games.runje.dicy.layouts.SimpleObserver;
 import games.runje.dicy.layouts.SkillChooser;
 import games.runje.dicy.layouts.StraightLayout;
 import games.runje.dicy.layouts.XOfAKindLayout;
+import games.runje.dicy.statistics.GameStatistic;
 import games.runje.dicy.statistics.PlayerStatistic;
 import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
@@ -83,6 +84,10 @@ public class OptionActivity extends Activity implements SimpleObserver
     private int[] player1Skills = { R.id.player1_skill1, R.id.player1_skill2, R.id.player1_skill3};
     private SkillChooser skillChooser2;
     private int[] player2Skills = { R.id.player2_skill1, R.id.player2_skill2, R.id.player2_skill3};;
+    private TextView player1Stats1;
+    private TextView player1Stats2;
+    private TextView player2Stats1;
+    private TextView player2Stats2;
 
     public static Rules getRulesFromBundle(Bundle bundle)
     {
@@ -146,6 +151,44 @@ public class OptionActivity extends Activity implements SimpleObserver
         {
             layout.addView(x, params);
         }
+
+        initStatistics();
+    }
+
+    private void initStatistics()
+    {
+        player1Stats1 = (TextView) findViewById(R.id.text_player1_stats1);
+        player1Stats2 = (TextView) findViewById(R.id.text_player1_stats2);
+        player2Stats1 = (TextView) findViewById(R.id.text_player2_stats1);
+        player2Stats2 = (TextView) findViewById(R.id.text_player2_stats2);
+
+        updateStats();
+    }
+
+    private void updateStats()
+    {
+        StatisticManager manager = new SQLiteHandler(this);
+
+        PlayerStatistic player1 = manager.getPlayer(((PlayerStatistic) player1Spinner.getSelectedItem()).getName());
+        PlayerStatistic player2 = manager.getPlayer(((PlayerStatistic) player2Spinner.getSelectedItem()).getName());
+
+        player1Stats1.setText(player1.getWins() + " / " + (player1.getGames()));
+        player2Stats1.setText(player2.getWins() + " / " + (player2.getGames()));
+
+        List<GameStatistic> games = manager.getGames(player1.getName(), player2.getName());
+        int p1Wins = 0;
+
+        for (GameStatistic game : games)
+        {
+            if (game.getPlayer1().getName().equals(player1.getName()) && game.hasP1Won())
+            {
+                p1Wins++;
+            }
+        }
+
+        int p2Wins = games.size() - p1Wins;
+        player1Stats2.setText(p1Wins + " / " + games.size());
+        player2Stats2.setText(p2Wins + " / " + games.size());
     }
 
     private void initSkills()
@@ -210,6 +253,7 @@ public class OptionActivity extends Activity implements SimpleObserver
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
                 player2Adapter.setSelectedOther(i);
+                updateStats();
             }
 
             @Override
@@ -226,6 +270,7 @@ public class OptionActivity extends Activity implements SimpleObserver
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
                 player1Adapter.setSelectedOther(i);
+                updateStats();
             }
 
             @Override

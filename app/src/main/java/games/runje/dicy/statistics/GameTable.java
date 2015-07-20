@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import games.runje.dicymodel.Logger;
 
@@ -112,5 +113,28 @@ public class GameTable
     private static GameStatistic createGameFromCursor(Cursor cursor)
     {
         return new GameStatistic(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3) == 1, cursor.getInt(4) == 1, cursor.getInt(5), cursor.getInt(6));
+    }
+
+    public static List<GameStatistic> getGames(SQLiteDatabase db, String player1, String player2)
+    {
+        ArrayList<GameStatistic> games = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_GAMES + " WHERE (" + KEY_P1 + " = ? AND " + KEY_P2 + " = ?) OR (" + KEY_P1 + " = ? " + "AND " + KEY_P2 + " = ?)";
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{player1, player2, player2, player1});
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                GameStatistic game = createGameFromCursor(cursor);
+                Logger.logDebug(LogKey, game.toString());
+                games.add(game);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return games;
     }
 }
