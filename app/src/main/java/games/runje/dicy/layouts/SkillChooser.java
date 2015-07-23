@@ -103,14 +103,27 @@ public class SkillChooser
         for (int i = 0; i < 6; i++)
         {
             View dice = view.findViewById(diceIds[i]);
-            final int finalI = i;
+            final int diceValue = i + 1;
             dice.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    skill_value.setImageResource(AnimatedBoardElement.valueToImageResource(finalI + 1));
-                    skillValues[skillNumber] = finalI + 1;
+                    boolean valueSet = false;
+                    for (int sv : skillValues)
+                    {
+                        if (sv == diceValue)
+                        {
+                            valueSet = true;
+                            break;
+                        }
+                    }
+
+                    if (!valueSet)
+                    {
+                        skill_value.setImageResource(AnimatedBoardElement.valueToImageResource(diceValue));
+                        skillValues[skillNumber] = diceValue;
+                    }
                 }
             });
 
