@@ -23,7 +23,7 @@ public class AnimatedChangeSkill extends Skill
     }
 
     @Override
-    public void startWaiting(Board board, AbstractGamemaster gm)
+    public void startWaiting(Board board, AbstractGamemaster gm, boolean isPlaying)
     {
         AnimatedBoard animatedBoard = ((AnimatedBoard) board);
         if (waiting)
@@ -31,15 +31,23 @@ public class AnimatedChangeSkill extends Skill
             Logger.logInfo(LogKey, "Reverting Change Skill Waiting");
             // revert action
             waiting = false;
-            animatedBoard.changeToSwitchListener();
+            if (isPlaying)
+            {
+                animatedBoard.changeToSwitchListener();
+            }
+
             gm.cancelWaiting();
         }
         else
         {
             waiting = true;
-            animatedBoard.changeToSelectListener();
-            animatedBoard.getBoardLayout().setEnabledGravity(true);
-            gm.getControls().setSkillEnabled(this);
+            if (isPlaying)
+            {
+                animatedBoard.changeToSelectListener();
+                animatedBoard.getBoardLayout().setEnabledGravity(true);
+
+                gm.getControls().setSkillEnabled(this);
+            }
         }
     }
 

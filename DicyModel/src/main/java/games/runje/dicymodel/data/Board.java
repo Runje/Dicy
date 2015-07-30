@@ -601,4 +601,15 @@ public class Board
             }
         }
     }
+
+    public void updateBoard(ArrayList<ArrayList<BoardElement> > b)
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                getElement(i,j).setValue(b.get(i).get(j).getValue());
+            }
+        }
+    }
 }

@@ -88,6 +88,12 @@ public class AnimatedBoard extends Board
         }
     }
 
+    public void updateBoard(ArrayList<ArrayList<BoardElement> > b)
+    {
+        super.updateBoard(b);
+        updateBoard();
+    }
+
     /**
      * Fills the animated board with dummy dices and creates the layout.
      *

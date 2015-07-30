@@ -77,7 +77,7 @@ public class ConnectionToServer
 
             while (true)
             {
-                ByteBuffer buffer = ByteBuffer.allocate(2000);
+                ByteBuffer buffer = ByteBuffer.allocate(3000);
                 int length = MessageReader.readMessage(is, buffer);
                 final Message msg = MessageParser.parse(buffer, length);
                 messageHandler.handleMessage(msg);
@@ -96,6 +96,7 @@ public class ConnectionToServer
 
     public static void sendMessage(Message message)
     {
+        // TODO: When no connection
         message.setFromId(fromId);
         message.setToId(Message.ServerId);
         byte[] bytes = message.toByte();

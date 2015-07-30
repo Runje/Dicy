@@ -1,5 +1,8 @@
 package games.runje.dicymodel.skills;
 
+import games.runje.dicymodel.AbstractGamemaster;
+import games.runje.dicymodel.data.Board;
+
 /**
  * Created by Thomas on 31.03.2015.
  */
@@ -21,4 +24,5 @@ public class HelpSkill extends Skill
     {
         return true;
     }
+
 }

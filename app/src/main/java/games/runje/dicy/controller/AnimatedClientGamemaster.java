@@ -55,11 +55,9 @@ public class AnimatedClientGamemaster extends AnimatedGamemaster implements Clie
 
         messageInProcess = true;
         waitForMessage = false;
-        getActivity().runOnUiThread(new Runnable()
-        {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 msg.executeAtClient(AnimatedClientGamemaster.this);
                 messageInProcess = false;
             }
@@ -101,30 +99,48 @@ public class AnimatedClientGamemaster extends AnimatedGamemaster implements Clie
         stateTransition(GameState.Normal);
     }
 
-    @Override
-    public void executeSkillFromHost(Skill s)
-    {
-        getGame().setStrikePossible(false);
-        Skill skill = getGame().getPlayingPlayer().getSkill(s.getName());
-        skill.setPos(s.getPos());
-        activeSkill = skill;
-        skill.execute(board, this);
 
-        // TODO: waitformessage?
+    @Override
+    public void executeFirstSkillMessageFromHost(Skill s)
+    {
+        waitForMessage = false;
+        super.executeSkillFromUser2(s, true);
+        waitForMessage = true;
+    }
+
+    @Override
+    public void executeSecondSkillMessageFromHost(Skill s)
+    {
+        waitForMessage = false;
+        Logger.logInfo(LogKey, "Executing second skill message");
+        endWait(s.getPos());
     }
 
     @Override
     public void executeSkillFromUser(Skill s)
     {
         waitForMessage = false;
-        super.executeSkillFromUser(s);
+        sendMessageToServer(new SkillMessage(s, getIndex(s), true));
+        super.executeSkillFromUser2(s, true);
+        // Only on shuffle skill???
+        if (s.getName().equals(Skill.Shuffle))
+        {
+            waitForMessage = true;
+        }
     }
 
     @Override
     public void endWait(Coords pos)
     {
         super.endWait(pos);
-        sendMessageToServer(new SkillMessage(activeSkill));
+    }
+
+    @Override
+    public void executeOnTouch(Coords pos)
+    {
+        activeSkill.setPos(pos);
+        sendMessageToServer(new SkillMessage(activeSkill, getIndex(activeSkill), false));
+        endWait(pos);
     }
 
     public void switchElementsFromUser(Coords first, Coords second)
@@ -153,14 +169,12 @@ public class AnimatedClientGamemaster extends AnimatedGamemaster implements Clie
         this.board = board;
         this.rules = r;
         this.game = game;
-        Logger.logInfo(LogKey, "Starting Game");
-
-
+        Logger.logInfo(LogKey, "Starting Game with " + game.getPlayers().get(0) + " and " + game.getPlayers().get(1));
     }
 
     protected void transitionToNormal()
     {
-        getGame().setStrikePossible(true);
+        super.transitionToNormal();
         waitForMessage = true;
     }
 

@@ -72,8 +72,7 @@ public class OnlineGameCreator implements MessageHandler
                     public void run()
                     {
 
-                        // TODO: rules
-                        gamemaster = new AnimatedClientGamemaster(msg.getBoard(), new Rules(), activity, msg.getGame());
+                        gamemaster = new AnimatedClientGamemaster(msg.getBoard(), msg.getRules(), activity, msg.getGame());
                         LinearLayout boardContainer = (LinearLayout) activity.findViewById(R.id.board);
                         boardContainer.addView(gamemaster.getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     }

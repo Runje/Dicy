@@ -7,6 +7,7 @@ import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.BoardElement;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
+import games.runje.dicymodel.game.Game;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
@@ -27,7 +28,11 @@ public interface ClientGamemaster
 
     void recreateBoard(Board board);
 
-    void executeSkillFromHost(Skill s);
+    void executeFirstSkillMessageFromHost(Skill s);
+
+    void executeSecondSkillMessageFromHost(Skill s);
 
     void receiveMessage(Message msg);
+
+    Game getGame();
 }

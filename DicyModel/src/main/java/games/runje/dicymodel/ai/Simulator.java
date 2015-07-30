@@ -61,8 +61,8 @@ public class Simulator
         }
 
         Collections.sort(pointList);
-        // median
-        return pointList.get(n / 4);
+        // 1/3 quantil
+        return pointList.get(n / 3);
     }
 
     public int makeOnlySwitch(Move m)

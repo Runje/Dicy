@@ -23,7 +23,7 @@ public class AnimatedHelpSkill extends HelpSkill
     }
 
     @Override
-    public void startWaiting(Board board, AbstractGamemaster gm)
+    public void startWaiting(Board board, AbstractGamemaster gm, boolean isPlaying)
     {
         AnimatedBoard animatedBoard = ((AnimatedBoard) board);
         if (waiting)
@@ -37,7 +37,7 @@ public class AnimatedHelpSkill extends HelpSkill
             waiting = true;
             Move move = Strategy.getBestSwitchMove(BoardChecker.getPossiblePointMoves(board, gm.getRules()));
             ((AnimatedBoard) board).highlightElements(move);
-            animatedBoard.getBoardLayout().setEnabledGravity(true);
+            animatedBoard.getBoardLayout().setEnabledGravity(isPlaying);
         }
     }
 

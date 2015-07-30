@@ -131,5 +131,6 @@ public class GameInfo
     public void setPointLimit(int i)
     {
         progress.setMaxProgress(i);
+        progress.postInvalidate();
     }
 }

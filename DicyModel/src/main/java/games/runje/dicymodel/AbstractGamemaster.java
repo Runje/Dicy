@@ -65,6 +65,7 @@ public abstract class AbstractGamemaster
     public void executeSkillFromUser(Skill s)
     {
         this.activeSkill = s;
+
         saveGame(GameState.Wait);
         stateTransition(GameState.Wait);
     }
@@ -158,8 +159,8 @@ public abstract class AbstractGamemaster
                 getGame().setStrikePossible(false);
                 controls.setPointLimit(0);
                 // TODO: should handle the skill
-                board.setEnabled(true);
-                activeSkill.startWaiting(board, this);
+                board.setEnabled(true && hasTurn());
+                activeSkill.startWaiting(board, this, hasTurn());
                 break;
             case Executed:
                 getGame().setStrikePossible(false);
@@ -203,6 +204,12 @@ public abstract class AbstractGamemaster
         }
         this.controls.update();
 
+    }
+
+    protected boolean hasTurn()
+    {
+        // if human player has turn
+        return getGame().getPlayingPlayer().getStrategy() == null;
     }
 
     protected void transitionToNormal()
@@ -360,11 +367,18 @@ public abstract class AbstractGamemaster
 
     private void saveGame(GameState nextState)
     {
-        int i = 0;
-        if (activeSkill != null)
-        {
-            i = getGame().getPlayingPlayer().getSkills().indexOf(activeSkill);
-        }
+        int i = getIndex(activeSkill);
         savedGame = new SavedGame(rules, game, board, nextState, lastMove, i);
+    }
+
+    protected int getIndex(Skill skill)
+    {
+        int i = -1;
+        if (skill != null)
+        {
+            i = getGame().getPlayingPlayer().getSkills().indexOf(skill);
+        }
+
+        return i;
     }
 }

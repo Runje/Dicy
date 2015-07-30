@@ -25,7 +25,7 @@ public class StartGameMessage extends Message
         this.board = board;
         this.rules = rules;
         this.game = game;
-        this.contentLength = MessageConverter.boardLength + MessageConverter.gameLength;
+        this.contentLength = MessageConverter.boardLength + MessageConverter.gameLength + MessageConverter.rulesLength;
     }
 
     public StartGameMessage(ByteBuffer buffer, int length)
@@ -33,7 +33,7 @@ public class StartGameMessage extends Message
         this.contentLength = length - headerLength;
         board = MessageConverter.byteToBoard(buffer);
         game = MessageConverter.byteToGame(buffer);
-
+        rules = MessageConverter.byteToRules(buffer);
     }
 
     public String getName()
@@ -46,6 +46,7 @@ public class StartGameMessage extends Message
         ByteBuffer buffer = ByteBuffer.allocate(contentLength);
         buffer.put(MessageConverter.boardToByte(board));
         buffer.put(MessageConverter.gameToByte(game));
+        buffer.put(MessageConverter.rulesToByte(rules));
         return buffer.array();
     }
 
@@ -58,13 +59,16 @@ public class StartGameMessage extends Message
     public void executeAtClient(ClientGamemaster gamemaster)
     {
         Logger.logDebug(LogKey, "StartGameMessage is executed");
-
-
         gamemaster.startGame(board, rules, game);
     }
 
     public LocalGame getGame()
     {
         return game;
+    }
+
+    public Rules getRules()
+    {
+        return rules;
     }
 }

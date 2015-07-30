@@ -27,6 +27,7 @@ import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.ShuffleSkill;
 import games.runje.dicymodel.skills.Skill;
 
 /**
@@ -291,5 +292,22 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     {
         Logger.logInfo(LogKey, "AI is Executing skill: " + s.getName());
         executeSkillFromUser(s);
+    }
+
+    public void executeSkillFromUser(Skill s)
+    {
+
+        executeSkillFromUser2(s, false);
+    }
+
+    public void executeSkillFromUser2(Skill s, boolean online)
+    {
+
+        super.executeSkillFromUser(s);
+        if (activeSkill.getName().equals(Skill.Shuffle) && !online)
+        {
+            ((ShuffleSkill) s).shuffle(board);
+            activeSkill.execute(board, this);
+        }
     }
 }

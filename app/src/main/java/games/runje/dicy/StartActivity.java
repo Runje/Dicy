@@ -35,12 +35,6 @@ public class StartActivity extends Activity
         Intent intent = new Intent(this, TestActivity.class);
         //startActivity(intent);
 
-        StatisticManager manager = new SQLiteHandler(this);
-
-        manager.update(new GameStatistic(0, "Thomas", "Milena", true, false, 100, 200));
-        manager.update(new GameStatistic(1, "Max", "Thomas", false, true, 400, 9900));
-
-        manager.getAllGames();
     }
 
 
@@ -48,8 +42,8 @@ public class StartActivity extends Activity
     public void clickOnlineGame(View v)
     {
         Intent intent = new Intent(this, OnlineGameActivity.class);
-        //startActivity(intent);
-        Toast.makeText(this, "Playing online is not implemented yet", Toast.LENGTH_LONG).show();
+        startActivity(intent);
+        //Toast.makeText(this, "Playing online is not implemented yet", Toast.LENGTH_LONG).show();
     }
 
     public void clickPlay(View v)

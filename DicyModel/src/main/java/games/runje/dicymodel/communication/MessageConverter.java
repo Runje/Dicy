@@ -120,7 +120,7 @@ public class MessageConverter
         return skill;
     }
 
-    private static byte booleanToByte(boolean b)
+    public static byte booleanToByte(boolean b)
     {
         return (byte) (b ? 1 : 0);
     }

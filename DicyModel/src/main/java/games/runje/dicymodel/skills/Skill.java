@@ -128,9 +128,9 @@ public class Skill
         this.pos = pos;
     }
 
-    public void startWaiting(Board board, AbstractGamemaster gm)
+    public void startWaiting(Board board, AbstractGamemaster gm, boolean isPlaying)
     {
-        gm.endWait(null);
+       waiting = true;
     }
 
     public void execute(Board board, AbstractGamemaster gm)

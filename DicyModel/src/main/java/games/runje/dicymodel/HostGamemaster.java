@@ -14,6 +14,7 @@ import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.skills.ShuffleSkill;
 import games.runje.dicymodel.skills.Skill;
 
 /**
@@ -117,11 +118,28 @@ public class HostGamemaster extends AbstractGamemaster
         endRecreateBoardAnimation();
     }
 
-    public void executeSkill(Skill s, long fromId)
+    public void executeFirstSkillMessage(Skill s, long fromId)
     {
-        getGame().setStrikePossible(false);
-        sendMessageToOther(new SkillMessage(s), fromId);
-        s.execute(board, this);
+        sendMessageToOther(new SkillMessage(s, getIndex(s), true), fromId);
+        executeSkillFromUser(s);
+
+        if (s.getName().equals(Skill.Shuffle))
+        {
+            ShuffleSkill shuffleSkill = (ShuffleSkill) s;
+            shuffleSkill.shuffle(board);
+            SkillMessage msg = new SkillMessage(s, getIndex(s), false, shuffleSkill.getNewBoard());
+
+            sendMessageToBoth(msg);
+            endWait(s.getPos());
+        }
+    }
+
+    public void executeSecondSkillMessage(Skill s, long fromId)
+    {
+        //this.activeSkill = s;
+        //getGame().setStrikePossible(false);
+        sendMessageToOther(new SkillMessage(s, getIndex(activeSkill), false), fromId);
+        endWait(s.getPos());
     }
 
 }
