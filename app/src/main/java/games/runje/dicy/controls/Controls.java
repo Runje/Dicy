@@ -36,7 +36,6 @@ public class Controls implements GameControls
     boolean enabled;
     private boolean saveBoardEnabled;
     private boolean saveGameInfoEnabled;
-    private boolean[] savePlayersEnabled = new boolean[2];
     private boolean gameEnded = false;
 
     public Controls(Activity activity, ControlHandler handler, LocalGame game)
@@ -123,7 +122,7 @@ public class Controls implements GameControls
         if (game.isGameOver() && enabled)
         {
             AnimatedLogger.logInfo(LogKey, "Game Over");
-            enabled = false;
+            this.enabled = false;
             return;
         }
 

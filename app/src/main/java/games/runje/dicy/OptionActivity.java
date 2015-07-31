@@ -184,6 +184,10 @@ public class OptionActivity extends Activity implements SimpleObserver
             {
                 p1Wins++;
             }
+
+            if (game.getPlayer2().getName().equals(player1.getName()) && !game.hasP1Won()) {
+                p1Wins++;
+            }
         }
 
         int p2Wins = games.size() - p1Wins;

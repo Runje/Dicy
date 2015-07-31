@@ -5,21 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import games.runje.dicy.R;
 import games.runje.dicy.layouts.DicyProgress;
 import games.runje.dicy.layouts.PlayerLayout;
 import games.runje.dicy.layouts.PointList;
 import games.runje.dicymodel.Rules;
-import games.runje.dicymodel.data.Orientation;
-import games.runje.dicymodel.data.PointElement;
-import games.runje.dicymodel.data.PointType;
 import games.runje.dicymodel.game.LocalGame;
 
 /**
@@ -100,9 +93,6 @@ public class GameInfo
         int pointsLimit = game.getPointsLimit();
         String sLimit = Integer.toString(pointsLimit);
 
-
-
-
         this.movePointsText.setText("" + Integer.toString(game.getSwitchPoints()) + "\\" + sLimit);
 
         progress.setProgress(game.getSwitchPoints());
@@ -125,7 +115,8 @@ public class GameInfo
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
-        this.nextButton.setEnabled(enabled);
+        // only allow next if its not the first move
+        this.nextButton.setEnabled(enabled && game.getMovePoints() > 0);
     }
 
     public void setPointLimit(int i)
