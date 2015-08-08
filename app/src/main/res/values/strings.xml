@@ -13,5 +13,11 @@
     <string name="next_button_text">Next</string>
     <string name="preference_file_key">games.runje.dicy.option_activity_preference</string>
     <string name="game_file_key">gamefilekey</string>
+    <string name="start_tutorial">Ziel des Spieles ist es mehr Punkte als der Gegner zu erzielen. Punkte erreicht man indem man zwei aneinander liegende Würfel tauscht. Tausche die zwei markierten Würfel.</string>
+    <string name="step1_tutorial">Man kann Punkte mit den Standardregeln mit 3 oder mehr gleichen Würfeln oder mit einer Straße mit einer Mindestlänge von 3 machen. Wieviel Punkte welche Kombination gibt, kann man nachschauen, wenn man auf das Fragezeichen klickt.  Kombinationen mit Einser oder Straßen, die mit einer Eins anfangen, geben am meisten Punkte. Mit der zwei am wenigstens und dann steigen die Punkte wieder bis zur Sechs. Schaue dir nun die Punkteliste an.</string>
+    <string name="step2_tutorial">Klicke auf eine der vier Banden am Rand des Spielfeldes um die Gravitation zu ändern. Die Würfel fallen immer zu der markierten Bande.</string>
+    <string name="step3_tutorial">Man muss mit jedem Zug eine Mindestanzahl an Punkten erreichen (rot blinkende Zahl), sonst verliert man all seine gesammelten Punkten in dieser Runde (Die Punkte in Klammer unter dem Spielernamen). Um sich die Punkte zu sichern, kann man seine Runde beenden, in dem man auf den gelben Pfeil klickt.</string>
+    <string name="step4_tutorial">Eine weitere Möglichkeit sichere Punkte zu machen sind die Skills. Diese können durch einsammeln des Würfels auf dem Skill aufgeladen werden. Sobald sie aufgeladen sind, kann man sie durch einen Klick einsetzen.  Der Shuffle Skill mischt das Spielfeld durch. Mit dem Change Skill kann man einen Würfel auf dem Spielfeld in den auf dem Change Skill abgebildeten Würfel verwandeln. Und bei dem Help Skill wird der bestmögliche Tausch angezeigt. Außerdem wird bei allen Skills die Punktegrenze auf 0 gesetzt, so dass man keine Punkte dadurch verlieren kann.</string>
+
 
 </resources>

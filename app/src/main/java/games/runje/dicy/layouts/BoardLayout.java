@@ -1,10 +1,8 @@
 package games.runje.dicy.layouts;
 
-import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import games.runje.dicy.R;
@@ -22,8 +20,8 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
 {
     private final String LogKey = "BoardLayout";
     private final BoardListener boardListener;
+    public int diceSize;
     AnimatedBoard board;
-    int diceSize;
     private int XOffset = 1;
     private int YOffset = 1;
     private Border above;
@@ -34,8 +32,9 @@ public class BoardLayout extends RelativeLayout implements View.OnClickListener
     public BoardLayout(AnimatedBoard b, BoardListener boardListener)
     {
         super(b.getActivity());
+        this.setId(R.id.board_layout);
         this.boardListener = boardListener;
-        LinearLayout boardContainer = (LinearLayout) b.getActivity().findViewById(R.id.board);
+        View boardContainer = b.getActivity().findViewById(R.id.board);
         this.board = b;
         DisplayMetrics dm = new DisplayMetrics();
         board.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);

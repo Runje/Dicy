@@ -32,4 +32,5 @@
     <item name="borderBelow" type="id"/>
     <item name="borderLeft" type="id"/>
     <item name="borderRight" type="id"/>
+    <item name="board_layout" type="id"/>
 </resources>

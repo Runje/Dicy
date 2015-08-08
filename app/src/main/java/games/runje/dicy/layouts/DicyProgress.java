@@ -20,6 +20,7 @@ public class DicyProgress extends View
     private int maxProgress = 100;
     private int fillColor = Color.YELLOW;
     private int warnColor = Color.RED;
+    private int pointLimitAlpha = 255;
 
     public DicyProgress(Context context)
     {
@@ -34,6 +35,16 @@ public class DicyProgress extends View
     public DicyProgress(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
+    }
+
+    public int getPointLimitAlpha()
+    {
+        return pointLimitAlpha;
+    }
+
+    public void setPointLimitAlpha(int pointLimitAlpha)
+    {
+        this.pointLimitAlpha = pointLimitAlpha;
     }
 
     public int getProgress()
@@ -104,7 +115,9 @@ public class DicyProgress extends View
 
         // max
         float leftText = canvas.getWidth() - width;
+        paint.setAlpha(pointLimitAlpha);
         canvas.drawText(text, leftText, barHeight / 2 + height / 2, paint);
+        paint.setAlpha(255);
 
         // current
         paint.setColor(fillColor);

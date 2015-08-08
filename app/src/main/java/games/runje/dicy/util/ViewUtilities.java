@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 /**
@@ -43,5 +45,20 @@ public class ViewUtilities
         Rect bounds = new Rect();
         paint.getTextBounds(text, 0, text.length(), bounds);
         return bounds.height();
+    }
+
+    public static boolean removeView(View v)
+    {
+        if (v.getParent() instanceof ViewGroup)
+        {
+            ViewGroup parent = (ViewGroup) v.getParent();
+            if (parent != null)
+            {
+                parent.removeView(v);
+                return true;
+            }
+        }
+
+        return false;
     }
 }

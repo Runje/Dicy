@@ -5,11 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
-
-import games.runje.dicy.statistics.GameStatistic;
-import games.runje.dicy.statistics.SQLiteHandler;
-import games.runje.dicy.statistics.StatisticManager;
 
 public class StartActivity extends Activity
 {
@@ -33,7 +28,7 @@ public class StartActivity extends Activity
     public void clickTestarena(View v)
     {
         Intent intent = new Intent(this, TestActivity.class);
-        //startActivity(intent);
+        startActivity(intent);
 
     }
 

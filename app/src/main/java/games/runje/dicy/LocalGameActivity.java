@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -118,7 +117,7 @@ public class LocalGameActivity extends Activity
                 {
                     LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(savedGame, LocalGameActivity.this);
                 }
-                LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
+                ViewGroup boardContainer = (ViewGroup) findViewById(R.id.board);
                 boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
         });

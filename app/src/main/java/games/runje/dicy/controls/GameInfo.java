@@ -2,6 +2,8 @@ package games.runje.dicy.controls;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.View;
@@ -54,8 +56,28 @@ public class GameInfo
         progress.setMaxProgress(game.getPointsLimit());
     }
 
+    public static Dialog createPointListDialog(Context context, Rules rules, final Runnable runnable)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-    private void initPointListButton()
+        builder.setMessage("Points")
+                .setTitle("List").setView(PointList.createPointList(context, rules));
+        builder.setPositiveButton("ok", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                if (runnable != null)
+                {
+                    runnable.run();
+                }
+            }
+        });
+
+        return builder.create();
+    }
+
+    public void initPointListButton()
     {
         ImageView b = (ImageView) activity.findViewById(R.id.pointList);
         b.setOnClickListener(new View.OnClickListener()
@@ -63,26 +85,8 @@ public class GameInfo
             @Override
             public void onClick(View view)
             {
-                // 1. Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-                Rules rules = GameInfo.this.handler.getRules();
-
-                // 2. Chain together various setter methods to set the dialog characteristics
-                builder.setMessage("Points")
-                        .setTitle("List").setView(PointList.createPointList(activity, rules));
-                builder.setPositiveButton("ok", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-
-                    }
-                });
-
-                // 3. Get the AlertDialog from create()
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                createPointListDialog(activity, handler.getRules(), null).show();
             }
         });
     }

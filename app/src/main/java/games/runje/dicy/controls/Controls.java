@@ -56,6 +56,11 @@ public class Controls implements GameControls
         setEnabledControls(true);
     }
 
+    public void reinitPointList()
+    {
+        gameInfo.initPointListButton();
+    }
+
     @Override
     public void setSkillEnabled(Skill skill)
     {
