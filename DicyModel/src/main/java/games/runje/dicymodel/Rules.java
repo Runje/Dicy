@@ -14,6 +14,8 @@ public class Rules
     private final int rows;
     private final int columns;
     private int lengthFactor;
+    private int timeLimitInS;
+    private boolean timeLimit;
     private boolean pointLimitSetManually;
     /**
      * Points can be achieved diagonally.
@@ -41,7 +43,6 @@ public class Rules
     private int minStraight;
     private int pointLimit;
     private int gameEndPoints;
-
     /**
      * Creates standard Rules:
      * 6 Dices.
@@ -65,6 +66,26 @@ public class Rules
         // TODO: Calculate
         this.pointLimit = -1;
         this.pointLimitSetManually = false;
+    }
+
+    public boolean isTimeLimit()
+    {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(boolean timeLimit)
+    {
+        this.timeLimit = timeLimit;
+    }
+
+    public int getTimeLimitInS()
+    {
+        return timeLimitInS;
+    }
+
+    public void setTimeLimitInS(int timeLimitInS)
+    {
+        this.timeLimitInS = timeLimitInS;
     }
 
     @Override

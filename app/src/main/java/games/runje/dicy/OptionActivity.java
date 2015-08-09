@@ -69,6 +69,8 @@ public class OptionActivity extends Activity implements SimpleObserver
     public static final String Player2Skill1ValueIntent = "Player2Skill1Value";
     public static final String Player2Skill2ValueIntent = "Player2Skill2Value";
     public static final String Player2Skill3ValueIntent = "Player2Skill3Value";
+    public static final String TimeLimitInSIntent = "TimeLimit";
+    public static final String TimeLimitCheckedIntent = "TimeLimitChecked";
     public static String LogKey = "Options";
     private static String PointLimitIntent = "PointLimit";
     private Spinner lengthSpinner;
@@ -83,11 +85,14 @@ public class OptionActivity extends Activity implements SimpleObserver
     private SkillChooser skillChooser1;
     private int[] player1Skills = { R.id.player1_skill1, R.id.player1_skill2, R.id.player1_skill3};
     private SkillChooser skillChooser2;
-    private int[] player2Skills = { R.id.player2_skill1, R.id.player2_skill2, R.id.player2_skill3};;
+    ;
+    private int[] player2Skills = {R.id.player2_skill1, R.id.player2_skill2, R.id.player2_skill3};
     private TextView player1Stats1;
     private TextView player1Stats2;
     private TextView player2Stats1;
     private TextView player2Stats2;
+    private EditText editTimeLimit;
+    private CheckBox checkTimeLimit;
 
     public static Rules getRulesFromBundle(Bundle bundle)
     {
@@ -114,9 +119,10 @@ public class OptionActivity extends Activity implements SimpleObserver
         rules.setMinXOfAKind(bundle.getInt(OptionActivity.XOfAKindIntent, 11));
         rules.initStraightPoints(4);
         rules.setLengthFactor(f);
-
+        rules.setTimeLimitInS(bundle.getInt(OptionActivity.TimeLimitInSIntent, 0));
         int pointLimit = bundle.getInt(PointLimitIntent, -1);
         rules.setPointLimit(pointLimit);
+        rules.setTimeLimit(bundle.getBoolean(OptionActivity.TimeLimitCheckedIntent));
         return rules;
     }
 
@@ -154,6 +160,13 @@ public class OptionActivity extends Activity implements SimpleObserver
         }
 
         initStatistics();
+        initTimeLimit();
+    }
+
+    private void initTimeLimit()
+    {
+        checkTimeLimit = (CheckBox) findViewById(R.id.checkBox_time_limit);
+        editTimeLimit = (EditText) findViewById(R.id.edit_time_limit);
     }
 
     private void initStatistics()
@@ -416,6 +429,10 @@ public class OptionActivity extends Activity implements SimpleObserver
         intent.putInt(Player2Skill1ValueIntent, skillChooser2.getValue(0));
         intent.putInt(Player2Skill2ValueIntent, skillChooser2.getValue(1));
         intent.putInt(Player2Skill3ValueIntent, skillChooser2.getValue(2));
+
+        intent.putInt(TimeLimitInSIntent, Integer.parseInt(editTimeLimit.getText().toString()));
+        intent.putBoolean(TimeLimitCheckedIntent, checkTimeLimit.isChecked());
+
     }
 
     private void saveToSharedPreferences()
@@ -459,6 +476,9 @@ public class OptionActivity extends Activity implements SimpleObserver
         edit.putInt(Player2Skill1ValueIntent, skillChooser2.getValue(0));
         edit.putInt(Player2Skill2ValueIntent, skillChooser2.getValue(1));
         edit.putInt(Player2Skill3ValueIntent, skillChooser2.getValue(2));
+
+        edit.putInt(TimeLimitInSIntent, Integer.parseInt(editTimeLimit.getText().toString()));
+        edit.putBoolean(TimeLimitCheckedIntent, checkTimeLimit.isChecked());
         edit.commit();
     }
 
@@ -518,6 +538,9 @@ public class OptionActivity extends Activity implements SimpleObserver
         skillChooser2.setValue(sharedPreferences.getInt(Player2Skill1ValueIntent, 1), 0);
         skillChooser2.setValue(sharedPreferences.getInt(Player2Skill2ValueIntent, 2), 1);
         skillChooser2.setValue(sharedPreferences.getInt(Player2Skill3ValueIntent, 3), 2);
+
+        editTimeLimit.setText(Integer.toString(sharedPreferences.getInt(TimeLimitInSIntent, 0)));
+        checkTimeLimit.setChecked(sharedPreferences.getBoolean(TimeLimitCheckedIntent, false));
         update();
     }
 

@@ -213,11 +213,33 @@
                 />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_time_limit"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number"
+                android:numeric="integer"
+                android:text="0"/>
+
+            <CheckBox
+                android:id="@+id/checkBox_time_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time Limit in s"/>
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/play_button"
             style="@style/chipbutton"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="bottom|right"
             android:onClick="clickPlay"
             android:text="Play"/>
