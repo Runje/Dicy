@@ -102,6 +102,7 @@ public class Rules
     public void setLengthFactor(int lengthFactor)
     {
         this.lengthFactor = lengthFactor;
+        this.gameEndPoints = lengthFactor * pointLimit;
     }
 
     public int getColumns()
@@ -272,6 +273,7 @@ public class Rules
     public void setPointLimit(int pointLimit)
     {
         this.pointLimit = pointLimit;
+        this.gameEndPoints = lengthFactor * pointLimit;
     }
 
     public void setStraightPoints(int[][] straightPoints)

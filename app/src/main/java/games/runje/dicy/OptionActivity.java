@@ -113,6 +113,7 @@ public class OptionActivity extends Activity implements SimpleObserver
         rules.setMinStraight(bundle.getInt(OptionActivity.StraightIntent, 7));
         rules.setMinXOfAKind(bundle.getInt(OptionActivity.XOfAKindIntent, 11));
         rules.initStraightPoints(4);
+        rules.setLengthFactor(f);
 
         int pointLimit = bundle.getInt(PointLimitIntent, -1);
         rules.setPointLimit(pointLimit);
