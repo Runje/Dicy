@@ -56,6 +56,33 @@ public class LocalGameActivity extends Activity
         return new Player(statistic.getName(), Strategy.makeStrategy(statistic.getStrategy()), statistic.getId(), skills);
     }
 
+    static void showQuitDialog(final Activity activity, final LocalGame game)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Quit Game?");
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+
+            }
+        });
+
+        builder.setPositiveButton("Quit Game", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                game.cancel();
+                Intent intent = new Intent(activity, StartActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        builder.create().show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -169,33 +196,6 @@ public class LocalGameActivity extends Activity
         Logger.logInfo(LogKey, "On Destroy");
     }
 
-    void showQuitDialog()
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Quit Game?");
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i)
-            {
-
-            }
-        });
-
-        builder.setPositiveButton("Quit Game", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i)
-            {
-                gmAnimated.getGame().cancel();
-                Intent intent = new Intent(LocalGameActivity.this, OptionActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        builder.create().show();
-    }
-
     private List<Player> getPlayersFromIntent()
     {
         Bundle intent = getIntent().getExtras();
@@ -244,7 +244,7 @@ public class LocalGameActivity extends Activity
     @Override
     public void onBackPressed()
     {
-        showQuitDialog();
+        showQuitDialog(this, gmAnimated.getGame());
     }
 
 }

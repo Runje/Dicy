@@ -1,20 +1,25 @@
 package games.runje.dicy.tutorial;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Transformation;
 import android.widget.TextView;
 
 import games.runje.dicy.R;
+import games.runje.dicy.StartActivity;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controls.Controls;
 import games.runje.dicy.controls.GameInfo;
 import games.runje.dicy.layouts.DicyProgress;
+import games.runje.dicy.layouts.ProgressBlinkAnimation;
 import games.runje.dicy.util.ViewUtilities;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
@@ -33,8 +38,8 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
     public static String LogKey = "SwitchTutorialGamemaster";
     private BoardSelector boardSelector;
     private TextView lastText;
-    private int tutorialStep = 3;
-
+    private int tutorialStep = 0;
+    private int skillsExecuted = 0;
     public SwitchTutorialGamemaster(LocalGame game, Rules rules, final Activity activity, final Board board)
     {
         super(game, rules, activity, board);
@@ -52,6 +57,13 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
         highlightMove();
     }
 
+    @Override
+    public void nextFromUser()
+    {
+        clearLastText();
+        super.nextFromUser();
+    }
+
     private void highlightMove()
     {
         Move move = Strategy.getBestSwitchMove(BoardChecker.getPossiblePointMoves(board, getRules()));
@@ -62,6 +74,22 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
     {
         View v = activity.findViewById(R.id.players);
 
+    }
+
+    @Override
+    public void executeSkillFromUser(Skill s)
+    {
+        clearLastText();
+        super.executeSkillFromUser(s);
+
+        if (game.getPlayingPlayer().isHuman())
+        {
+            skillsExecuted++;
+            if (skillsExecuted == 3)
+            {
+                tutorialStep++;
+            }
+        }
     }
 
     private void showTextOverPlayers(int stringId)
@@ -106,6 +134,7 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
         activity.findViewById(R.id.skill1).clearAnimation();
         activity.findViewById(R.id.skill3).clearAnimation();
         activity.findViewById(R.id.skill2).clearAnimation();
+        activity.findViewById(R.id.player_progress).clearAnimation();
     }
 
     private void clearLastText()
@@ -114,6 +143,24 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
         {
             ViewUtilities.removeView(lastText);
         }
+    }
+
+    @Override
+    public void gameOver()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setMessage(game.getWinner() + " wins the game.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        Intent intent = new Intent(((Dialog) dialog).getContext(), StartActivity.class);
+                        activity.startActivity(intent);
+                    }
+                });
+        // Create the AlertDialog object and return it
+        builder.create().show();
     }
 
     private void showNextTutorialStep()
@@ -157,28 +204,39 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
 
             case 3:
                 // skills
-                DicyProgress progress2 = (DicyProgress) activity.findViewById(R.id.dicy_progress);
-                int newLimit2 = 50;
-                progress2.setMaxProgress(newLimit2);
-                progress2.postInvalidate();
-                rules.setPointLimit(newLimit2);
-                game.setPointsLimit(newLimit2);
-                for (Skill skill : game.getPlayers().get(0).getSkills())
+                if (skillsExecuted == 0)
                 {
-                    skill.setCurrentLoad(skill.getMaxLoad());
-                }
+                    DicyProgress progress2 = (DicyProgress) activity.findViewById(R.id.dicy_progress);
+                    int newLimit2 = 50;
+                    progress2.setMaxProgress(newLimit2);
+                    progress2.postInvalidate();
+                    rules.setPointLimit(newLimit2);
+                    game.setPointsLimit(newLimit2);
+                    for (Skill skill : game.getPlayers().get(0).getSkills())
+                    {
+                        skill.setCurrentLoad(skill.getMaxLoad());
+                    }
 
-                showTextOverBoard(R.string.step4_tutorial);
+                    showTextOverBoard(R.string.step4_tutorial);
+                }
                 highlightSkills();
-                tutorialStep++;
                 break;
 
             case 4:
                 // sudden death
+                showTextOverBoard(R.string.step5_tutorial);
+                highlightPlayerPoints();
+                tutorialStep++;
                 break;
         }
 
 
+    }
+
+    private void highlightPlayerPoints()
+    {
+        Animation animation = AnimationUtils.loadAnimation(activity, R.anim.blink);
+        activity.findViewById(R.id.player_progress).startAnimation(animation);
     }
 
     private void highlightSkills()
@@ -197,16 +255,7 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
     private void highlightPointLimit()
     {
         final DicyProgress progress = (DicyProgress) activity.findViewById(R.id.dicy_progress);
-        Animation animation = new Animation()
-        {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t)
-            {
-                int newAlpha = (int) (interpolatedTime * 255);
-                progress.setPointLimitAlpha(newAlpha);
-                progress.postInvalidate();
-            }
-        };
+        Animation animation = new ProgressBlinkAnimation(progress);
 
         animation.setRepeatCount(Animation.INFINITE);
         animation.setRepeatMode(Animation.REVERSE);

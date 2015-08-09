@@ -10,6 +10,8 @@ public class StartActivity extends Activity
 {
 
 
+    private String KEY_FIRST_TIME = "first_time";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -19,15 +21,28 @@ public class StartActivity extends Activity
 
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.game_file_key), MODE_PRIVATE);
         boolean resumeGame = sharedPreferences.getBoolean(LocalGameActivity.KEY_RESUME_GAME, false);
+        boolean firstTime = sharedPreferences.getBoolean(KEY_FIRST_TIME, true);
+
+        if (firstTime)
+        {
+            sharedPreferences.edit().putBoolean(KEY_FIRST_TIME, false).commit();
+            clickTutorial(null);
+        }
 
         View resumeButton = findViewById(R.id.button_resume);
         resumeButton.setEnabled(resumeGame);
 
     }
 
-    public void clickTestarena(View v)
+    @Override
+    public void onBackPressed()
     {
-        Intent intent = new Intent(this, TestActivity.class);
+        // do nothing
+    }
+
+    public void clickTutorial(View v)
+    {
+        Intent intent = new Intent(this, TutorialActivity.class);
         startActivity(intent);
 
     }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
-import android.media.Image;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,7 @@ public class PlayerLayout extends RelativeLayout
     public static String HtmlGreen = "#000000";
     public static String HtmlWhite = "#FFFF00";
     public static String HtmlBlue = "#0B0B3B";
+    public static String LogKey = "PlayerLayout";
     private final View container;
     private final Activity activity;
     private final ImageView strike1;
@@ -49,12 +49,6 @@ public class PlayerLayout extends RelativeLayout
     List<SkillLayout> skills = new ArrayList<>();
     ControlHandler handler;
     private Player player;
-    public static String LogKey = "PlayerLayout";
-
-    public List<SkillLayout> getSkills()
-    {
-        return skills;
-    }
 
     public PlayerLayout(Activity activity, Player player, int imageId, int containerId, ControlHandler handler)
     {
@@ -83,9 +77,25 @@ public class PlayerLayout extends RelativeLayout
 
     }
 
+    public List<SkillLayout> getSkills()
+    {
+        return skills;
+    }
+
     public Player getPlayer()
     {
         return player;
+    }
+
+    public void highlightPoints()
+    {
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+        points.startAnimation(animation);
+    }
+
+    public void clearHighlights()
+    {
+        points.clearAnimation();
     }
 
     public void startTurnAnimation()

@@ -152,6 +152,11 @@ public class LocalGame extends Game
         return players.get(turn);
     }
 
+    public Player getNotPlayingPlayer()
+    {
+        return players.get((turn + 1) % 2);
+    }
+
     @Override
     public boolean isFinishedOrCancelled()
     {
@@ -270,6 +275,23 @@ public class LocalGame extends Game
             enoughPoints = true;
             winner = getPlayingPlayer().getName();
             winIndex = turn;
+        }
+
+        //Logger.logDebug(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
+        return lastLeadingPlayerTurn && enoughPoints;
+    }
+
+    public boolean willGameBeOver()
+    {
+        boolean lastLeadingPlayerTurn = (((turn + 1) % 2) == lastLeadingPlayer);
+        boolean enoughPoints = false;
+
+        // TODO: What if two player with same points?
+
+
+        if (getNotPlayingPlayer().getPoints() >= gameEndPoints && (getPlayingPlayer().getPoints() + getMovePoints() < getNotPlayingPlayer().getPoints()))
+        {
+            enoughPoints = true;
         }
 
         //Logger.logDebug(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);

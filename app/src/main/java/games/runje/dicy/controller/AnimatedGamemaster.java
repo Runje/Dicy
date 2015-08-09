@@ -14,7 +14,12 @@ import games.runje.dicy.animatedData.SwitchAnimation;
 import games.runje.dicy.animatedData.animatedSkills.AnimatedSkill;
 import games.runje.dicy.controls.ControlHandler;
 import games.runje.dicy.controls.Controls;
+import games.runje.dicy.controls.FinishedDialog;
 import games.runje.dicy.layouts.BoardLayout;
+import games.runje.dicy.statistics.GameStatistic;
+import games.runje.dicy.statistics.PlayerStatistic;
+import games.runje.dicy.statistics.SQLiteHandler;
+import games.runje.dicy.statistics.StatisticManager;
 import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
@@ -103,6 +108,20 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     public void setEnabledBoard(boolean enabled)
     {
         this.animatedBoard.setEnabled(enabled);
+    }
+
+    @Override
+    public void gameOver()
+    {
+        StatisticManager manager = new SQLiteHandler(activity);
+        PlayerStatistic player1 = manager.getPlayer(game.getPlayers().get(0).getName());
+        PlayerStatistic player2 = manager.getPlayer(game.getPlayers().get(1).getName());
+        manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0));
+        FinishedDialog d = new FinishedDialog();
+        d.setName(game.getWinner());
+        AnimatedLogger.logDebug(LogKey, "Before show");
+        d.show(activity.getFragmentManager(), "Game is finished");
+        AnimatedLogger.logDebug(LogKey, "After show");
     }
 
     public AnimatedBoard getAnimatedBoard()

@@ -28,7 +28,7 @@ import games.runje.dicymodel.skills.Skill;
 /**
  * Created by Thomas on 08.06.2015.
  */
-public class TestActivity extends Activity
+public class TutorialActivity extends Activity
 {
 
     private String LogKey = "TestActivity";
@@ -81,13 +81,19 @@ public class TestActivity extends Activity
             @Override
             public void run()
             {
-                TestActivity.this.gmAnimated = new SwitchTutorialGamemaster(game, rules, TestActivity.this, board);
+                TutorialActivity.this.gmAnimated = new SwitchTutorialGamemaster(game, rules, TutorialActivity.this, board);
                 ViewGroup boardContainer = (ViewGroup) findViewById(R.id.board);
                 boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
         });
 
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        LocalGameActivity.showQuitDialog(this, gmAnimated.getGame());
     }
 
 

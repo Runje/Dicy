@@ -216,6 +216,15 @@ public abstract class AbstractGamemaster
     {
         getGame().setStrikePossible(true);
         controls.setPointLimit(rules.getPointLimit());
+
+        if (game.willGameBeOver())
+        {
+            controls.highlightPoints();
+            Logger.logInfo(LogKey, "Game will be over (to normal)");
+        } else
+        {
+            controls.clearHighlights();
+        }
     }
 
     private void startRecreateBoard()
@@ -328,9 +337,22 @@ public abstract class AbstractGamemaster
 
     public void next()
     {
+        if (game.willGameBeOver())
+        {
+            // don't allow , if game would be over
+            controls.highlightPoints();
+            Logger.logInfo(LogKey, "Game will be over (next)");
+            return;
+        }
+
         game.moveEnds();
         controls.setEnabledControls(true);
         controls.update();
+        if (game.willGameBeOver())
+        {
+            // highlight for next player
+            controls.highlightPoints();
+        }
     }
 
     public GameControls getControls()

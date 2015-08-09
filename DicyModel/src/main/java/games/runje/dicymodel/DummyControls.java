@@ -49,4 +49,16 @@ public class DummyControls implements GameControls
 
     }
 
+    @Override
+    public void highlightPoints()
+    {
+
+    }
+
+    @Override
+    public void clearHighlights()
+    {
+
+    }
+
 }

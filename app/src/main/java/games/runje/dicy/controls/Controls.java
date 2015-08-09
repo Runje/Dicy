@@ -11,10 +11,6 @@ import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.layouts.BoardLayout;
 import games.runje.dicy.layouts.PlayerLayout;
 import games.runje.dicy.layouts.SkillLayout;
-import games.runje.dicy.statistics.GameStatistic;
-import games.runje.dicy.statistics.PlayerStatistic;
-import games.runje.dicy.statistics.SQLiteHandler;
-import games.runje.dicy.statistics.StatisticManager;
 import games.runje.dicymodel.GameControls;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.data.Player;
@@ -148,21 +144,31 @@ public class Controls implements GameControls
         }
     }
 
+    @Override
+    public void clearHighlights()
+    {
+        for (PlayerLayout playerLayout : playerLayouts)
+        {
+            playerLayout.clearHighlights();
+        }
+    }
+
+    @Override
+    public void highlightPoints()
+    {
+        for (PlayerLayout playerLayout : playerLayouts)
+        {
+            playerLayout.highlightPoints();
+        }
+    }
+
     private void gameOver()
     {
         if (game.isGameOver() && !gameEnded)
         {
             gameEnded = true;
             setEnabledControls(false);
-            StatisticManager manager = new SQLiteHandler(activity);
-            PlayerStatistic player1 = manager.getPlayer(game.getPlayers().get(0).getName());
-            PlayerStatistic player2 = manager.getPlayer(game.getPlayers().get(1).getName());
-            manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0));
-            FinishedDialog d = new FinishedDialog();
-            d.setName(game.getWinner());
-            AnimatedLogger.logDebug(LogKey, "Before show");
-            d.show(activity.getFragmentManager(), "Game is finished");
-            AnimatedLogger.logDebug(LogKey, "After show");
+            handler.gameOver();
         }
     }
 

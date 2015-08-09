@@ -20,4 +20,8 @@ public interface GameControls
     void save();
 
     void setPointLimit(int i);
+
+    void highlightPoints();
+
+    void clearHighlights();
 }
