@@ -1,6 +1,7 @@
 package games.runje.dicy.controller;
 
 import android.app.Activity;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     public static final String LogKey = "GamemasterAnimated";
     protected Activity activity;
     AnimatedBoard animatedBoard;
+    private boolean gameStarted;
 
     public AnimatedGamemaster(LocalGame game, Rules rules, Activity activity)
     {
@@ -66,6 +68,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         {
             this.activeSkill = getGame().getPlayingPlayer().getSkills().get(savedGame.getActiveSkillIndex());
         }
+
         stateTransition(savedGame.getNextGameState());
     }
 
@@ -96,6 +99,8 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         this.controls = new Controls(activity, this, game);
         controls.setEnabledControls(true);
         controls.update();
+        gameStarted = true;
+
     }
 
     @Override
@@ -122,6 +127,26 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         AnimatedLogger.logDebug(LogKey, "Before show");
         d.show(activity.getFragmentManager(), "Game is finished");
         AnimatedLogger.logDebug(LogKey, "After show");
+    }
+
+    @Override
+    public void timeOut()
+    {
+        if (!gameStarted || !timeoutPossible)
+        {
+            return;
+        }
+
+        activity.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Toast.makeText(activity, "TIME OUT", Toast.LENGTH_SHORT).show();
+                next(true);
+            }
+        });
+
     }
 
     public AnimatedBoard getAnimatedBoard()
@@ -240,7 +265,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
 
     public void nextFromUser()
     {
-        next();
+        next(false);
     }
 
     @Override

@@ -25,4 +25,6 @@ public interface ControlHandler
     void setEnabledBoard(boolean enabled);
 
     void gameOver();
+
+    void timeOut();
 }

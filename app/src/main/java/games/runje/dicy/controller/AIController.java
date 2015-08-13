@@ -123,7 +123,7 @@ public class AIController
                                 @Override
                                 public void run()
                                 {
-                                    handler.next();
+                                    handler.next(false);
                                 }
                             });
                         }

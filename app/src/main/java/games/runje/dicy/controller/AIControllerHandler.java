@@ -16,7 +16,7 @@ public interface AIControllerHandler
 
     boolean areControlsEnabled();
 
-    void next();
+    void next(boolean force);
 
     void switchElements(Coords first, Coords second);
 

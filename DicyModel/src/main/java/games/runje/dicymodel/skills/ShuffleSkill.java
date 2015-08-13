@@ -40,16 +40,17 @@ public class ShuffleSkill extends Skill
         Logger.logInfo(LogKey, "Before shuffle: " + board);
         board.updateBoard(newBoard);
         Logger.logInfo(LogKey, "After shuffle: " + board);
+        newBoard = null;
         super.startExecute(board, gm);
-    }
-
-    public void setNewBoard(ArrayList<ArrayList<BoardElement>> newBoard)
-    {
-        this.newBoard = newBoard;
     }
 
     public ArrayList<ArrayList<BoardElement>> getNewBoard()
     {
         return newBoard;
+    }
+
+    public void setNewBoard(ArrayList<ArrayList<BoardElement>> newBoard)
+    {
+        this.newBoard = newBoard;
     }
 }

@@ -74,7 +74,7 @@ public class AnimatedClientGamemaster extends AnimatedGamemaster implements Clie
     public void nextFromUser()
     {
         sendMessageToServer(new NextMessage());
-        next();
+        next(false);
         waitForMessage = true;
 
     }
@@ -82,7 +82,7 @@ public class AnimatedClientGamemaster extends AnimatedGamemaster implements Clie
     @Override
     public void nextFromHost()
     {
-        next();
+        next(false);
     }
 
     @Override

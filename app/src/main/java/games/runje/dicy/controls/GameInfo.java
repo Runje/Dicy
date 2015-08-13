@@ -7,8 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Date;
 
 import games.runje.dicy.R;
 import games.runje.dicy.layouts.DicyProgress;
@@ -28,7 +32,9 @@ public class GameInfo
     private final ControlHandler handler;
     private final LocalGame game;
     private final DicyProgress progress;
+    private final TextView countdown;
     private boolean enabled;
+    private String LogKey = "GameInfo";
 
     public GameInfo(Activity activity, final ControlHandler handler, LocalGame game)
     {
@@ -42,9 +48,11 @@ public class GameInfo
         movePointsText.setText("0\\" + game.getPointsLimit());
 
         nextButton = (ImageView) activity.findViewById(R.id.image_next);
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 handler.nextFromUser();
             }
         });
@@ -54,6 +62,17 @@ public class GameInfo
 
         progress = (DicyProgress) activity.findViewById(R.id.dicy_progress);
         progress.setMaxProgress(game.getPointsLimit());
+
+        countdown = (TextView) activity.findViewById(R.id.text_countdown);
+        Rules rules = handler.getRules();
+        if (rules.isTimeLimit())
+        {
+            countdown.setText(Integer.toString(rules.getTimeLimitInS()));
+            updateCountdown();
+        } else
+        {
+            countdown.setVisibility(View.GONE);
+        }
     }
 
     public static Dialog createPointListDialog(Context context, Rules rules, final Runnable runnable)
@@ -75,6 +94,59 @@ public class GameInfo
         });
 
         return builder.create();
+    }
+
+    public void updateCountdown()
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                while (!game.isFinishedOrCancelled())
+                {
+                    final long time = (new Date().getTime() - game.getPlayerIsPlayingSince().getTime()) / 1000;
+                    long timeLimit = handler.getRules().getTimeLimitInS();
+                    final long cdown = timeLimit - time;
+                    activity.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            if (cdown >= 0)
+                            {
+                                countdown.setText(Integer.toString((int) cdown));
+
+                                if (cdown <= 10)
+                                {
+                                    Animation animation = AnimationUtils.loadAnimation(activity, R.anim.blink);
+                                    countdown.startAnimation(animation);
+                                    countdown.setTextColor(Color.RED);
+                                } else
+                                {
+                                    countdown.clearAnimation();
+                                    countdown.setTextColor(Color.YELLOW);
+                                }
+
+                                countdown.invalidate();
+                            }
+                        }
+                    });
+                    if (time > handler.getRules().getTimeLimitInS())
+                    {
+                        handler.timeOut();
+                    }
+
+                    try
+                    {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     public void initPointListButton()

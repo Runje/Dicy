@@ -26,6 +26,7 @@ public abstract class AbstractGamemaster
     protected LocalGame game;
     protected Skill activeSkill;
     protected ArrayList<BoardElement> recreateElements;
+    protected boolean timeoutPossible = true;
     private GameState oldState = GameState.Normal;
     private boolean switchback = false;
     private SavedGame savedGame;
@@ -57,6 +58,7 @@ public abstract class AbstractGamemaster
     {
         Logger.logDebug(LogKey, "Switching elements");
         controls.setEnabledControls(false);
+        timeoutPossible = false;
         this.lastMove = new Move(first, second);
         saveGame(GameState.Switched);
         startSwitchAnimation(first, second);
@@ -64,6 +66,7 @@ public abstract class AbstractGamemaster
 
     public void executeSkillFromUser(Skill s)
     {
+        timeoutPossible = false;
         this.activeSkill = s;
 
         saveGame(GameState.Wait);
@@ -72,6 +75,7 @@ public abstract class AbstractGamemaster
 
     public void endWait(Coords pos)
     {
+        timeoutPossible = false;
         if (pos != null)
         {
             activeSkill.setPos(pos);
@@ -161,6 +165,7 @@ public abstract class AbstractGamemaster
                 // TODO: should handle the skill
                 board.setEnabled(true && hasTurn());
                 activeSkill.startWaiting(board, this, hasTurn());
+                //timeoutPossible = true;
                 break;
             case Executed:
                 getGame().setStrikePossible(false);
@@ -225,6 +230,8 @@ public abstract class AbstractGamemaster
         {
             controls.clearHighlights();
         }
+
+        timeoutPossible = true;
     }
 
     private void startRecreateBoard()
@@ -335,9 +342,9 @@ public abstract class AbstractGamemaster
         return rules;
     }
 
-    public void next()
+    public void next(boolean force)
     {
-        if (game.willGameBeOver())
+        if (game.willGameBeOver() && !force)
         {
             // don't allow , if game would be over
             controls.highlightPoints();

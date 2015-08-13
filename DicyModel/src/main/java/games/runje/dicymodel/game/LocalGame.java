@@ -2,6 +2,7 @@ package games.runje.dicymodel.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import games.runje.dicymodel.Logger;
@@ -31,6 +32,7 @@ public class LocalGame extends Game
     private boolean cancelled = false;
     private int length;
     private int winIndex = -1;
+    private Date playerIsPlayingSince;
 
     public LocalGame(int pointLimit, int length, List<Player> playerList, int startingPlayer)
     {
@@ -42,6 +44,12 @@ public class LocalGame extends Game
 
         this.lastLeadingPlayer = startingPlayer;
         turn = startingPlayer;
+        resetTimer();
+    }
+
+    public Date getPlayerIsPlayingSince()
+    {
+        return playerIsPlayingSince;
     }
 
     public void setLength(int length)
@@ -120,16 +128,21 @@ public class LocalGame extends Game
         if (switchPoints >= pointsLimit || !isStrikePossible())
         {
             movePoints += switchPoints;
+            resetTimer();
         }
         else
         {
-            players.get(turn).addStrike();
-            getPlayingPlayer().setLastMoveWasStrike(true);
+
             movePoints = 0;
             moveEnds();
         }
 
         switchPoints = 0;
+    }
+
+    private void resetTimer()
+    {
+        playerIsPlayingSince = new Date();
     }
 
     @Override
@@ -215,6 +228,7 @@ public class LocalGame extends Game
     private boolean nextPlayer()
     {
         turn = (turn + 1) % players.size();
+        playerIsPlayingSince = new Date();
         return (players.get(turn).isAi());
     }
 
@@ -226,6 +240,10 @@ public class LocalGame extends Game
         {
             players.get(turn).setStrikes(0);
             getPlayingPlayer().setLastMoveWasStrike(false);
+        } else
+        {
+            players.get(turn).addStrike();
+            getPlayingPlayer().setLastMoveWasStrike(true);
         }
 
         movePoints = 0;

@@ -99,7 +99,7 @@ public class HostGamemaster extends AbstractGamemaster
 
     public void next(long fromId)
     {
-        super.next();
+        super.next(false);
         sendMessageToOther(new NextMessage(), fromId);
     }
 
