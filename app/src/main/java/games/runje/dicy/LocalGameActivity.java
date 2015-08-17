@@ -161,6 +161,10 @@ public class LocalGameActivity extends Activity
     protected void onResume()
     {
         Logger.logInfo(LogKey, "On Resume");
+        if (gmAnimated != null)
+        {
+            gmAnimated.onResume();
+        }
 
         super.onResume();
     }
@@ -177,7 +181,10 @@ public class LocalGameActivity extends Activity
         Logger.logDebug(LogKey, "Game: " + gmAnimated.getRules());
         editor.commit();
 
-
+        if (gmAnimated != null)
+        {
+            gmAnimated.onPause();
+        }
         super.onPause();
     }
 

@@ -2,7 +2,6 @@ package games.runje.dicymodel.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import games.runje.dicymodel.Logger;
@@ -32,7 +31,7 @@ public class LocalGame extends Game
     private boolean cancelled = false;
     private int length;
     private int winIndex = -1;
-    private Date playerIsPlayingSince;
+    private int playerIsPlayingSince;
 
     public LocalGame(int pointLimit, int length, List<Player> playerList, int startingPlayer)
     {
@@ -47,9 +46,14 @@ public class LocalGame extends Game
         resetTimer();
     }
 
-    public Date getPlayerIsPlayingSince()
+    public int getPlayerIsPlayingSince()
     {
         return playerIsPlayingSince;
+    }
+
+    public void setPlayerIsPlayingSince(int playerIsPlayingSince)
+    {
+        this.playerIsPlayingSince = playerIsPlayingSince;
     }
 
     public void setLength(int length)
@@ -140,9 +144,9 @@ public class LocalGame extends Game
         switchPoints = 0;
     }
 
-    private void resetTimer()
+    public void resetTimer()
     {
-        playerIsPlayingSince = new Date();
+        playerIsPlayingSince = 0;
     }
 
     @Override
@@ -228,7 +232,7 @@ public class LocalGame extends Game
     private boolean nextPlayer()
     {
         turn = (turn + 1) % players.size();
-        playerIsPlayingSince = new Date();
+        resetTimer();
         return (players.get(turn).isAi());
     }
 
@@ -367,5 +371,10 @@ public class LocalGame extends Game
         {
             return players.get(0);
         }
+    }
+
+    public void increasePlayingTime()
+    {
+        playerIsPlayingSince++;
     }
 }

@@ -24,4 +24,8 @@ public interface GameControls
     void highlightPoints();
 
     void clearHighlights();
+
+    void onResume();
+
+    void onPause();
 }

@@ -18,6 +18,7 @@ import games.runje.dicy.R;
 import games.runje.dicy.layouts.DicyProgress;
 import games.runje.dicy.layouts.PlayerLayout;
 import games.runje.dicy.layouts.PointList;
+import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.game.LocalGame;
 
@@ -35,6 +36,9 @@ public class GameInfo
     private final TextView countdown;
     private boolean enabled;
     private String LogKey = "GameInfo";
+    private Date gamePausedAt;
+    private long pauseTime;
+    private boolean paused;
 
     public GameInfo(Activity activity, final ControlHandler handler, LocalGame game)
     {
@@ -96,6 +100,23 @@ public class GameInfo
         return builder.create();
     }
 
+    public void onPause()
+    {
+        paused = true;
+        gamePausedAt = new Date();
+    }
+
+    public void onResume()
+    {
+        paused = false;
+        if (gamePausedAt != null)
+        {
+            if (handler.getRules().isTimeLimit())
+            {
+                updateCountdown();
+            }
+        }
+    }
     public void updateCountdown()
     {
         new Thread(new Runnable()
@@ -103,9 +124,12 @@ public class GameInfo
             @Override
             public void run()
             {
-                while (!game.isFinishedOrCancelled())
+                Logger.logInfo(LogKey, "Starting Update Countdown Thread");
+                while (!(game.isFinishedOrCancelled() || paused))
                 {
-                    final long time = (new Date().getTime() - game.getPlayerIsPlayingSince().getTime()) / 1000;
+                    game.increasePlayingTime();
+                    final long time = game.getPlayerIsPlayingSince();
+
                     long timeLimit = handler.getRules().getTimeLimitInS();
                     final long cdown = timeLimit - time;
                     activity.runOnUiThread(new Runnable()
@@ -145,6 +169,8 @@ public class GameInfo
                         e.printStackTrace();
                     }
                 }
+
+                Logger.logInfo(LogKey, "Ending Update Countdown Thread");
             }
         }).start();
     }

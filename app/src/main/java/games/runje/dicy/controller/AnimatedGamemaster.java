@@ -44,7 +44,6 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     public static final String LogKey = "GamemasterAnimated";
     protected Activity activity;
     AnimatedBoard animatedBoard;
-    private boolean gameStarted;
 
     public AnimatedGamemaster(LocalGame game, Rules rules, Activity activity)
     {
@@ -99,8 +98,6 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         this.controls = new Controls(activity, this, game);
         controls.setEnabledControls(true);
         controls.update();
-        gameStarted = true;
-
     }
 
     @Override
@@ -132,7 +129,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     @Override
     public void timeOut()
     {
-        if (!gameStarted || !timeoutPossible)
+        if (!timeoutPossible)
         {
             return;
         }
@@ -340,7 +337,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
 
     public void executeSkillFromUser(Skill s)
     {
-
+        game.resetTimer();
         executeSkillFromUser2(s, false);
     }
 
@@ -353,5 +350,15 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
             ((ShuffleSkill) s).shuffle(board);
             activeSkill.execute(board, this);
         }
+    }
+
+    public void onResume()
+    {
+        controls.onResume();
+    }
+
+    public void onPause()
+    {
+        controls.onPause();
     }
 }

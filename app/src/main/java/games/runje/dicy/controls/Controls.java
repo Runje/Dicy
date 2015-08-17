@@ -52,6 +52,15 @@ public class Controls implements GameControls
         setEnabledControls(true);
     }
 
+    public void onResume()
+    {
+        gameInfo.onResume();
+    }
+
+    public void onPause()
+    {
+        gameInfo.onPause();
+    }
     public void reinitPointList()
     {
         gameInfo.initPointListButton();

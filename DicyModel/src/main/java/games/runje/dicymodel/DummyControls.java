@@ -50,6 +50,18 @@ public class DummyControls implements GameControls
     }
 
     @Override
+    public void onResume()
+    {
+
+    }
+
+    @Override
+    public void onPause()
+    {
+
+    }
+
+    @Override
     public void highlightPoints()
     {
 
