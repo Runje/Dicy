@@ -47,6 +47,11 @@ public class StartActivity extends Activity
 
     }
 
+    public void clickStatistics(View v)
+    {
+        Intent intent = new Intent(this, StatisticsActivity.class);
+        startActivity(intent);
+    }
 
 
     public void clickOnlineGame(View v)

@@ -51,6 +51,13 @@
             android:label="@string/title_activity_online_game"
             android:theme="@style/FullscreenTheme">
         </activity>
+
+        <activity
+            android:name=".StatisticsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_online_game"
+            android:theme="@style/FullscreenTheme">
+        </activity>
     </application>
 
 

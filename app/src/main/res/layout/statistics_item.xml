@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/stats_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dicy_green"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/stats_name"
+        android:layout_width="100sp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Name"
+        android:textColor="@color/dicy_yellow"/>
+
+    <TextView
+        android:id="@+id/stats_games"
+        android:layout_width="50sp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Games"
+        android:textColor="@color/dicy_yellow"/>
+
+    <TextView
+        android:id="@+id/stats_wins"
+        android:layout_width="50sp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Wins"
+        android:textColor="@color/dicy_yellow"/>
+
+    <TextView
+        android:id="@+id/stats_looses"
+        android:layout_width="50sp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Looses"
+        android:textColor="@color/dicy_yellow"/>
+
+    <TextView
+        android:id="@+id/stats_percent"
+        android:layout_width="50sp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Percent"
+        android:textColor="@color/dicy_yellow"/>
+</LinearLayout>

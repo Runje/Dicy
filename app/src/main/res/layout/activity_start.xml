@@ -71,6 +71,15 @@
                         android:layout_gravity="center"
                         android:onClick="clickTutorial"
                         android:text="Tutorial"/>
+
+                    <Button
+                        android:id="@+id/button7"
+                        style="@style/chipbutton"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:onClick="clickStatistics"
+                        android:text="Statistics"/>
                 </FrameLayout>
 
                 <FrameLayout

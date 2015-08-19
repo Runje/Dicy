@@ -40,6 +40,16 @@ public class PlayerStatistic
         this.name = name;
     }
 
+    public long getLooses()
+    {
+        return games - wins;
+    }
+
+    public double getPercentageWin()
+    {
+        return (double) wins / games * 100;
+    }
+
     public long getId()
     {
 

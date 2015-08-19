@@ -1,10 +1,11 @@
 package games.runje.dicymodel;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
-import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.data.PointElement;
 
 /**
@@ -52,4 +53,16 @@ public class Utilities
     }
 
 
+    public static String doubleToString(double d, int afterSep)
+    {
+        String pattern = "#.";
+        for (int i = 0; i < afterSep; i++)
+        {
+            pattern += "#";
+
+        }
+        DecimalFormat formatter = new DecimalFormat(pattern);
+
+        return String.format(Locale.ENGLISH, "%." + afterSep + "f", d);
+    }
 }
