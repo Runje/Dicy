@@ -67,7 +67,7 @@ public class GameActivity extends Activity
 
                 Rules rules = new Rules();
                 Board bb = Board.createBoardNoPoints(rules);
-                LocalGame game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), playerList, new Random().nextInt(2));
+                LocalGame game = new LocalGame(rules.getPointLimit(), rules.getGameLength(), playerList, new Random().nextInt(2));
                 AnimatedGamemaster gmAnimated = new AnimatedGamemaster(game, rules, GameActivity.this);
                 LinearLayout boardContainer = (LinearLayout) findViewById(R.id.board);
                 boardContainer.addView(gmAnimated.getAnimatedBoard().getBoardLayout(), ActionBar.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

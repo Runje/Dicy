@@ -21,6 +21,7 @@ import java.util.Random;
 import games.runje.dicy.controller.AnimatedGamemaster;
 import games.runje.dicy.controller.AnimatedLogger;
 import games.runje.dicy.layouts.SkillChooser;
+import games.runje.dicy.statistics.LocalGameStatisticsHandler;
 import games.runje.dicy.statistics.PlayerStatistic;
 import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
@@ -127,7 +128,7 @@ public class LocalGameActivity extends Activity
             rules = OptionActivity.getRulesFromBundle(getIntent().getExtras());
             List<Player> players = getPlayersFromIntent();
 
-            game = new LocalGame(rules.getPointLimit(), rules.getLengthFactor(), players, new Random().nextInt(2));
+            game = new LocalGame(rules.getPointLimit(), rules.getGameLength(), players, new Random().nextInt(2));
             board = Board.createBoardNoPoints(rules);
         }
 
@@ -136,6 +137,7 @@ public class LocalGameActivity extends Activity
             @Override
             public void run()
             {
+                game.setStatisticsHandler(new LocalGameStatisticsHandler(LocalGameActivity.this));
                 if (savedGame == null)
                 {
                     LocalGameActivity.this.gmAnimated = new AnimatedGamemaster(game, rules, LocalGameActivity.this, board);

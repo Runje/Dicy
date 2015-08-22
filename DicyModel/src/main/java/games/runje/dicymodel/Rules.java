@@ -1,6 +1,7 @@
 package games.runje.dicymodel;
 
 import games.runje.dicymodel.data.PointType;
+import games.runje.dicymodel.game.GameLength;
 
 /**
  * Created by Thomas on 01.10.2014.
@@ -43,6 +44,8 @@ public class Rules
     private int minStraight;
     private int pointLimit;
     private int gameEndPoints;
+    private GameLength gameLength;
+
     /**
      * Creates standard Rules:
      * 6 Dices.
@@ -66,6 +69,7 @@ public class Rules
         // TODO: Calculate
         this.pointLimit = -1;
         this.pointLimitSetManually = false;
+        this.gameLength = GameLength.Normal;
     }
 
     public boolean isTimeLimit()
@@ -305,5 +309,15 @@ public class Rules
     public void setxOfAKindPoints(int[][] xOfAKindPoints)
     {
         this.xOfAKindPoints = xOfAKindPoints;
+    }
+
+    public GameLength getGameLength()
+    {
+        return gameLength;
+    }
+
+    public void setGameLength(GameLength gameLength)
+    {
+        this.gameLength = gameLength;
     }
 }

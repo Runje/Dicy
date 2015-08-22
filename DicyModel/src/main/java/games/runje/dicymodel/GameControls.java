@@ -9,6 +9,8 @@ public interface GameControls
 {
     void setEnabledControls(boolean enabled);
 
+    void setEnabledNext(boolean enabled);
+
     boolean areControlsEnabled();
 
     void update();

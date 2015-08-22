@@ -202,11 +202,7 @@ public abstract class AbstractGamemaster
         }
 
 
-        // enable
-        if (this.state == GameState.Normal)
-        {
-            this.controls.setEnabledControls(true);
-        }
+
         this.controls.update();
 
     }
@@ -232,6 +228,8 @@ public abstract class AbstractGamemaster
         }
 
         timeoutPossible = true;
+        // enable
+        this.controls.setEnabledControls(true);
     }
 
     private void startRecreateBoard()

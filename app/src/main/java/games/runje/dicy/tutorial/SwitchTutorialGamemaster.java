@@ -21,7 +21,6 @@ import games.runje.dicy.controls.GameInfo;
 import games.runje.dicy.layouts.DicyProgress;
 import games.runje.dicy.layouts.ProgressBlinkAnimation;
 import games.runje.dicy.util.ViewUtilities;
-import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
@@ -150,7 +149,7 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setMessage(game.getWinner() + " wins the game.")
+        builder.setMessage("The Winner is " + game.getWinner())
                 .setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)
@@ -197,7 +196,6 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
                 highlightNext();
                 highlightBracketPoints();
                 highlightPointLimit();
-                disableNext();
                 // TODO: disable skills
                 tutorialStep++;
                 break;
@@ -249,7 +247,7 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
 
     private void disableNext()
     {
-        activity.findViewById(R.id.image_next).setEnabled(false);
+        controls.setEnabledNext(false);
     }
 
     private void highlightPointLimit()
@@ -338,20 +336,5 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
         });
     }
 
-    public void startGame()
-    {
-        Logger.logInfo(LogKey, "Starting Game");
-        //RelativeLayout root = (RelativeLayout) getActivity().getWindow().getDecorView().getRootView();
-        /*GameLayout root = (GameLayout) getActivity().findViewById(R.id.points);
-        Context context = root.getContext();
-        ImageView image = new ImageView(context);
-        image.setClickable(true);
-        image.setBackgroundColor(Color.WHITE);
-        image.setAlpha(0.7f);/*
-        root.addView(image, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);*/
 
-
-        //new Hider(root.getBoard());
-        //root.setForeground(getActivity().getResources().getDrawable(R.drawable.green_square));
-    }
 }

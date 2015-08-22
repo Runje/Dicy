@@ -19,6 +19,8 @@
     <string name="step3_tutorial">Man muss mit jedem Zug eine Mindestanzahl an Punkten erreichen (rot blinkende Zahl), sonst verliert man all seine gesammelten Punkten in dieser Runde (Die Punkte in Klammer unter dem Spielernamen). Um sich die Punkte zu sichern, kann man seine Runde beenden, in dem man auf den gelben Pfeil klickt.</string>
     <string name="step4_tutorial">Eine weitere Möglichkeit sichere Punkte zu machen sind die Skills. Diese können durch einsammeln des Würfels auf dem Skill aufgeladen werden. Sobald sie aufgeladen sind, kann man sie durch einen Klick einsetzen.  Der Shuffle Skill mischt das Spielfeld durch. Mit dem Change Skill kann man einen Würfel auf dem Spielfeld in den auf dem Change Skill abgebildeten Würfel verwandeln. Und bei dem Help Skill wird der bestmögliche Tausch angezeigt. Außerdem wird bei allen Skills die Punktegrenze auf 0 gesetzt, so dass man keine Punkte dadurch verlieren kann. Probiere nun alle Skills aus.</string>
     <string name="step5_tutorial">Sobald der erste Spieler den roten Balken beim Punktestand erreicht hat, beginnt das Sudden Death. Ab sofort muss man in jeder Runde mindestens mit dem Gegner gleichziehen um das Spiel nicht zu verlieren.</string>
+    <string name="top_ten_move">NEW TOP TEN MOVE RECORD</string>
+    <string name="top_ten_switch">NEW TOP TEN SWITCH RECORD</string>
 
 
 </resources>

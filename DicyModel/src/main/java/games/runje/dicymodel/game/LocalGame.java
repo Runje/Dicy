@@ -29,15 +29,18 @@ public class LocalGame extends Game
     private int pointsLimit;
     private String winner;
     private boolean cancelled = false;
-    private int length;
+    private int lengthFactor;
     private int winIndex = -1;
     private int playerIsPlayingSince;
+    private StatisticHandler statisticsHandler;
+    private GameLength gameLength;
 
-    public LocalGame(int pointLimit, int length, List<Player> playerList, int startingPlayer)
+    public LocalGame(int pointLimit, GameLength length, List<Player> playerList, int startingPlayer)
     {
         pointsLimit = pointLimit;
-        this.length = length;
-        gameEndPoints = pointLimit * length;
+        this.gameLength = length;
+        this.lengthFactor = GameLength.LengthToFactor(length);
+        gameEndPoints = pointLimit * lengthFactor;
 
         this.players = playerList;
 
@@ -56,9 +59,9 @@ public class LocalGame extends Game
         this.playerIsPlayingSince = playerIsPlayingSince;
     }
 
-    public void setLength(int length)
+    public void setLengthFactor(int lengthFactor)
     {
-        this.length = length;
+        this.lengthFactor = lengthFactor;
     }
 
     public int getGameEndPoints()
@@ -97,7 +100,7 @@ public class LocalGame extends Game
                 ", pointsLimit=" + pointsLimit +
                 ", winner='" + winner + '\'' +
                 ", cancelled=" + cancelled +
-                ", length=" + length +
+                ", lengthFactor=" + lengthFactor +
                 ", winIndex=" + winIndex +
                 '}';
     }
@@ -133,6 +136,10 @@ public class LocalGame extends Game
         {
             movePoints += switchPoints;
             resetTimer();
+            if (statisticsHandler != null)
+            {
+                statisticsHandler.switchPoints(switchPoints, getPlayingPlayer());
+            }
         }
         else
         {
@@ -236,6 +243,11 @@ public class LocalGame extends Game
         return (players.get(turn).isAi());
     }
 
+    public void setStatisticsHandler(StatisticHandler statisticsHandler)
+    {
+        this.statisticsHandler = statisticsHandler;
+    }
+
     @Override
     public boolean moveEnds()
     {
@@ -244,6 +256,10 @@ public class LocalGame extends Game
         {
             players.get(turn).setStrikes(0);
             getPlayingPlayer().setLastMoveWasStrike(false);
+            if (statisticsHandler != null)
+            {
+                statisticsHandler.movePoints(movePoints, getPlayingPlayer());
+            }
         } else
         {
             players.get(turn).addStrike();
@@ -328,7 +344,7 @@ public class LocalGame extends Game
     public void setPointsLimit(int pointsLimit)
     {
         this.pointsLimit = pointsLimit;
-        this.gameEndPoints = length * pointsLimit;
+        this.gameEndPoints = lengthFactor * pointsLimit;
     }
 
     public String getWinner()
@@ -376,5 +392,15 @@ public class LocalGame extends Game
     public void increasePlayingTime()
     {
         playerIsPlayingSince++;
+    }
+
+    public GameLength getGameLength()
+    {
+        return gameLength;
+    }
+
+    public void setGameLength(GameLength gameLength)
+    {
+        this.gameLength = gameLength;
     }
 }

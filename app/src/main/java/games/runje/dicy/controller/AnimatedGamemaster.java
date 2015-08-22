@@ -98,6 +98,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         this.controls = new Controls(activity, this, game);
         controls.setEnabledControls(true);
         controls.update();
+
     }
 
     @Override
@@ -118,7 +119,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         StatisticManager manager = new SQLiteHandler(activity);
         PlayerStatistic player1 = manager.getPlayer(game.getPlayers().get(0).getName());
         PlayerStatistic player2 = manager.getPlayer(game.getPlayers().get(1).getName());
-        manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0));
+        manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0, game.getPlayers().get(0).getPoints(), game.getPlayers().get(1).getPoints(), game.getGameLength()));
         FinishedDialog d = new FinishedDialog();
         d.setName(game.getWinner());
         AnimatedLogger.logDebug(LogKey, "Before show");

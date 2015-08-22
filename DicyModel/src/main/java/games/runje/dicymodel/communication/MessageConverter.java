@@ -15,6 +15,7 @@ import games.runje.dicymodel.data.Coords;
 import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.GameLength;
 import games.runje.dicymodel.game.GameState;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
@@ -37,11 +38,12 @@ public class MessageConverter
     public static final int skillNameLength = 15;
     public static final int idLength = 8;
     public static final int playerNameLength = 20;
-    public static final int rulesLength = 4 * 4 + 1 + 1 + 4;
+    public static final int gameLengthLength = 6;
+    public static final int rulesLength = 4 * 4 + 1 + 1 + 4 + gameLengthLength;
     public static final int skillLength = coordsLength + 1 + 3 * 4 + skillNameLength;
     public static final int strategyLength = 15;
     public static final int playerLength = playerNameLength + idLength + 4 + strategyLength + 4 + 2 + 3 * skillLength;
-    public static final int gameLength = 4 * 4 + 4 * playerLength + 3 * 4 + 4;
+    public static final int gameLength = 4 * 4 + 4 * playerLength + 3 * 4 + 4 + gameLengthLength;
     public static final int moveLength = 2 * coordsLength;
     public static final int gameStateLength = 14;
     public static final int savedGameLength = boardLength + gameLength + rulesLength + gameStateLength + moveLength + 4;
@@ -164,6 +166,7 @@ public class MessageConverter
         buffer.putInt(game.getSwitchPoints());
         buffer.putInt(game.getTurn());
         buffer.putInt(game.getPlayerIsPlayingSince());
+        buffer.put(stringToByte(game.getGameLength().toString(), gameLengthLength));
         return buffer.array();
     }
 
@@ -181,11 +184,12 @@ public class MessageConverter
 
         int oldPosition = buffer.position();
         buffer.position(oldPosition + (4 - players.size()) * playerLength);
-        LocalGame game = new LocalGame(pointsLimit, gameEndPoints, players, lastLeadingPlayer);
         int movePoints = buffer.getInt();
         int switchPoints = buffer.getInt();
         int turn = buffer.getInt();
         int time = buffer.getInt();
+        GameLength gameLength = GameLength.valueOf(byteToString(buffer, gameLengthLength));
+        LocalGame game = new LocalGame(pointsLimit, gameLength, players, lastLeadingPlayer);
         game.setGameEndPoints(gameEndPoints);
         game.setMovePoints(movePoints);
         game.setSwitchPoints(switchPoints);
@@ -312,6 +316,7 @@ public class MessageConverter
         boolean diagonal = byteToBoolean(buffer.get());
         boolean time = byteToBoolean(buffer.get());
         int timeLimit = buffer.getInt();
+        GameLength gameLength = GameLength.valueOf(byteToString(buffer, gameLengthLength));
 
         Rules rules = new Rules();
         rules.setPointLimit(pointLimit);
@@ -335,6 +340,7 @@ public class MessageConverter
         buffer.put(booleanToByte(rules.isDiagonalActive()));
         buffer.put(booleanToByte(rules.isTimeLimit()));
         buffer.putInt(rules.getTimeLimitInS());
+        buffer.put(stringToByte(rules.getGameLength().toString(), gameLengthLength));
         return buffer.array();
     }
 

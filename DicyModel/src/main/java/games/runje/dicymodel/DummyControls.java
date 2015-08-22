@@ -14,6 +14,12 @@ public class DummyControls implements GameControls
     }
 
     @Override
+    public void setEnabledNext(boolean enabled)
+    {
+
+    }
+
+    @Override
     public boolean areControlsEnabled()
     {
         return false;

@@ -3,19 +3,13 @@ package games.runje.dicy.controls;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import java.util.List;
-
-import games.runje.dicy.OptionActivity;
 import games.runje.dicy.StartActivity;
+import games.runje.dicy.StatisticsActivity;
 import games.runje.dicy.controller.AnimatedLogger;
-import games.runje.dicy.statistics.PlayerStatistic;
-import games.runje.dicy.statistics.SQLiteHandler;
-import games.runje.dicy.statistics.StatisticManager;
 
 /**
  * Created by Thomas on 18.01.2015.
@@ -43,20 +37,12 @@ public class FinishedDialog extends DialogFragment
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        StatisticManager manager = new SQLiteHandler(getActivity());
-        List<PlayerStatistic> players = manager.getAllPlayers();
-        String statistics = "";
-        for (PlayerStatistic playerStatistic: players)
-        {
-            statistics += playerStatistic + "\n";
-        }
-
-        builder.setMessage(statistics + name + " wins the game.")
-                .setPositiveButton("Again", new DialogInterface.OnClickListener()
+        builder.setMessage(name + " wins the game.")
+                .setPositiveButton("Show Statistics", new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        Intent intent = new Intent(((Dialog) dialog).getContext(), OptionActivity.class);
+                        Intent intent = new Intent(((Dialog) dialog).getContext(), StatisticsActivity.class);
                         startActivity(intent);
                     }
                 })

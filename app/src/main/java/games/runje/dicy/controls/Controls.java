@@ -146,11 +146,16 @@ public class Controls implements GameControls
 
         handler.setEnabledBoard(enabled);
         boardLayout.setEnabledGravity(enabled);
-        gameInfo.setEnabled(enabled);
+        setEnabledNext(enabled);
         for (PlayerLayout playerLayout : playerLayouts)
         {
             playerLayout.setEnabled(enabled && game.hasTurn(playerLayout.getPlayer()));
         }
+    }
+
+    public void setEnabledNext(boolean enabled)
+    {
+        gameInfo.setEnabled(enabled);
     }
 
     @Override

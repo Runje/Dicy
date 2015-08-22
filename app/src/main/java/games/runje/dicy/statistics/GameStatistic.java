@@ -1,5 +1,9 @@
 package games.runje.dicy.statistics;
 
+import java.util.Date;
+
+import games.runje.dicymodel.game.GameLength;
+
 /**
  * Created by Thomas on 15.06.2015.
  */
@@ -15,7 +19,11 @@ public class GameStatistic
     // 0 or 1
     private boolean p1Won;
 
-    public GameStatistic(long id, String player1, String player2, boolean p1started, boolean p1won, int p1Points, int p2Points)
+    private Date date;
+
+    private GameLength length;
+
+    public GameStatistic(long id, String player1, String player2, boolean p1started, boolean p1won, int p1Points, int p2Points, Date date, GameLength length)
     {
         this.id = id;
         this.player1 = new PlayerStatistic(player1);
@@ -24,13 +32,39 @@ public class GameStatistic
         this.p1Won = p1won;
         this.p1Points = p1Points;
         this.p2Points = p2Points;
+        this.date = date;
+        this.length = length;
     }
 
-    public GameStatistic(PlayerStatistic player1, PlayerStatistic player2, boolean p1Won)
+    public GameStatistic(PlayerStatistic player1, PlayerStatistic player2, boolean p1Won, int p1Points, int p2Points, GameLength length)
     {
         this.player1 = player1;
         this.player2 = player2;
         this.p1Won = p1Won;
+        this.p1Points = p1Points;
+        this.p2Points = p2Points;
+        date = new Date();
+        this.length = length;
+    }
+
+    public GameLength getLength()
+    {
+        return length;
+    }
+
+    public void setLength(GameLength length)
+    {
+        this.length = length;
+    }
+
+    public Date getDate()
+    {
+        return date;
+    }
+
+    public void setDate(Date date)
+    {
+        this.date = date;
     }
 
     @Override

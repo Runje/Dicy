@@ -148,9 +148,10 @@ public class PlayerStatisticsAdapter extends BaseAdapter
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if (view == null)
         {
-            view = inflater.inflate(R.layout.statistics_item, null);
+            view = inflater.inflate(R.layout.player_statistics_item, null);
         }
 
+        TextView pos = (TextView) view.findViewById(R.id.stats_pos);
         TextView name = (TextView) view.findViewById(R.id.stats_name);
         TextView games = (TextView) view.findViewById(R.id.stats_games);
         TextView wins = (TextView) view.findViewById(R.id.stats_wins);
@@ -158,6 +159,7 @@ public class PlayerStatisticsAdapter extends BaseAdapter
         TextView percent = (TextView) view.findViewById(R.id.stats_percent);
 
         PlayerStatistic player = (PlayerStatistic) getItem(i);
+        pos.setText(Integer.toString(i + 1));
         name.setText(player.getName());
         games.setText(Long.toString(player.getGames()));
         wins.setText(Long.toString(player.getWins()));
@@ -169,6 +171,9 @@ public class PlayerStatisticsAdapter extends BaseAdapter
         if (i % 2 == 0)
         {
             view.findViewById(R.id.stats_layout).setBackgroundColor(Color.DKGRAY);
+        } else
+        {
+            view.findViewById(R.id.stats_layout).setBackgroundColor(context.getResources().getColor(R.color.dicy_green));
         }
 
         return view;

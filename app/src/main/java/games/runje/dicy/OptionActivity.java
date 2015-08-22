@@ -40,6 +40,7 @@ import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.game.GameLength;
 import games.runje.dicymodel.skills.Skill;
 
 
@@ -97,19 +98,9 @@ public class OptionActivity extends Activity implements SimpleObserver
     public static Rules getRulesFromBundle(Bundle bundle)
     {
         String length = bundle.getString(OptionActivity.LengthIntent);
-        int f = 5;
-        switch (length)
-        {
-            case "Short":
-                f = 5;
-                break;
-            case "Middle":
-                f = 10;
-                break;
-            case "Long":
-                f = 20;
-                break;
-        }
+        GameLength gameLength = GameLength.valueOf(length);
+        int f = GameLength.LengthToFactor(gameLength);
+
 
         boolean diagonal = bundle.getBoolean(OptionActivity.DiagonalIntent, false);
 
@@ -119,6 +110,7 @@ public class OptionActivity extends Activity implements SimpleObserver
         rules.setMinXOfAKind(bundle.getInt(OptionActivity.XOfAKindIntent, 11));
         rules.initStraightPoints(4);
         rules.setLengthFactor(f);
+        rules.setGameLength(gameLength);
         rules.setTimeLimitInS(bundle.getInt(OptionActivity.TimeLimitInSIntent, 0));
         int pointLimit = bundle.getInt(PointLimitIntent, -1);
         rules.setPointLimit(pointLimit);
@@ -397,10 +389,10 @@ public class OptionActivity extends Activity implements SimpleObserver
         lengthSpinner = (Spinner) findViewById(R.id.length_dropdown);
         List<String> l = new ArrayList<>();
         // TODO: make strings static variables
-        l.add("Short");
-        l.add("Normal");
-        l.add("Long");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, l);
+        l.add(GameLength.Short.toString());
+        l.add(GameLength.Normal.toString());
+        l.add(GameLength.Long.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, l);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         lengthSpinner.setAdapter(adapter);
         return lengthSpinner;
@@ -504,17 +496,17 @@ public class OptionActivity extends Activity implements SimpleObserver
         }
         player2Spinner.setSelection(p2);
 
-        String selectedItem = sharedPreferences.getString(LengthIntent, "Short");
+        GameLength selectedItem = GameLength.valueOf(sharedPreferences.getString(LengthIntent, "Short"));
         int pos = 0;
         switch (selectedItem)
         {
-            case "Short":
+            case Short:
                 pos = 0;
                 break;
-            case "Normal":
+            case Normal:
                 pos = 1;
                 break;
-            case "Long":
+            case Long:
                 pos = 2;
                 break;
         }
