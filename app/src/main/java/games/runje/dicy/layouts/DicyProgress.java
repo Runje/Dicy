@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import games.runje.dicy.util.ViewUtilities;
+import games.runje.dicy.util.ActivityUtilities;
 import games.runje.dicymodel.Logger;
 
 /**
@@ -101,12 +101,12 @@ public class DicyProgress extends View
 
         // max value
         String text = Integer.toString(maxProgress);
-        float width = ViewUtilities.getTextWidth(text, paint);
-        float height = ViewUtilities.getTextHeight(text, paint);
+        float width = ActivityUtilities.getTextWidth(text, paint);
+        float height = ActivityUtilities.getTextHeight(text, paint);
 
         // current value
         String maxCurrent = Integer.toString(99999);
-        float widthMaxCurrent = ViewUtilities.getTextWidth(maxCurrent, paint);
+        float widthMaxCurrent = ActivityUtilities.getTextWidth(maxCurrent, paint);
 
         float textPadding = 10;
 
@@ -125,8 +125,8 @@ public class DicyProgress extends View
         progressPercent = Math.min(progressPercent, 1);
 
         String progressText = Integer.toString(progress);
-        float progressWidth = ViewUtilities.getTextWidth(progressText, paint);
-        float progressHeight = ViewUtilities.getTextHeight(progressText, paint);
+        float progressWidth = ActivityUtilities.getTextWidth(progressText, paint);
+        float progressHeight = ActivityUtilities.getTextHeight(progressText, paint);
 
         float progressPercentWidth = progressPercent * (barWidth);
 

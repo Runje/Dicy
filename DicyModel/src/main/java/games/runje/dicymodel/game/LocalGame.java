@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import games.runje.dicymodel.Logger;
+import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
@@ -34,10 +35,12 @@ public class LocalGame extends Game
     private int playerIsPlayingSince;
     private StatisticHandler statisticsHandler;
     private GameLength gameLength;
+    private Rules rules;
 
-    public LocalGame(int pointLimit, GameLength length, List<Player> playerList, int startingPlayer)
+    public LocalGame(int pointLimit, GameLength length, List<Player> playerList, int startingPlayer, Rules rules)
     {
         pointsLimit = pointLimit;
+        this.rules = rules;
         this.gameLength = length;
         this.lengthFactor = GameLength.LengthToFactor(length);
         gameEndPoints = pointLimit * lengthFactor;
@@ -138,7 +141,7 @@ public class LocalGame extends Game
             resetTimer();
             if (statisticsHandler != null)
             {
-                statisticsHandler.switchPoints(switchPoints, getPlayingPlayer());
+                statisticsHandler.switchPoints(switchPoints, getPlayingPlayer(), rules.getRuleVariant());
             }
         }
         else
@@ -258,7 +261,7 @@ public class LocalGame extends Game
             getPlayingPlayer().setLastMoveWasStrike(false);
             if (statisticsHandler != null)
             {
-                statisticsHandler.movePoints(movePoints, getPlayingPlayer());
+                statisticsHandler.movePoints(movePoints, getPlayingPlayer(), rules.getRuleVariant());
             }
         } else
         {
@@ -336,6 +339,25 @@ public class LocalGame extends Game
         return lastLeadingPlayerTurn && enoughPoints;
     }
 
+    public boolean willGameBeOverIfStrike()
+    {
+        boolean lastLeadingPlayerTurn = (((turn + 1) % 2) == lastLeadingPlayer);
+        boolean enoughPoints = false;
+
+        // TODO: What if two player with same points?
+
+
+        if (getNotPlayingPlayer().getPoints() >= gameEndPoints)
+        {
+            enoughPoints = true;
+        }
+
+        //Logger.logDebug(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
+        return lastLeadingPlayerTurn && enoughPoints;
+    }
+
+
+
     public int getPointsLimit()
     {
         return pointsLimit;
@@ -402,5 +424,10 @@ public class LocalGame extends Game
     public void setGameLength(GameLength gameLength)
     {
         this.gameLength = gameLength;
+    }
+
+    public Rules getRules()
+    {
+        return rules;
     }
 }

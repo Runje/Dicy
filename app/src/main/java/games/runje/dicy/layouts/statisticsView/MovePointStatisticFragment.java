@@ -5,15 +5,22 @@ import java.util.List;
 import games.runje.dicy.statistics.PointStatistic;
 import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
+import games.runje.dicymodel.game.RuleVariant;
 
 /**
  * Created by Thomas on 22.08.2015.
  */
 public class MovePointStatisticFragment extends PointStatisticFragment
 {
-    public List<PointStatistic> getPoints()
+    public List<PointStatistic> getPoints(RuleVariant ruleVariant)
     {
         StatisticManager manager = new SQLiteHandler(getActivity());
-        return manager.getAllMovePoints();
+        if (ruleVariant != null)
+        {
+            return manager.getMovePoints(ruleVariant);
+        } else
+        {
+            return manager.getAllMovePoints();
+        }
     }
 }

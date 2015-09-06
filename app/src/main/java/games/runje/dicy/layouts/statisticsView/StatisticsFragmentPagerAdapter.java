@@ -7,12 +7,15 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import games.runje.dicymodel.game.RuleVariant;
+
 /**
  * Created by Thomas on 20.08.2015.
  */
 public class StatisticsFragmentPagerAdapter extends FragmentStatePagerAdapter
 {
     List<Fragment> fragments;
+    private RuleVariant ruleVariant;
 
     public StatisticsFragmentPagerAdapter(FragmentManager fm)
     {

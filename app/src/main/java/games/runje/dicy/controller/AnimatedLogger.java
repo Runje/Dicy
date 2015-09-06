@@ -47,9 +47,10 @@ public class AnimatedLogger extends Logger
         keyMap.put(AbstractGamemaster.LogKey, 3);
         keyMap.put(AnimatedGamemaster.LogKey, 3);
         keyMap.put(PlayerTable.LogKey, 3);
-        keyMap.put(GameTable.LogKey, 2);
-        keyMap.put(LocalGameActivity.LogKey, 2);
+        keyMap.put(GameTable.LogKey, 3);
+        keyMap.put(LocalGameActivity.LogKey, 3);
         keyMap.put(Border.LogKey, 3);
+        keyMap.put(AIController.LogKey, 2);
 
 
         for(String key : keyGroup.keySet())

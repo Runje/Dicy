@@ -132,7 +132,7 @@ public class AnimatedBoard extends Board
         updateBoard();
     }
 
-    private void updateBoard()
+    public void updateBoard()
     {
         for (int row = 0; row < this.rows; row++)
         {

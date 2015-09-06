@@ -1,22 +1,25 @@
 package games.runje.dicy.statistics;
 
+import games.runje.dicymodel.game.RuleVariant;
+
 /**
  * Created by Thomas on 15.06.2015.
  */
 public class PlayerStatistic
 {
     private String strategy;
-    private long games;
-    private long wins;
+    private long[] games;
+    private long[] wins;
     private String name;
     private long id;
 
+    // TODO: wins / games for each rule variant
     public PlayerStatistic(String name)
     {
         this.name = name;
     }
 
-    public PlayerStatistic(long id, String name, long games, long wins, String strategy)
+    public PlayerStatistic(long id, String name, long[] games, long[] wins, String strategy)
     {
         this.name = name;
         this.id = id;
@@ -42,17 +45,31 @@ public class PlayerStatistic
 
     public long getLooses()
     {
-        return games - wins;
+        long l = 0;
+        for (int i = 0; i < games.length; i++)
+        {
+            l += games[i] - wins[i];
+        }
+        return l;
+    }
+
+    public long getLooses(RuleVariant ruleVariant)
+    {
+        return getGames(ruleVariant) - getWins(ruleVariant);
     }
 
     public double getPercentageWin()
     {
-        return (double) wins / games * 100;
+        return (double) getWins() / getGames() * 100;
+    }
+
+    public double getPercentageWin(RuleVariant ruleVariant)
+    {
+        return (double) getWins(ruleVariant) / getGames(ruleVariant) * 100;
     }
 
     public long getId()
     {
-
         return id;
     }
 
@@ -63,23 +80,32 @@ public class PlayerStatistic
 
     public long getGames()
     {
-
-        return games;
+        long g = 0;
+        for (int i = 0; i < games.length; i++)
+        {
+            g += games[i];
+        }
+        return g;
     }
 
-    public void setGames(long games)
+    public long getGames(RuleVariant ruleVariant)
     {
-        this.games = games;
+        return games[ruleVariant.ordinal()];
     }
 
     public long getWins()
     {
-        return wins;
+        long w = 0;
+        for (int i = 0; i < games.length; i++)
+        {
+            w += wins[i];
+        }
+        return w;
     }
 
-    public void setWins(long wins)
+    public long getWins(RuleVariant ruleVariant)
     {
-        this.wins = wins;
+        return wins[ruleVariant.ordinal()];
     }
 
     @Override
@@ -94,14 +120,14 @@ public class PlayerStatistic
                 '}';
     }
 
-    public void increaseGames()
+    public void increaseGames(RuleVariant ruleVariant)
     {
-        games++;
+        games[ruleVariant.ordinal()]++;
     }
 
-    public void increaseWins()
+    public void increaseWins(RuleVariant ruleVariant)
     {
-        wins++;
+        wins[ruleVariant.ordinal()]++;
     }
 
 

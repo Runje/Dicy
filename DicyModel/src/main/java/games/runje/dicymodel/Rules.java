@@ -2,6 +2,7 @@ package games.runje.dicymodel;
 
 import games.runje.dicymodel.data.PointType;
 import games.runje.dicymodel.game.GameLength;
+import games.runje.dicymodel.game.RuleVariant;
 
 /**
  * Created by Thomas on 01.10.2014.
@@ -14,6 +15,7 @@ public class Rules
     public final static int maxLengthOfRow = 10;
     private final int rows;
     private final int columns;
+    RuleVariant ruleVariant;
     private int lengthFactor;
     private int timeLimitInS;
     private boolean timeLimit;
@@ -45,7 +47,6 @@ public class Rules
     private int pointLimit;
     private int gameEndPoints;
     private GameLength gameLength;
-
     /**
      * Creates standard Rules:
      * 6 Dices.
@@ -70,6 +71,64 @@ public class Rules
         this.pointLimit = -1;
         this.pointLimitSetManually = false;
         this.gameLength = GameLength.Normal;
+    }
+
+    public static Rules makeRules(RuleVariant ruleVariant)
+    {
+        Rules rules = new Rules();
+        switch (ruleVariant)
+        {
+            case Baden_Baden:
+                rules.setDiagonalActive(false);
+                rules.setMinStraight(rules.numberOfDices + 1);
+                rules.setMinXOfAKind(3);
+                rules.setPointLimit(45);
+                break;
+            case Basel:
+                rules.setDiagonalActive(true);
+                rules.setMinStraight(rules.numberOfDices + 1);
+                rules.setMinXOfAKind(3);
+                rules.setPointLimit(90);
+                break;
+            case Las_Vegas:
+                rules.setDiagonalActive(true);
+                rules.setMinStraight(3);
+                rules.setMinXOfAKind(3);
+                rules.setPointLimit(270);
+                break;
+            case Macao:
+                rules.setDiagonalActive(true);
+                rules.setMinStraight(3);
+                rules.setMinXOfAKind(Math.max(rules.rows, rules.columns) + 1);
+                rules.setPointLimit(70);
+                break;
+            case Atlantic_City:
+                rules.setDiagonalActive(false);
+                rules.setMinStraight(3);
+                rules.setMinXOfAKind(3);
+                rules.setPointLimit(70);
+                break;
+            case Monte_Carlo:
+                rules.setDiagonalActive(false);
+                rules.setMinStraight(3);
+                rules.setMinXOfAKind(Math.max(rules.rows, rules.columns) + 1);
+                rules.setPointLimit(40);
+                break;
+        }
+
+        rules.setRuleVariant(ruleVariant);
+        return rules;
+    }
+
+    public RuleVariant getRuleVariant()
+    {
+
+        return ruleVariant;
+    }
+
+    public void setRuleVariant(RuleVariant ruleVariant)
+    {
+        this.ruleVariant = ruleVariant;
     }
 
     public boolean isTimeLimit()

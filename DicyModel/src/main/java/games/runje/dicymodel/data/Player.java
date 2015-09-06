@@ -169,4 +169,28 @@ public class Player
                 ", skills=" + Arrays.toString(skills.toArray()) +
                 '}';
     }
+
+    public boolean isSkillPossible()
+    {
+        for (Skill s : skills)
+        {
+            if (s.isExecutable())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public double getStrategyValue()
+    {
+        if (strategy == null)
+        {
+            return -1;
+        } else
+        {
+            return 100 * (strategy.getSeePoints() + strategy.getSeeFalling() + 1 - strategy.getError());
+        }
+    }
 }

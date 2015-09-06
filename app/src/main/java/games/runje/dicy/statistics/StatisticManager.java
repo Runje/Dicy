@@ -3,8 +3,10 @@ package games.runje.dicy.statistics;
 import java.util.ArrayList;
 import java.util.List;
 
+import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.GameLength;
+import games.runje.dicymodel.game.RuleVariant;
 
 /**
  * Created by Thomas on 15.06.2015.
@@ -20,7 +22,7 @@ public interface StatisticManager
 
     PlayerStatistic getPlayer(String name);
 
-    PlayerStatistic createPlayer(String name, String strategy);
+    PlayerStatistic createPlayer(String name, Strategy strategy);
 
     List<GameStatistic> getAllGames();
 
@@ -28,9 +30,11 @@ public interface StatisticManager
 
     List<GameStatistic> getGames(GameLength length);
 
-    boolean addMovePoints(int movePoints, Player playingPlayer);
+    List<GameStatistic> getGames(GameLength length, RuleVariant ruleVariant);
 
-    boolean addSwitchPoints(int switchPoints, Player playingPlayer);
+    boolean addMovePoints(int movePoints, Player playingPlayer, RuleVariant ruleVariant);
+
+    boolean addSwitchPoints(int switchPoints, Player playingPlayer, RuleVariant ruleVariant);
 
     List<PointStatistic> getAllMovePoints();
 
@@ -39,4 +43,8 @@ public interface StatisticManager
     void deleteMovePoint(PointStatistic point);
 
     void deleteSwitchPoint(PointStatistic point);
+
+    List<PointStatistic> getMovePoints(RuleVariant ruleVariant);
+
+    List<PointStatistic> getSwitchPoints(RuleVariant ruleVariant);
 }

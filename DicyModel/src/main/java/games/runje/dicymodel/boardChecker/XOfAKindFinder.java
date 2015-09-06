@@ -42,7 +42,7 @@ public class XOfAKindFinder extends Finder
         for (int i = 0; i < line.size(); i++)
         {
             int newValue = line.get(i).getValue();
-            if (newValue != 0 && newValue == value)
+            if (newValue != -1 && newValue == value)
             {
                 x++;
 

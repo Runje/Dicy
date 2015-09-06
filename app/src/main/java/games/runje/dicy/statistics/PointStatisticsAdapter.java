@@ -49,7 +49,6 @@ public class PointStatisticsAdapter extends BaseAdapter
     @Override
     public int getCount()
     {
-        // +1 for header
         return points.size();
     }
 
@@ -104,4 +103,10 @@ public class PointStatisticsAdapter extends BaseAdapter
         return view;
     }
 
+    public void setPoints(List<PointStatistic> points)
+    {
+        this.points = points;
+        sortAfterPoints();
+        notifyDataSetChanged();
+    }
 }

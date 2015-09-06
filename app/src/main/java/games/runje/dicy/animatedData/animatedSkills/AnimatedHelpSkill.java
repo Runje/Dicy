@@ -3,10 +3,7 @@ package games.runje.dicy.animatedData.animatedSkills;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.Logger;
-import games.runje.dicymodel.ai.Strategy;
-import games.runje.dicymodel.boardChecker.BoardChecker;
 import games.runje.dicymodel.data.Board;
-import games.runje.dicymodel.data.Move;
 import games.runje.dicymodel.skills.HelpSkill;
 import games.runje.dicymodel.skills.Skill;
 
@@ -25,6 +22,7 @@ public class AnimatedHelpSkill extends HelpSkill
     @Override
     public void startWaiting(Board board, AbstractGamemaster gm, boolean isPlaying)
     {
+        super.startWaiting(board, gm, isPlaying);
         AnimatedBoard animatedBoard = ((AnimatedBoard) board);
         if (waiting)
         {
@@ -35,7 +33,7 @@ public class AnimatedHelpSkill extends HelpSkill
         else
         {
             waiting = true;
-            Move move = Strategy.getBestSwitchMove(BoardChecker.getPossiblePointMoves(board, gm.getRules()));
+
             ((AnimatedBoard) board).highlightElements(move);
             animatedBoard.getBoardLayout().setEnabledGravity(isPlaying);
         }

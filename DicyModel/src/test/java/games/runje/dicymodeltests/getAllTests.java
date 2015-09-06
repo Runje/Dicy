@@ -29,8 +29,8 @@ public class getAllTests
         ArrayList<PointElement> expectedElements = new ArrayList<>();
         expectedElements.add(new PointElement(PointType.XOfAKind, 3, 1, new Coords[]{new Coords(0, 0), new Coords(1, 0), new Coords(2, 0)}, Orientation.Down, rules.getXOfAKindPoints(3, 1)));
         expectedElements.add(new PointElement(PointType.XOfAKind, 3, 1, new Coords[]{new Coords(0, 0), new Coords(1, 1), new Coords(2, 2)}, Orientation.DownRight, rules.getXOfAKindPoints(3, 1)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(0, 0), new Coords(0, 1), new Coords(0, 2)}, Orientation.Right, rules.getStraightPoints(3)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(0, 2), new Coords(1, 2), new Coords(2, 2)}, Orientation.Down, rules.getStraightPoints(3)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(0, 0), new Coords(0, 1), new Coords(0, 2)}, Orientation.Right, rules.getStraightPoints(3, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(0, 2), new Coords(1, 2), new Coords(2, 2)}, Orientation.Down, rules.getStraightPoints(3, 1)));
         pointsHelper(new int[]{1, 2, 3,
                         1, 1, 2,
                         1, 2, 1},

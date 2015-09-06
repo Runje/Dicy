@@ -20,7 +20,7 @@ import games.runje.dicy.controls.Controls;
 import games.runje.dicy.controls.GameInfo;
 import games.runje.dicy.layouts.DicyProgress;
 import games.runje.dicy.layouts.ProgressBlinkAnimation;
-import games.runje.dicy.util.ViewUtilities;
+import games.runje.dicy.util.ActivityUtilities;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.boardChecker.BoardChecker;
@@ -140,7 +140,7 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
     {
         if (lastText != null)
         {
-            ViewUtilities.removeView(lastText);
+            ActivityUtilities.removeView(lastText);
         }
     }
 

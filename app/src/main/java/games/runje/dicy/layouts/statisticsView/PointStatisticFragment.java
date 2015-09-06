@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +20,7 @@ import games.runje.dicy.R;
 import games.runje.dicy.statistics.GameStatistic;
 import games.runje.dicy.statistics.PointStatistic;
 import games.runje.dicy.statistics.PointStatisticsAdapter;
+import games.runje.dicymodel.game.RuleVariant;
 
 /**
  * Created by Thomas on 20.08.2015.
@@ -49,13 +52,48 @@ public abstract class PointStatisticFragment extends Fragment
         games.setText("Points");
         percent.setText("Date");
         header.setBackgroundColor(Color.BLUE);
-        final PointStatisticsAdapter adapter = new PointStatisticsAdapter(getActivity(), getPoints());
+        final PointStatisticsAdapter adapter = new PointStatisticsAdapter(getActivity(), getPoints(null));
         list.setAdapter(adapter);
+
+        ToggleButton baden = (ToggleButton) view.findViewById(R.id.toggle_Baden);
+        ToggleButton basel = (ToggleButton) view.findViewById(R.id.toggle_Basel);
+        ToggleButton atlantic = (ToggleButton) view.findViewById(R.id.toggle_Atlantic);
+        ToggleButton vegas = (ToggleButton) view.findViewById(R.id.toggle_LasVegas);
+        ToggleButton macao = (ToggleButton) view.findViewById(R.id.toggle_Macao);
+        ToggleButton monte = (ToggleButton) view.findViewById(R.id.toggle_MonteCarlo);
+        ToggleButton all = (ToggleButton) view.findViewById(R.id.toggle_All);
+        final ToggleButton[] buttons = new ToggleButton[]{baden, basel, atlantic, vegas, macao, monte};
+        baden.setOnCheckedChangeListener(new ToggleListener(RuleVariant.Baden_Baden, adapter, all, buttons));
+        basel.setOnCheckedChangeListener(new ToggleListener(RuleVariant.Basel, adapter, all, buttons));
+        atlantic.setOnCheckedChangeListener(new ToggleListener(RuleVariant.Atlantic_City, adapter, all, buttons));
+        vegas.setOnCheckedChangeListener(new ToggleListener(RuleVariant.Las_Vegas, adapter, all, buttons));
+        macao.setOnCheckedChangeListener(new ToggleListener(RuleVariant.Macao, adapter, all, buttons));
+        monte.setOnCheckedChangeListener(new ToggleListener(RuleVariant.Monte_Carlo, adapter, all, buttons));
+
+        all.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                if (b)
+                {
+
+                    for (ToggleButton button : buttons)
+                    {
+                        if (button.isChecked())
+                        {
+                            button.setChecked(false);
+                        }
+                    }
+
+                    adapter.setPoints(getPoints(null));
+                }
+            }
+        });
         return view;
     }
 
-    public abstract List<PointStatistic> getPoints();
-
+    public abstract List<PointStatistic> getPoints(RuleVariant ruleVariant);
 
     protected List<PointStatistic> getPointList(List<GameStatistic> games)
     {
@@ -65,10 +103,10 @@ public abstract class PointStatisticFragment extends Fragment
         {
             if (game.hasP1Won())
             {
-                points.add(new PointStatistic(game.getPlayer1().getName(), game.getDate(), game.getP1Points()));
+                points.add(new PointStatistic(game.getPlayer1().getName(), game.getDate(), game.getP1Points(), game.getRuleVariant()));
             } else
             {
-                points.add(new PointStatistic(game.getPlayer2().getName(), game.getDate(), game.getP2Points()));
+                points.add(new PointStatistic(game.getPlayer2().getName(), game.getDate(), game.getP2Points(), game.getRuleVariant()));
             }
         }
 
@@ -84,5 +122,47 @@ public abstract class PointStatisticFragment extends Fragment
         Collections.reverse(points);
 
         return points;
+    }
+
+    private class ToggleListener implements CompoundButton.OnCheckedChangeListener
+    {
+        private final ToggleButton all;
+        private final ToggleButton[] others;
+        private RuleVariant ruleVariant;
+        private PointStatisticsAdapter adapter;
+
+        public ToggleListener(RuleVariant ruleVariant, PointStatisticsAdapter adapter, ToggleButton all, ToggleButton[] others)
+        {
+            this.ruleVariant = ruleVariant;
+            this.adapter = adapter;
+            this.all = all;
+            this.others = others;
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+        {
+            if (b)
+            {
+
+                all.setChecked(false);
+
+                for (ToggleButton button : others)
+                {
+                    if (button != compoundButton)
+                    {
+                        if (button.isChecked())
+                        {
+                            button.setChecked(false);
+                        }
+                    }
+                }
+
+                adapter.setPoints(getPoints(ruleVariant));
+            } else
+            {
+                all.setChecked(true);
+            }
+        }
     }
 }

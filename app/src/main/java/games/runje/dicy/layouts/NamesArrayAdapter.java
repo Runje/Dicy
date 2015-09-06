@@ -1,7 +1,6 @@
 package games.runje.dicy.layouts;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import games.runje.dicy.OptionActivity;
 import games.runje.dicy.R;
 import games.runje.dicy.statistics.PlayerStatistic;
 import games.runje.dicymodel.Logger;
+import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Strategy;
 
 /**
@@ -46,24 +46,7 @@ public class NamesArrayAdapter extends ArrayAdapter<PlayerStatistic>
     public void setSelectedOther(int other)
     {
         Logger.logInfo("Names", "Set selcted other " + other);
-        /*PlayerStatistic playerStatistic = players.get(selectedOther);
-        boolean found = false;
-        for (int i = 0; i < getCount(); i++)
-        {
-            if (getItem(i).getName().equals(playerStatistic.getName()))
-            {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found)
-        {
-            insert(playerStatistic, selectedOther);
-        }
-*/
         selectedOther = other;
-        //remove(players.get(other));
     }
 
     @Override
@@ -94,7 +77,7 @@ public class NamesArrayAdapter extends ArrayAdapter<PlayerStatistic>
                 false);
         TextView main_text = (TextView) mySpinner
                 .findViewById(R.id.textView);
-        main_text.setText(players.get(position).getName());
+        PlayerStatistic player = players.get(position);
 
 
         if (players.get(position).getStrategy().equals(Strategy.Human))
@@ -103,6 +86,11 @@ public class NamesArrayAdapter extends ArrayAdapter<PlayerStatistic>
                     .findViewById(R.id.imageView);
 
             left_icon.setVisibility(View.GONE);
+            main_text.setText(players.get(position).getName());
+        } else
+        {
+            Strategy strategy = Strategy.getStrategy(player.getStrategy());
+            main_text.setText(players.get(position).getName() + " (" + Utilities.doubleToString(strategy.getValue(), 2) + ")");
         }
 
 

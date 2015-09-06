@@ -35,14 +35,15 @@
                 android:src="@drawable/blueyellowchip"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <Spinner
                     android:id="@+id/player1_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:text="Player1"
@@ -109,17 +110,19 @@
                 android:src="@drawable/bluewhitechip"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <Spinner
                     android:id="@+id/player2_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:text="Player2"/>
+                    android:text="Player2"
+                    />
 
             </LinearLayout>
 
@@ -202,16 +205,43 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
 
             <CheckBox
                 android:id="@+id/checkbox_diagonal"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Diagonal"
-                />
+                android:layout_weight="1"
+                android:clickable="false"
+                android:enabled="true"
+                android:text="Diagonal"/>
+
+            <CheckBox
+                android:id="@+id/checkBox_xxx"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:clickable="false"
+                android:enabled="true"
+                android:text="XXX"/>
+
+            <CheckBox
+                android:id="@+id/checkBox_123"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:clickable="false"
+                android:enabled="true"
+                android:text="123"/>
         </LinearLayout>
+
+        <Spinner
+            android:id="@+id/spinner_rules"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"

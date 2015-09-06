@@ -30,4 +30,6 @@ public interface GameControls
     void onResume();
 
     void onPause();
+
+    void setEnabledControlsForAI(boolean b);
 }

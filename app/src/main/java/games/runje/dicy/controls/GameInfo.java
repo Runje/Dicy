@@ -6,11 +6,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.text.InputType;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Date;
 
@@ -40,7 +44,7 @@ public class GameInfo
     private long pauseTime;
     private boolean paused;
 
-    public GameInfo(Activity activity, final ControlHandler handler, LocalGame game)
+    public GameInfo(final Activity activity, final ControlHandler handler, final LocalGame game)
     {
         this.game = game;
         this.activity = activity;
@@ -67,6 +71,40 @@ public class GameInfo
         progress = (DicyProgress) activity.findViewById(R.id.dicy_progress);
         progress.setMaxProgress(game.getPointsLimit());
 
+        progress.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View view)
+            {
+                FrameLayout frameLayout = new FrameLayout(activity);
+                final EditText editText = new EditText(activity);
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                frameLayout.addView(editText);
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setView(frameLayout);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        try
+                        {
+                            int newLimit = Integer.parseInt(editText.getText().toString());
+                            progress.setMaxProgress(newLimit);
+                            game.setPointsLimit(newLimit);
+                            game.getRules().setPointLimit(newLimit);
+                            progress.invalidate();
+                        } catch (Exception e)
+                        {
+                            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.create().show();
+                return false;
+            }
+        });
         countdown = (TextView) activity.findViewById(R.id.text_countdown);
         Rules rules = handler.getRules();
         if (rules.isTimeLimit())

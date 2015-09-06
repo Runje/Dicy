@@ -3,6 +3,7 @@ package games.runje.dicy.controller;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.data.Board;
 import games.runje.dicymodel.data.Coords;
+import games.runje.dicymodel.data.Gravity;
 import games.runje.dicymodel.game.Game;
 import games.runje.dicymodel.skills.Skill;
 
@@ -25,4 +26,8 @@ public interface AIControllerHandler
     Board getBoard();
 
     void executeSkill(Skill s);
+
+    void changeGravity(Gravity gravity);
+
+    void executeOnTouch(Coords first);
 }

@@ -50,14 +50,14 @@ public class GetStraightsTests
         rules.setMinStraight(3);
         rules.initStraightPoints(2);
         ArrayList<PointElement> expectedElements = new ArrayList<>();
-        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(0, 0), new Coords(0, 1), new Coords(0, 2)}, Orientation.Right, rules.getStraightPoints(3)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(0, 0), new Coords(0, 1), new Coords(0, 2)}, Orientation.Right, rules.getStraightPoints(3, 1)));
         pointsHelper(new int[]{1, 2, 3,
                         1, 3, 2,
                         3, 1, 3},
                 expectedElements, rules);
 
-        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(1, 0), new Coords(1, 1), new Coords(1, 2)}, Orientation.Right, rules.getStraightPoints(3)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(2, 0), new Coords(2, 1), new Coords(2, 2)}, Orientation.Right, rules.getStraightPoints(3)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(1, 0), new Coords(1, 1), new Coords(1, 2)}, Orientation.Right, rules.getStraightPoints(3, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(2, 0), new Coords(2, 1), new Coords(2, 2)}, Orientation.Right, rules.getStraightPoints(3, 1)));
         pointsHelper(new int[]{1, 2, 3,
                         3, 2, 1,
                         1, 2, 3},
@@ -65,11 +65,11 @@ public class GetStraightsTests
 
 
         expectedElements = new ArrayList<>();
-        expectedElements.add(new PointElement(PointType.Straight, 5, 5, new Coords[]{new Coords(0, 0), new Coords(0, 1), new Coords(0, 2), new Coords(0, 3), new Coords(0, 4)}, Orientation.Right, rules.getStraightPoints(5)));
-        expectedElements.add(new PointElement(PointType.Straight, 5, 5, new Coords[]{new Coords(1, 0), new Coords(1, 1), new Coords(1, 2), new Coords(1, 3), new Coords(1, 4)}, Orientation.Right, rules.getStraightPoints(5)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(2, 2), new Coords(2, 3), new Coords(2, 4)}, Orientation.Right, rules.getStraightPoints(3)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 6, new Coords[]{new Coords(3, 0), new Coords(3, 1), new Coords(3, 2)}, Orientation.Right, rules.getStraightPoints(3)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 6, new Coords[]{new Coords(4, 1), new Coords(4, 2), new Coords(4, 3)}, Orientation.Right, rules.getStraightPoints(3)));
+        expectedElements.add(new PointElement(PointType.Straight, 5, 5, new Coords[]{new Coords(0, 0), new Coords(0, 1), new Coords(0, 2), new Coords(0, 3), new Coords(0, 4)}, Orientation.Right, rules.getStraightPoints(5, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 5, 5, new Coords[]{new Coords(1, 0), new Coords(1, 1), new Coords(1, 2), new Coords(1, 3), new Coords(1, 4)}, Orientation.Right, rules.getStraightPoints(5, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(2, 2), new Coords(2, 3), new Coords(2, 4)}, Orientation.Right, rules.getStraightPoints(3, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 6, new Coords[]{new Coords(3, 0), new Coords(3, 1), new Coords(3, 2)}, Orientation.Right, rules.getStraightPoints(3, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 6, new Coords[]{new Coords(4, 1), new Coords(4, 2), new Coords(4, 3)}, Orientation.Right, rules.getStraightPoints(3, 1)));
 
         pointsHelper(new int[]{1, 2, 3, 4, 5,
                         5, 4, 3, 2, 1,
@@ -86,12 +86,12 @@ public class GetStraightsTests
         rules.setMinStraight(3);
         rules.initStraightPoints(2);
         ArrayList<PointElement> expectedElements = new ArrayList<>();
-        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(0, 0), new Coords(1, 0), new Coords(2, 0)}, Orientation.Down, rules.getStraightPoints(3)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(2, 0), new Coords(3, 0), new Coords(4, 0)}, Orientation.Down, rules.getStraightPoints(3)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 4, new Coords[]{new Coords(2, 1), new Coords(3, 1), new Coords(4, 1)}, Orientation.Down, rules.getStraightPoints(3)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 6, new Coords[]{new Coords(2, 2), new Coords(3, 2), new Coords(4, 2)}, Orientation.Down, rules.getStraightPoints(3)));
-        expectedElements.add(new PointElement(PointType.Straight, 5, 5, new Coords[]{new Coords(0, 3), new Coords(1, 3), new Coords(2, 3), new Coords(3, 3), new Coords(4, 3)}, Orientation.Down, rules.getStraightPoints(5)));
-        expectedElements.add(new PointElement(PointType.Straight, 3, 6, new Coords[]{new Coords(0, 4), new Coords(1, 4), new Coords(2, 4)}, Orientation.Down, rules.getStraightPoints(3)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(0, 0), new Coords(1, 0), new Coords(2, 0)}, Orientation.Down, rules.getStraightPoints(3, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 3, new Coords[]{new Coords(2, 0), new Coords(3, 0), new Coords(4, 0)}, Orientation.Down, rules.getStraightPoints(3, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 4, new Coords[]{new Coords(2, 1), new Coords(3, 1), new Coords(4, 1)}, Orientation.Down, rules.getStraightPoints(3, 2)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 6, new Coords[]{new Coords(2, 2), new Coords(3, 2), new Coords(4, 2)}, Orientation.Down, rules.getStraightPoints(3, 4)));
+        expectedElements.add(new PointElement(PointType.Straight, 5, 5, new Coords[]{new Coords(0, 3), new Coords(1, 3), new Coords(2, 3), new Coords(3, 3), new Coords(4, 3)}, Orientation.Down, rules.getStraightPoints(5, 1)));
+        expectedElements.add(new PointElement(PointType.Straight, 3, 6, new Coords[]{new Coords(0, 4), new Coords(1, 4), new Coords(2, 4)}, Orientation.Down, rules.getStraightPoints(3, 4)));
         pointsHelper(new int[]{1, 2, 6, 1, 6,
                         2, 6, 4, 2, 5,
                         3, 2, 6, 3, 4,
@@ -108,7 +108,7 @@ public class GetStraightsTests
         rules.initStraightPoints(2);
         rules.setDiagonalActive(true);
         ArrayList<PointElement> expectedElements = new ArrayList<>();
-        expectedElements.add(new PointElement(PointType.Straight, 4, 6, new Coords[]{new Coords(1, 1), new Coords(2, 2), new Coords(3, 3), new Coords(4, 4)}, Orientation.DownRight, rules.getStraightPoints(4)));
+        expectedElements.add(new PointElement(PointType.Straight, 4, 6, new Coords[]{new Coords(1, 1), new Coords(2, 2), new Coords(3, 3), new Coords(4, 4)}, Orientation.DownRight, rules.getStraightPoints(4, 3)));
         pointsHelper(new int[]{1, 2, 6, 6, 6,
                         2, 6, 4, 2, 5,
                         3, 2, 5, 3, 4,
@@ -125,7 +125,7 @@ public class GetStraightsTests
         rules.initStraightPoints(2);
         rules.setDiagonalActive(true);
         ArrayList<PointElement> expectedElements = new ArrayList<>();
-        expectedElements.add(new PointElement(PointType.Straight, 4, 4, new Coords[]{new Coords(1, 3), new Coords(2, 2), new Coords(3, 1), new Coords(4, 0)}, Orientation.DownLeft, rules.getStraightPoints(4)));
+        expectedElements.add(new PointElement(PointType.Straight, 4, 4, new Coords[]{new Coords(1, 3), new Coords(2, 2), new Coords(3, 1), new Coords(4, 0)}, Orientation.DownLeft, rules.getStraightPoints(4, 1)));
         pointsHelper(new int[]{1, 2, 6, 6, 6,
                         2, 6, 4, 4, 5,
                         3, 2, 3, 3, 4,

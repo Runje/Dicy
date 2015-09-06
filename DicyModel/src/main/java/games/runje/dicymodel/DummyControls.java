@@ -62,6 +62,12 @@ public class DummyControls implements GameControls
     }
 
     @Override
+    public void setEnabledControlsForAI(boolean b)
+    {
+
+    }
+
+    @Override
     public void onPause()
     {
 

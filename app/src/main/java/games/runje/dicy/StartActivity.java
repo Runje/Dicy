@@ -6,10 +6,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
+import games.runje.dicy.util.ActivityUtilities;
+
 public class StartActivity extends Activity
 {
-
-
     private String KEY_FIRST_TIME = "first_time";
 
     @Override
@@ -20,7 +20,7 @@ public class StartActivity extends Activity
         setContentView(R.layout.activity_start);
 
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.game_file_key), MODE_PRIVATE);
-        boolean resumeGame = sharedPreferences.getBoolean(LocalGameActivity.KEY_RESUME_GAME, false);
+        boolean resumeGame = ActivityUtilities.getGameResumeable(this);
         boolean firstTime = sharedPreferences.getBoolean(KEY_FIRST_TIME, true);
 
         if (firstTime)
@@ -31,6 +31,7 @@ public class StartActivity extends Activity
 
         View resumeButton = findViewById(R.id.button_resume);
         resumeButton.setEnabled(resumeGame);
+
 
     }
 

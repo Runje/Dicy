@@ -2,29 +2,50 @@ package games.runje.dicymodel.data;
 
 import java.util.ArrayList;
 
+import games.runje.dicymodel.Utilities;
+
 /**
  * Created by Thomas on 07.01.2015.
  */
 public class Move
 {
+    private Gravity gravity;
     private int points = 0;
     private Coords first;
     private Coords second;
     private ArrayList<PointElement> pointElements;
-
     public Move(Coords first, Coords second)
     {
         this.points = 0;
         this.first = first;
         this.second = second;
-    }
 
+    }
     public Move(int points, Coords first, Coords second)
     {
         this.points = points;
         this.first = first;
         this.second = second;
 
+    }
+
+    public Move(Coords first, Coords second, Gravity gravity, ArrayList<PointElement> elements)
+    {
+        this.pointElements = elements;
+        this.points = Utilities.getPointsFrom(elements);
+        this.first = first;
+        this.second = second;
+        this.gravity = gravity;
+    }
+
+    public Gravity getGravity()
+    {
+        return gravity;
+    }
+
+    public void setGravity(Gravity gravity)
+    {
+        this.gravity = gravity;
     }
 
     public Coords getFirst()
@@ -52,9 +73,10 @@ public class Move
     public String toString()
     {
         return "Move{" +
-                "points=" + points +
+                "second=" + second +
                 ", first=" + first +
-                ", second=" + second +
+                ", points=" + points +
+                ", gravity=" + gravity +
                 '}';
     }
 

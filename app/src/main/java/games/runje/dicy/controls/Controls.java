@@ -33,6 +33,7 @@ public class Controls implements GameControls
     private boolean saveBoardEnabled;
     private boolean saveGameInfoEnabled;
     private boolean gameEnded = false;
+    private boolean saveEnabled;
 
     public Controls(Activity activity, ControlHandler handler, LocalGame game)
     {
@@ -55,6 +56,12 @@ public class Controls implements GameControls
     public void onResume()
     {
         gameInfo.onResume();
+    }
+
+    @Override
+    public void setEnabledControlsForAI(boolean b)
+    {
+        enabled = true;
     }
 
     public void onPause()
@@ -97,6 +104,7 @@ public class Controls implements GameControls
     @Override
     public void restore()
     {
+        enabled = saveEnabled;
         handler.setEnabledBoard(saveBoardEnabled);
         boardLayout.setEnabledGravity(saveBoardEnabled);
 
@@ -111,6 +119,7 @@ public class Controls implements GameControls
     @Override
     public void save()
     {
+        saveEnabled = enabled;
         // Board
         saveBoardEnabled = handler.isEnabledBoard();
         Logger.logInfo(LogKey, "Board is enabled: " + saveBoardEnabled);

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.game.RuleVariant;
 
 /**
  * Created by Thomas on 23.06.2015.
@@ -18,26 +19,47 @@ public class PlayerTable
     private static final String TABLE_PLAYERS = "players";
 
     private static final String KEY_NAME = "name";
-    private static final String KEY_GAMES = "games";
-    private static final String KEY_WINS = "wins";
+    private static final String KEY_GAMES_0 = "games0";
+    private static final String KEY_GAMES_1 = "games1";
+    private static final String KEY_GAMES_2 = "games2";
+    private static final String KEY_GAMES_3 = "games3";
+    private static final String KEY_GAMES_4 = "games4";
+    private static final String KEY_GAMES_5 = "games5";
+    private static final String KEY_WINS_0 = "wins0";
+    private static final String KEY_WINS_1 = "wins1";
+    private static final String KEY_WINS_2 = "wins2";
+    private static final String KEY_WINS_3 = "wins3";
+    private static final String KEY_WINS_4 = "wins4";
+    private static final String KEY_WINS_5 = "wins5";
     private static final String KEY_ID = "id";
     private static final String KEY_STRATEGY = "strategy";
     private static final String CREATE_PLAYERS_TABLE = "CREATE TABLE " + TABLE_PLAYERS + "("
             + KEY_ID + " LONG,"
             + KEY_NAME + " TEXT,"
-            + KEY_GAMES + " LONG,"
-            + KEY_WINS + " LONG,"
+            + KEY_GAMES_0 + " LONG,"
+            + KEY_GAMES_1 + " LONG,"
+            + KEY_GAMES_2 + " LONG,"
+            + KEY_GAMES_3 + " LONG,"
+            + KEY_GAMES_4 + " LONG,"
+            + KEY_GAMES_5 + " LONG,"
+            + KEY_WINS_0 + " LONG,"
+            + KEY_WINS_1 + " LONG,"
+            + KEY_WINS_2 + " LONG,"
+            + KEY_WINS_3 + " LONG,"
+            + KEY_WINS_4 + " LONG,"
+            + KEY_WINS_5 + " LONG,"
             + KEY_STRATEGY + " TEXT"
             + ");";
 
 
     private static final String[] Player = new String[]{
-            KEY_ID, KEY_NAME, KEY_GAMES, KEY_WINS, KEY_STRATEGY};
+            KEY_ID, KEY_NAME, KEY_GAMES_0, KEY_GAMES_1, KEY_GAMES_2, KEY_GAMES_3, KEY_GAMES_4, KEY_GAMES_5, KEY_WINS_0, KEY_WINS_1, KEY_WINS_2, KEY_WINS_3, KEY_WINS_4, KEY_WINS_5, KEY_STRATEGY};
     public static String LogKey = "PlayerTable";
 
-    public static PlayerStatistic createPlayer(String name, String strategy, SQLiteDatabase db)
+    public static PlayerStatistic createPlayer(String name, Strategy strategy, SQLiteDatabase db)
     {
-        PlayerStatistic player = new PlayerStatistic(getNextId(db), name, 0, 0, strategy);
+        String s = strategy == null ? Strategy.Human : strategy.toString();
+        PlayerStatistic player = new PlayerStatistic(getNextId(db), name, new long[6], new long[6], s);
         String query = "select count(*) from " + TABLE_PLAYERS + " where " + KEY_NAME + " = ?";
         Cursor c = db.rawQuery(query, new String[]{name});
         if (c.moveToFirst())
@@ -81,8 +103,6 @@ public class PlayerTable
             Log.d("DBHandler", name + " is not in DB.");
             return null;
         }
-
-
     }
 
     public static void drop(SQLiteDatabase db)
@@ -95,8 +115,18 @@ public class PlayerTable
         ContentValues values = new ContentValues();
         values.put(KEY_ID, player.getId());
         values.put(KEY_NAME, player.getName());
-        values.put(KEY_GAMES, player.getGames());
-        values.put(KEY_WINS, player.getWins());
+        values.put(KEY_GAMES_0, player.getGames(RuleVariant.values()[0]));
+        values.put(KEY_GAMES_1, player.getGames(RuleVariant.values()[1]));
+        values.put(KEY_GAMES_2, player.getGames(RuleVariant.values()[2]));
+        values.put(KEY_GAMES_3, player.getGames(RuleVariant.values()[3]));
+        values.put(KEY_GAMES_4, player.getGames(RuleVariant.values()[4]));
+        values.put(KEY_GAMES_5, player.getGames(RuleVariant.values()[5]));
+        values.put(KEY_WINS_0, player.getWins(RuleVariant.values()[0]));
+        values.put(KEY_WINS_1, player.getWins(RuleVariant.values()[1]));
+        values.put(KEY_WINS_2, player.getWins(RuleVariant.values()[2]));
+        values.put(KEY_WINS_3, player.getWins(RuleVariant.values()[3]));
+        values.put(KEY_WINS_4, player.getWins(RuleVariant.values()[4]));
+        values.put(KEY_WINS_5, player.getWins(RuleVariant.values()[5]));
         values.put(KEY_STRATEGY, player.getStrategy());
         return values;
     }
@@ -114,16 +144,16 @@ public class PlayerTable
         PlayerStatistic player1 = game.getPlayer1();
         PlayerStatistic player2 = game.getPlayer2();
 
-        player1.increaseGames();
-        player2.increaseGames();
+        player1.increaseGames(game.getRuleVariant());
+        player2.increaseGames(game.getRuleVariant());
 
         if (game.hasP1Won())
         {
-            player1.increaseWins();
+            player1.increaseWins(game.getRuleVariant());
         }
         else
         {
-            player2.increaseWins();
+            player2.increaseWins(game.getRuleVariant());
         }
 
         updatePlayer(player1, db);
@@ -133,9 +163,12 @@ public class PlayerTable
     public static void create(SQLiteDatabase db)
     {
         db.execSQL(CREATE_PLAYERS_TABLE);
-        createPlayer("Thomas", Strategy.Human, db);
-        createPlayer("Milena", Strategy.Human, db);
-        createPlayer("Max", Strategy.Simple, db);
+        createPlayer("Thomas", Strategy.getStrategy(Strategy.Human), db);
+        createPlayer("Milena", Strategy.getStrategy(Strategy.Human), db);
+        createPlayer("Horst", new Strategy(0, 0, 0, 0, 0, 1), db);
+        createPlayer("Emil", new Strategy(0.1, 1, 0.1, 0.1, 0.1, 0.9), db);
+        createPlayer("Victor", new Strategy(1, 0, 1, 1, 1, 0), db);
+        createPlayer("Franz", new Strategy(0.2, 0.2, 0.2, 0.2, 0.2, 0.2), db);
     }
 
     public static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion)
@@ -168,6 +201,9 @@ public class PlayerTable
 
     private static PlayerStatistic createPlayerFromCursor(Cursor cursor)
     {
-        return new PlayerStatistic(cursor.getLong(0), cursor.getString(1), cursor.getLong(2), cursor.getLong(3), cursor.getString(4));
+
+        long[] games = new long[]{cursor.getLong(2), cursor.getLong(3), cursor.getLong(4), cursor.getLong(5), cursor.getLong(6), cursor.getLong(7)};
+        long[] wins = new long[]{cursor.getLong(8), cursor.getLong(9), cursor.getLong(10), cursor.getLong(11), cursor.getLong(12), cursor.getLong(13)};
+        return new PlayerStatistic(cursor.getLong(0), cursor.getString(1), games, wins, cursor.getString(14));
     }
 }

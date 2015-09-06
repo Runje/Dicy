@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -16,8 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,18 +26,16 @@ import games.runje.dicy.controller.CalcPointLimit;
 import games.runje.dicy.layouts.NamesArrayAdapter;
 import games.runje.dicy.layouts.SimpleObserver;
 import games.runje.dicy.layouts.SkillChooser;
-import games.runje.dicy.layouts.StraightLayout;
-import games.runje.dicy.layouts.XOfAKindLayout;
 import games.runje.dicy.statistics.GameStatistic;
 import games.runje.dicy.statistics.PlayerStatistic;
 import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
-import games.runje.dicy.util.ViewUtilities;
+import games.runje.dicy.util.ActivityUtilities;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
-import games.runje.dicymodel.Utilities;
 import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.game.GameLength;
+import games.runje.dicymodel.game.RuleVariant;
 import games.runje.dicymodel.skills.Skill;
 
 
@@ -72,14 +67,16 @@ public class OptionActivity extends Activity implements SimpleObserver
     public static final String Player2Skill3ValueIntent = "Player2Skill3Value";
     public static final String TimeLimitInSIntent = "TimeLimit";
     public static final String TimeLimitCheckedIntent = "TimeLimitChecked";
+    public static final String RuleVariantIntent = "RuleVariant";
     public static String LogKey = "Options";
     private static String PointLimitIntent = "PointLimit";
     private Spinner lengthSpinner;
     private Spinner player1Spinner;
     private Spinner player2Spinner;
+    private Spinner rulesSpinner;
     private CheckBox diagonal;
-    private StraightLayout straight;
-    private XOfAKindLayout xOfAKind;
+    private CheckBox xOfAKind;
+    private CheckBox straight;
     private int size = 75;
     private NamesArrayAdapter player1Adapter;
     private NamesArrayAdapter player2Adapter;
@@ -115,6 +112,7 @@ public class OptionActivity extends Activity implements SimpleObserver
         int pointLimit = bundle.getInt(PointLimitIntent, -1);
         rules.setPointLimit(pointLimit);
         rules.setTimeLimit(bundle.getBoolean(OptionActivity.TimeLimitCheckedIntent));
+        rules.setRuleVariant(RuleVariant.values()[bundle.getInt(RuleVariantIntent, 0)]);
         return rules;
     }
 
@@ -135,21 +133,9 @@ public class OptionActivity extends Activity implements SimpleObserver
 
         names();
         lengthSpinner();
-        View straightView = straight();
-        LinearLayout layout = (LinearLayout) findViewById(R.id.rules_layout);
+        rules();
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.topMargin = 10;
-        if (straightView.getParent() == null)
-        {
-            layout.addView(straightView, params);
-        }
 
-        View x = xOfAKind();
-        if (x.getParent() == null)
-        {
-            layout.addView(x, params);
-        }
 
         initStatistics();
         initTimeLimit();
@@ -305,7 +291,7 @@ public class OptionActivity extends Activity implements SimpleObserver
                 EditText editText = (EditText) view.findViewById(R.id.editText2);
                 String name = editText.getText().toString();
                 StatisticManager manager = new SQLiteHandler(OptionActivity.this);
-                PlayerStatistic player = manager.createPlayer(name, Strategy.Human);
+                PlayerStatistic player = manager.createPlayer(name, Strategy.getStrategy(Strategy.Human));
                 player1Adapter.addPlayer(player);
                 player2Adapter.addPlayer(player);
             }
@@ -322,67 +308,7 @@ public class OptionActivity extends Activity implements SimpleObserver
 
 
     }
-    private View xOfAKind()
-    {
-        RelativeLayout l = new RelativeLayout(this);
-        ImageView t = new ImageView(this);
-        t.setImageResource(R.drawable.dice3droll);
-        t.setId(Utilities.generateViewId());
-        l.addView(t, new ViewGroup.LayoutParams(size, size));
 
-        // TODO: height of dices should be same as textview
-        xOfAKind = new XOfAKindLayout(this, 3, size, 7);
-        RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
-        final int id = t.getId();
-        p.addRule(RelativeLayout.RIGHT_OF, id);
-        //p.addRule(RelativeLayout.ALIGN_LEFT, straight.getId());
-        p.leftMargin = 55;
-
-
-        l.addView(xOfAKind, p);
-
-        xOfAKind.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                xOfAKind.increaseLength();
-            }
-        });
-
-        l.setId(Utilities.generateViewId());
-        return l;
-    }
-
-    private View straight()
-    {
-        RelativeLayout l = new RelativeLayout(this);
-        ImageView t = new ImageView(this);
-        t.setImageResource(R.drawable.straight);
-        t.setId(Utilities.generateViewId());
-        l.addView(t, new ViewGroup.LayoutParams(this.size, size));
-
-
-        // TODO: height of dices should be same as textview
-        straight = new StraightLayout(this, 3, size, 1);
-        RelativeLayout.LayoutParams p = ViewUtilities.createRelativeLayoutParams();
-        final int id = t.getId();
-        p.addRule(RelativeLayout.RIGHT_OF, id);
-        p.leftMargin = 55;
-        l.addView(straight, p);
-
-        straight.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                straight.increaseLength();
-            }
-        });
-
-        l.setId(Utilities.generateViewId());
-        return l;
-    }
 
     private View lengthSpinner()
     {
@@ -398,6 +324,33 @@ public class OptionActivity extends Activity implements SimpleObserver
         return lengthSpinner;
     }
 
+    private void rules()
+    {
+        xOfAKind = (CheckBox) findViewById(R.id.checkBox_xxx);
+        straight = (CheckBox) findViewById(R.id.checkBox_123);
+        rulesSpinner = (Spinner) findViewById(R.id.spinner_rules);
+        ArrayAdapter<RuleVariant> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, RuleVariant.values());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        rulesSpinner.setAdapter(adapter);
+        rulesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                Rules rules = Rules.makeRules((RuleVariant) adapterView.getItemAtPosition(i));
+                diagonal.setChecked(rules.isDiagonalActive());
+                xOfAKind.setChecked(rules.getMinXOfAKind() == 3);
+                straight.setChecked(rules.getMinStraight() == 3);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView)
+            {
+
+            }
+        });
+    }
+
     private void saveToBundle(Bundle intent)
     {
         String[] players = {((PlayerStatistic) player1Spinner.getSelectedItem()).getName(), ((PlayerStatistic) player2Spinner.getSelectedItem()).getName(), "", ""};
@@ -405,8 +358,9 @@ public class OptionActivity extends Activity implements SimpleObserver
         intent.putStringArray(Player1Intent, players);
         intent.putString(LengthIntent, (String) lengthSpinner.getSelectedItem());
         intent.putBoolean(DiagonalIntent, diagonal.isChecked());
-        intent.putInt(StraightIntent, straight.getLength());
-        intent.putInt(XOfAKindIntent, xOfAKind.getLength());
+        // TODO: make boolean
+        intent.putInt(StraightIntent, straight.isChecked() ? 3 : 100);
+        intent.putInt(XOfAKindIntent, xOfAKind.isChecked() ? 3 : 100);
         intent.putString(Player1Skill1Intent, skillChooser1.getName(0));
         intent.putString(Player1Skill2Intent, skillChooser1.getName(1));
         intent.putString(Player1Skill3Intent, skillChooser1.getName(2));
@@ -425,6 +379,7 @@ public class OptionActivity extends Activity implements SimpleObserver
         intent.putInt(TimeLimitInSIntent, Integer.parseInt(editTimeLimit.getText().toString()));
         intent.putBoolean(TimeLimitCheckedIntent, checkTimeLimit.isChecked());
 
+        intent.putInt(RuleVariantIntent, rulesSpinner.getSelectedItemPosition());
     }
 
     private void saveToSharedPreferences()
@@ -453,8 +408,8 @@ public class OptionActivity extends Activity implements SimpleObserver
         edit.putString(Player2Intent, players[1]);
         edit.putString(LengthIntent, (String) lengthSpinner.getSelectedItem());
         edit.putBoolean(DiagonalIntent, diagonal.isChecked());
-        edit.putInt(StraightIntent, straight.getLength());
-        edit.putInt(XOfAKindIntent, xOfAKind.getLength());
+        edit.putInt(StraightIntent, straight.isChecked() ? 3 : 100);
+        edit.putInt(XOfAKindIntent, xOfAKind.isChecked() ? 3 : 100);
         edit.putString(Player1Skill1Intent, skillChooser1.getName(0));
         edit.putString(Player1Skill2Intent, skillChooser1.getName(1));
         edit.putString(Player1Skill3Intent, skillChooser1.getName(2));
@@ -471,6 +426,7 @@ public class OptionActivity extends Activity implements SimpleObserver
 
         edit.putInt(TimeLimitInSIntent, Integer.parseInt(editTimeLimit.getText().toString()));
         edit.putBoolean(TimeLimitCheckedIntent, checkTimeLimit.isChecked());
+        edit.putInt(RuleVariantIntent, rulesSpinner.getSelectedItemPosition());
         edit.commit();
     }
 
@@ -514,8 +470,8 @@ public class OptionActivity extends Activity implements SimpleObserver
         lengthSpinner.setSelection(pos);
 
         diagonal.setChecked(sharedPreferences.getBoolean(DiagonalIntent, false));
-        straight.setLength(sharedPreferences.getInt(StraightIntent, 3));
-        xOfAKind.setLength(sharedPreferences.getInt(XOfAKindIntent, 3));
+        straight.setChecked(sharedPreferences.getInt(StraightIntent, 3) == 3);
+        xOfAKind.setChecked(sharedPreferences.getInt(XOfAKindIntent, 3) == 3);
 
         skillChooser1.setName(sharedPreferences.getString(Player1Skill1Intent, Skill.Help), 0);
         skillChooser1.setName(sharedPreferences.getString(Player1Skill2Intent, Skill.Change),1);
@@ -557,7 +513,7 @@ public class OptionActivity extends Activity implements SimpleObserver
         saveToBundle(b);
 
 
-        if (straight.getLength() == straight.MaxLength + 1 && xOfAKind.getLength() == xOfAKind.MaxLength + 1)
+        if (!straight.isChecked() && !xOfAKind.isChecked())
         {
             Toast.makeText(OptionActivity.this, "No Points possible", Toast.LENGTH_SHORT).show();
             return;
@@ -577,10 +533,7 @@ public class OptionActivity extends Activity implements SimpleObserver
 
                 intent.putExtras(b);
                 saveToSharedPreferences();
-                SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.game_file_key), MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(LocalGameActivity.KEY_RESUME_GAME, false);
-                editor.commit();
+                ActivityUtilities.setGameResumeable(OptionActivity.this, false);
                 startActivity(intent);
                 v.postDelayed(new Runnable()
                 {

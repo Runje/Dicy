@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import games.runje.dicy.R;
 import games.runje.dicymodel.data.Player;
+import games.runje.dicymodel.game.RuleVariant;
 import games.runje.dicymodel.game.StatisticHandler;
 
 /**
@@ -22,9 +23,9 @@ public class LocalGameStatisticsHandler implements StatisticHandler
     }
 
     @Override
-    public void movePoints(int movePoints, Player playingPlayer)
+    public void movePoints(int movePoints, Player playingPlayer, RuleVariant ruleVariant)
     {
-        boolean top10 = manager.addMovePoints(movePoints, playingPlayer);
+        boolean top10 = manager.addMovePoints(movePoints, playingPlayer, ruleVariant);
 
         if (top10)
         {
@@ -33,9 +34,9 @@ public class LocalGameStatisticsHandler implements StatisticHandler
     }
 
     @Override
-    public void switchPoints(int switchPoints, Player playingPlayer)
+    public void switchPoints(int switchPoints, Player playingPlayer, RuleVariant ruleVariant)
     {
-        boolean top10 = manager.addSwitchPoints(switchPoints, playingPlayer);
+        boolean top10 = manager.addSwitchPoints(switchPoints, playingPlayer, ruleVariant);
 
         if (top10)
         {

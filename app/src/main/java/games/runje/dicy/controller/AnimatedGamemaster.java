@@ -21,6 +21,7 @@ import games.runje.dicy.statistics.GameStatistic;
 import games.runje.dicy.statistics.PlayerStatistic;
 import games.runje.dicy.statistics.SQLiteHandler;
 import games.runje.dicy.statistics.StatisticManager;
+import games.runje.dicy.util.ActivityUtilities;
 import games.runje.dicymodel.AbstractGamemaster;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
@@ -68,19 +69,14 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
             this.activeSkill = getGame().getPlayingPlayer().getSkills().get(savedGame.getActiveSkillIndex());
         }
 
+        animatedBoard.updateBoard();
+        animatedBoard.consistencyCheck();
         stateTransition(savedGame.getNextGameState());
     }
 
     private void init()
     {
-        // start AI
-        for (Player pl : game.getPlayers())
-        {
-            if (pl.isAi())
-            {
-                new AIController(pl, activity, this);
-            }
-        }
+
 
         for (Player player : game.getPlayers())
         {
@@ -98,6 +94,14 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         this.controls = new Controls(activity, this, game);
         controls.setEnabledControls(true);
         controls.update();
+        // start AI
+        for (Player pl : game.getPlayers())
+        {
+            if (pl.isAi())
+            {
+                new AIController(pl, activity, this);
+            }
+        }
 
     }
 
@@ -116,10 +120,11 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     @Override
     public void gameOver()
     {
+        ActivityUtilities.setGameResumeable(activity, false);
         StatisticManager manager = new SQLiteHandler(activity);
         PlayerStatistic player1 = manager.getPlayer(game.getPlayers().get(0).getName());
         PlayerStatistic player2 = manager.getPlayer(game.getPlayers().get(1).getName());
-        manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0, game.getPlayers().get(0).getPoints(), game.getPlayers().get(1).getPoints(), game.getGameLength()));
+        manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0, game.getPlayers().get(0).getPoints(), game.getPlayers().get(1).getPoints(), game.getGameLength(), rules.getRuleVariant()));
         FinishedDialog d = new FinishedDialog();
         d.setName(game.getWinner());
         AnimatedLogger.logDebug(LogKey, "Before show");
@@ -281,6 +286,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     {
         if (board.getGravity() == gravity)
         {
+            Logger.logInfo(LogKey, "Board has already gravity: " + gravity);
             return;
         }
 
@@ -288,14 +294,17 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         board.setGravity(gravity);
         controls.save();
         controls.setEnabledControls(false);
+        Logger.logInfo(LogKey, "Board disabled on change gravity");
         AnimationHandler animationHandler = new AnimationHandler(new Runnable()
         {
             @Override
             public void run()
             {
                 getControls().restore();
+                Logger.logInfo(LogKey, "Board enabled after change gravity");
             }
         });
+
 
         for (int i = 0; i < board.getNumberOfRows(); i++)
         {

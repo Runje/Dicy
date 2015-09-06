@@ -164,6 +164,7 @@ public abstract class AbstractGamemaster
                 controls.setPointLimit(0);
                 // TODO: should handle the skill
                 board.setEnabled(true && hasTurn());
+                controls.setEnabledControlsForAI(true);
                 activeSkill.startWaiting(board, this, hasTurn());
                 //timeoutPossible = true;
                 break;
@@ -215,6 +216,7 @@ public abstract class AbstractGamemaster
 
     protected void transitionToNormal()
     {
+        saveGame(GameState.Normal);
         getGame().setStrikePossible(true);
         controls.setPointLimit(rules.getPointLimit());
 
@@ -222,6 +224,7 @@ public abstract class AbstractGamemaster
         {
             controls.highlightPoints();
             Logger.logInfo(LogKey, "Game will be over (to normal)");
+
         } else
         {
             controls.clearHighlights();
@@ -230,6 +233,7 @@ public abstract class AbstractGamemaster
         timeoutPossible = true;
         // enable
         this.controls.setEnabledControls(true);
+
     }
 
     private void startRecreateBoard()

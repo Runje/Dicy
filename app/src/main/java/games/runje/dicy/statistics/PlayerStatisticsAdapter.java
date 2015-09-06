@@ -15,6 +15,7 @@ import java.util.List;
 
 import games.runje.dicy.R;
 import games.runje.dicymodel.Utilities;
+import games.runje.dicymodel.game.RuleVariant;
 
 /**
  * Created by Thomas on 18.08.2015.
@@ -24,6 +25,7 @@ public class PlayerStatisticsAdapter extends BaseAdapter
 
     private final Context context;
     List<PlayerStatistic> players;
+    RuleVariant ruleVariant;
     private boolean winsDescending = true;
     private boolean nameDescending;
     private boolean loosesDescending;
@@ -34,19 +36,33 @@ public class PlayerStatisticsAdapter extends BaseAdapter
     {
         this.context = context;
         this.players = players;
+        ruleVariant = null;
         sortAfterWins(winsDescending);
     }
 
     private void sortAfterWins(boolean descending)
     {
-        Collections.sort(players, new Comparator<PlayerStatistic>()
+        if (ruleVariant == null)
         {
-            @Override
-            public int compare(PlayerStatistic p1, PlayerStatistic p2)
+            Collections.sort(players, new Comparator<PlayerStatistic>()
             {
-                return ((Long) p1.getWins()).compareTo(p2.getWins());
-            }
-        });
+                @Override
+                public int compare(PlayerStatistic p1, PlayerStatistic p2)
+                {
+                    return ((Long) p1.getWins()).compareTo(p2.getWins());
+                }
+            });
+        } else
+        {
+            Collections.sort(players, new Comparator<PlayerStatistic>()
+            {
+                @Override
+                public int compare(PlayerStatistic p1, PlayerStatistic p2)
+                {
+                    return ((Long) p1.getWins(ruleVariant)).compareTo(p2.getWins(ruleVariant));
+                }
+            });
+        }
 
         if (descending)
         {
@@ -56,14 +72,27 @@ public class PlayerStatisticsAdapter extends BaseAdapter
 
     private void sortAfterPercentageWins(boolean descending)
     {
-        Collections.sort(players, new Comparator<PlayerStatistic>()
+        if (ruleVariant == null)
         {
-            @Override
-            public int compare(PlayerStatistic p1, PlayerStatistic p2)
+            Collections.sort(players, new Comparator<PlayerStatistic>()
             {
-                return ((Double) p1.getPercentageWin()).compareTo(p2.getPercentageWin());
-            }
-        });
+                @Override
+                public int compare(PlayerStatistic p1, PlayerStatistic p2)
+                {
+                    return ((Double) p1.getPercentageWin()).compareTo(p2.getPercentageWin());
+                }
+            });
+        } else
+        {
+            Collections.sort(players, new Comparator<PlayerStatistic>()
+            {
+                @Override
+                public int compare(PlayerStatistic p1, PlayerStatistic p2)
+                {
+                    return ((Double) p1.getPercentageWin(ruleVariant)).compareTo(p2.getPercentageWin(ruleVariant));
+                }
+            });
+        }
 
         if (descending)
         {
@@ -73,14 +102,27 @@ public class PlayerStatisticsAdapter extends BaseAdapter
 
     private void sortAfterGames(boolean descending)
     {
-        Collections.sort(players, new Comparator<PlayerStatistic>()
+        if (ruleVariant == null)
         {
-            @Override
-            public int compare(PlayerStatistic p1, PlayerStatistic p2)
+            Collections.sort(players, new Comparator<PlayerStatistic>()
             {
-                return ((Long) p1.getGames()).compareTo(p2.getGames());
-            }
-        });
+                @Override
+                public int compare(PlayerStatistic p1, PlayerStatistic p2)
+                {
+                    return ((Long) p1.getGames()).compareTo(p2.getGames());
+                }
+            });
+        } else
+        {
+            Collections.sort(players, new Comparator<PlayerStatistic>()
+            {
+                @Override
+                public int compare(PlayerStatistic p1, PlayerStatistic p2)
+                {
+                    return ((Long) p1.getGames(ruleVariant)).compareTo(p2.getGames(ruleVariant));
+                }
+            });
+        }
 
         if (descending)
         {
@@ -90,14 +132,27 @@ public class PlayerStatisticsAdapter extends BaseAdapter
 
     private void sortAfterLooses(boolean descending)
     {
-        Collections.sort(players, new Comparator<PlayerStatistic>()
+        if (ruleVariant == null)
         {
-            @Override
-            public int compare(PlayerStatistic p1, PlayerStatistic p2)
+            Collections.sort(players, new Comparator<PlayerStatistic>()
             {
-                return ((Long) (p1.getGames() - p1.getWins())).compareTo(p2.getGames() - p2.getWins());
-            }
-        });
+                @Override
+                public int compare(PlayerStatistic p1, PlayerStatistic p2)
+                {
+                    return ((Long) (p1.getLooses())).compareTo(p2.getLooses());
+                }
+            });
+        } else
+        {
+            Collections.sort(players, new Comparator<PlayerStatistic>()
+            {
+                @Override
+                public int compare(PlayerStatistic p1, PlayerStatistic p2)
+                {
+                    return (((Long) p1.getLooses(ruleVariant)).compareTo(p2.getLooses(ruleVariant)));
+                }
+            });
+        }
 
         if (descending)
         {
@@ -161,12 +216,21 @@ public class PlayerStatisticsAdapter extends BaseAdapter
         PlayerStatistic player = (PlayerStatistic) getItem(i);
         pos.setText(Integer.toString(i + 1));
         name.setText(player.getName());
-        games.setText(Long.toString(player.getGames()));
-        wins.setText(Long.toString(player.getWins()));
-        looses.setText(Long.toString(player.getGames() - player.getWins()));
 
-        String p = Utilities.doubleToString(player.getPercentageWin(), 1);
-        percent.setText(p);
+        if (ruleVariant == null)
+        {
+            games.setText(Long.toString(player.getGames()));
+            wins.setText(Long.toString(player.getWins()));
+            looses.setText(Long.toString(player.getLooses()));
+            percent.setText(Utilities.doubleToString(player.getPercentageWin(), 1));
+        } else
+        {
+            games.setText(Long.toString(player.getGames(ruleVariant)));
+            wins.setText(Long.toString(player.getWins(ruleVariant)));
+            looses.setText(Long.toString(player.getLooses(ruleVariant)));
+            percent.setText(Utilities.doubleToString(player.getPercentageWin(ruleVariant), 1));
+        }
+
 
         if (i % 2 == 0)
         {
@@ -211,6 +275,13 @@ public class PlayerStatisticsAdapter extends BaseAdapter
     {
         gamesDescending = !gamesDescending;
         sortAfterGames(gamesDescending);
+        notifyDataSetChanged();
+    }
+
+    public void setRuleVariant(RuleVariant ruleVariant)
+    {
+        this.ruleVariant = ruleVariant;
+        sortAfterWins(true);
         notifyDataSetChanged();
     }
 }

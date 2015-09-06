@@ -7,8 +7,7 @@ import games.runje.dicymodel.data.Player;
  */
 public interface StatisticHandler
 {
+    void movePoints(int movePoints, Player playingPlayer, RuleVariant ruleVariant);
 
-    void movePoints(int movePoints, Player playingPlayer);
-
-    void switchPoints(int switchPoints, Player playingPlayer);
+    void switchPoints(int switchPoints, Player playingPlayer, RuleVariant ruleVariant);
 }

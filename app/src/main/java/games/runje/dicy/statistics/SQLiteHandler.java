@@ -6,11 +6,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import games.runje.dicymodel.Logger;
+import games.runje.dicymodel.ai.Strategy;
 import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.GameLength;
+import games.runje.dicymodel.game.RuleVariant;
 
 /**
  * Created by Thomas on 15.06.2015.
@@ -18,7 +22,7 @@ import games.runje.dicymodel.game.GameLength;
 public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
 {
     // Database Version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
 
     // Database Name
     private static final String DATABASE_NAME = "dicy.db";
@@ -49,7 +53,7 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     }
 
     @Override
-    public boolean addMovePoints(int movePoints, Player playingPlayer)
+    public boolean addMovePoints(int movePoints, Player playingPlayer, RuleVariant ruleVariant)
     {
         SQLiteDatabase db = getWritableDatabase();
         MovePointsTable table = new MovePointsTable();
@@ -58,6 +62,17 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
 
         if (points.size() >= 10)
         {
+            Collections.sort(points, new Comparator<PointStatistic>()
+            {
+                @Override
+                public int compare(PointStatistic p1, PointStatistic p2)
+                {
+                    return ((Integer) p1.getPoints()).compareTo(p2.getPoints());
+                }
+            });
+
+            Collections.reverse(points);
+
             if (points.get(9).getPoints() > movePoints)
             {
                 db.close();
@@ -65,14 +80,14 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
             }
         }
 
-        table.add(movePoints, playingPlayer.getName(), db);
+        table.add(movePoints, playingPlayer.getName(), ruleVariant, db);
         db.close();
         Logger.logInfo(LogKey, "Added " + movePoints + " Points");
         return true;
     }
 
     @Override
-    public boolean addSwitchPoints(int switchPoints, Player playingPlayer)
+    public boolean addSwitchPoints(int switchPoints, Player playingPlayer, RuleVariant ruleVariant)
     {
         SQLiteDatabase db = getWritableDatabase();
         SwitchPointsTable table = new SwitchPointsTable();
@@ -80,6 +95,17 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
 
         if (points.size() >= 10)
         {
+            Collections.sort(points, new Comparator<PointStatistic>()
+            {
+                @Override
+                public int compare(PointStatistic p1, PointStatistic p2)
+                {
+                    return ((Integer) p1.getPoints()).compareTo(p2.getPoints());
+                }
+            });
+
+            Collections.reverse(points);
+
             if (points.get(9).getPoints() > switchPoints)
             {
                 db.close();
@@ -87,7 +113,7 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
             }
         }
 
-        table.add(switchPoints, playingPlayer.getName(), db);
+        table.add(switchPoints, playingPlayer.getName(), ruleVariant, db);
         db.close();
         Logger.logInfo(LogKey, "Added " + switchPoints + " Points");
 
@@ -99,6 +125,15 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     {
         SQLiteDatabase db = this.getWritableDatabase();
         List<PointStatistic> points = new MovePointsTable().getAll(db);
+        db.close();
+        return points;
+    }
+
+    @Override
+    public List<PointStatistic> getMovePoints(RuleVariant ruleVariant)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<PointStatistic> points = new MovePointsTable().getPoints(db, ruleVariant);
         db.close();
         return points;
     }
@@ -128,13 +163,22 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
         return points;
     }
 
-    public PlayerStatistic createPlayer(String name, String strategy, SQLiteDatabase db)
+    @Override
+    public List<PointStatistic> getSwitchPoints(RuleVariant ruleVariant)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<PointStatistic> points = new SwitchPointsTable().getPoints(db, ruleVariant);
+        db.close();
+        return points;
+    }
+
+    public PlayerStatistic createPlayer(String name, Strategy strategy, SQLiteDatabase db)
     {
         return PlayerTable.createPlayer(name, strategy, db);
     }
 
     @Override
-    public PlayerStatistic createPlayer(String name, String strategy)
+    public PlayerStatistic createPlayer(String name, Strategy strategy)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         PlayerStatistic p = createPlayer(name, strategy, db);
@@ -190,6 +234,15 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     }
 
     @Override
+    public List<GameStatistic> getGames(GameLength length, RuleVariant ruleVariant)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<GameStatistic> games = GameTable.getGames(db, length, ruleVariant);
+        db.close();
+        return games;
+    }
+
+    @Override
     public void update(GameStatistic game)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -210,9 +263,12 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion)
     {
         Logger.logInfo(LogKey, "On Upgrade from " + oldVersion + " to " + newVersion);
-        //PlayerTable.upgrade(sqLiteDatabase, oldVersion, newVersion);
+        PlayerTable.upgrade(sqLiteDatabase, oldVersion, newVersion);
         GameTable.upgrade(sqLiteDatabase, oldVersion, newVersion);
 
+        // TODO: make singleton
+        new SwitchPointsTable().upgrade(sqLiteDatabase, oldVersion, newVersion);
+        new MovePointsTable().upgrade(sqLiteDatabase, oldVersion, newVersion);
 
 
     }

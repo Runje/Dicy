@@ -18,6 +18,7 @@ import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.GameLength;
 import games.runje.dicymodel.game.GameState;
 import games.runje.dicymodel.game.LocalGame;
+import games.runje.dicymodel.game.RuleVariant;
 import games.runje.dicymodel.skills.Skill;
 
 /**
@@ -37,13 +38,14 @@ public class MessageConverter
     public static final int nameLength = 20;
     public static final int skillNameLength = 15;
     public static final int idLength = 8;
+    public static final int ruleVariantLength = 15;
     public static final int playerNameLength = 20;
     public static final int gameLengthLength = 6;
-    public static final int rulesLength = 4 * 4 + 1 + 1 + 4 + gameLengthLength;
+    public static final int rulesLength = 4 * 4 + 1 + 1 + 4 + gameLengthLength + ruleVariantLength;
     public static final int skillLength = coordsLength + 1 + 3 * 4 + skillNameLength;
-    public static final int strategyLength = 15;
+    public static final int strategyLength = 100;
     public static final int playerLength = playerNameLength + idLength + 4 + strategyLength + 4 + 2 + 3 * skillLength;
-    public static final int gameLength = 4 * 4 + 4 * playerLength + 3 * 4 + 4 + gameLengthLength;
+    public static final int gameLength = 4 * 4 + 4 * playerLength + 3 * 4 + 4 + gameLengthLength + rulesLength;
     public static final int moveLength = 2 * coordsLength;
     public static final int gameStateLength = 14;
     public static final int savedGameLength = boardLength + gameLength + rulesLength + gameStateLength + moveLength + 4;
@@ -83,7 +85,7 @@ public class MessageConverter
             skills.add(skill);
         }
 
-        Player player = new Player(name, Strategy.makeStrategy(strategy), id, skills);
+        Player player = new Player(name, Strategy.getStrategy(strategy), id, skills);
         player.setPoints(points);
         player.setStrikes(strikes);
         return player;
@@ -141,7 +143,7 @@ public class MessageConverter
         }
         else
         {
-            name = Strategy.Simple;
+            name = strategy.toString();
         }
 
         return stringToByte(name, strategyLength);
@@ -167,6 +169,7 @@ public class MessageConverter
         buffer.putInt(game.getTurn());
         buffer.putInt(game.getPlayerIsPlayingSince());
         buffer.put(stringToByte(game.getGameLength().toString(), gameLengthLength));
+        buffer.put(rulesToByte(game.getRules()));
         return buffer.array();
     }
 
@@ -189,7 +192,8 @@ public class MessageConverter
         int turn = buffer.getInt();
         int time = buffer.getInt();
         GameLength gameLength = GameLength.valueOf(byteToString(buffer, gameLengthLength));
-        LocalGame game = new LocalGame(pointsLimit, gameLength, players, lastLeadingPlayer);
+        Rules rules = byteToRules(buffer);
+        LocalGame game = new LocalGame(pointsLimit, gameLength, players, lastLeadingPlayer, rules);
         game.setGameEndPoints(gameEndPoints);
         game.setMovePoints(movePoints);
         game.setSwitchPoints(switchPoints);
@@ -317,6 +321,7 @@ public class MessageConverter
         boolean time = byteToBoolean(buffer.get());
         int timeLimit = buffer.getInt();
         GameLength gameLength = GameLength.valueOf(byteToString(buffer, gameLengthLength));
+        RuleVariant ruleVariant = RuleVariant.getEnum(byteToString(buffer, ruleVariantLength));
 
         Rules rules = new Rules();
         rules.setPointLimit(pointLimit);
@@ -326,13 +331,14 @@ public class MessageConverter
         rules.setDiagonalActive(diagonal);
         rules.setTimeLimit(time);
         rules.setTimeLimitInS(timeLimit);
+        rules.setGameLength(gameLength);
+        rules.setRuleVariant(ruleVariant);
         return rules;
     }
 
     public static byte[] rulesToByte(Rules rules)
     {
         ByteBuffer buffer = ByteBuffer.allocate(rulesLength);
-        // TODO: Points
         buffer.putInt(rules.getPointLimit());
         buffer.putInt(rules.getGameEndPoints());
         buffer.putInt(rules.getMinStraight());
@@ -341,6 +347,7 @@ public class MessageConverter
         buffer.put(booleanToByte(rules.isTimeLimit()));
         buffer.putInt(rules.getTimeLimitInS());
         buffer.put(stringToByte(rules.getGameLength().toString(), gameLengthLength));
+        buffer.put(stringToByte(rules.getRuleVariant().toString(), ruleVariantLength));
         return buffer.array();
     }
 

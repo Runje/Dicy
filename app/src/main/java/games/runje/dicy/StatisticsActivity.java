@@ -23,7 +23,6 @@ public class StatisticsActivity extends FragmentActivity
     protected void onResume()
     {
         super.onResume();
-        //adapter.onResume();
         Logger.logInfo(LogKey, "On Resume");
 
     }
@@ -43,6 +42,8 @@ public class StatisticsActivity extends FragmentActivity
         adapter = new StatisticsFragmentPagerAdapter(getSupportFragmentManager());
         pager = (ViewPager) findViewById(R.id.statistics_pager);
         pager.setAdapter(adapter);
+
+
     }
 
 

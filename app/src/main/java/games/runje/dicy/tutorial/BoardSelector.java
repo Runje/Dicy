@@ -12,7 +12,7 @@ import java.util.List;
 import games.runje.dicy.R;
 import games.runje.dicy.animatedData.AnimatedBoard;
 import games.runje.dicy.layouts.BoardLayout;
-import games.runje.dicy.util.ViewUtilities;
+import games.runje.dicy.util.ActivityUtilities;
 import games.runje.dicymodel.data.Coords;
 
 /**
@@ -68,7 +68,7 @@ public class BoardSelector
     {
         if (this.allHider != null)
         {
-            ViewUtilities.removeView(this.allHider);
+            ActivityUtilities.removeView(this.allHider);
         }
 
         for (int i = 0; i < board.getNumberOfRows(); i++)
@@ -76,7 +76,7 @@ public class BoardSelector
             List<View> row = diceHider.get(i);
             for (int j = 0; j < board.getNumberOfColumns(); j++)
             {
-                ViewUtilities.removeView(row.get(j));
+                ActivityUtilities.removeView(row.get(j));
             }
         }
 
