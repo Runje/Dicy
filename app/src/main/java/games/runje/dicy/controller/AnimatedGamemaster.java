@@ -124,7 +124,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         StatisticManager manager = new SQLiteHandler(activity);
         PlayerStatistic player1 = manager.getPlayer(game.getPlayers().get(0).getName());
         PlayerStatistic player2 = manager.getPlayer(game.getPlayers().get(1).getName());
-        manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0, game.getPlayers().get(0).getPoints(), game.getPlayers().get(1).getPoints(), game.getGameLength(), rules.getRuleVariant()));
+        manager.update(new GameStatistic(player1, player2, game.getWinningIndex() == 0, game.getPlayers().get(0).getPoints(), game.getPlayers().get(1).getPoints(), rules.getGameLength(), rules.getRuleVariant()));
         FinishedDialog d = new FinishedDialog();
         d.setName(game.getWinner());
         AnimatedLogger.logDebug(LogKey, "Before show");

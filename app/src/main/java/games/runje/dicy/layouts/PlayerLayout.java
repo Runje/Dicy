@@ -67,7 +67,7 @@ public class PlayerLayout extends RelativeLayout
         points.setText(Integer.toString(player.getPoints()));
 
         progress = (DicyProgress2) container.findViewById(R.id.player_progress);
-        progress.setGoal(handler.getGame().getGameEndPoints());
+        progress.setGoal(handler.getRules().getGameEndPoints());
 
         //strikes = (TextView) container.findViewById(R.id.player_strike);
         strike1 = (ImageView) container.findViewById(R.id.strike1);
@@ -134,7 +134,7 @@ public class PlayerLayout extends RelativeLayout
         if (game.areMostPoints(player.getPoints()))
         {
             pointColor = HtmlBlue;
-            if (player.getPoints() > game.getGameEndPoints())
+            if (player.getPoints() > game.getRules().getGameEndPoints())
             {
                 pointColor = HtmlGreen;
             }
@@ -163,7 +163,7 @@ public class PlayerLayout extends RelativeLayout
             if (game.areMostPoints(sumPoints))
             {
                 color = HtmlBlue;
-                if (sumPoints > game.getGameEndPoints())
+                if (sumPoints > game.getRules().getGameEndPoints())
                 {
                     color = HtmlGreen;
                 }

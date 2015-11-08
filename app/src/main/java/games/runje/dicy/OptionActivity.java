@@ -22,7 +22,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import games.runje.dicy.controller.CalcPointLimit;
 import games.runje.dicy.layouts.NamesArrayAdapter;
 import games.runje.dicy.layouts.SimpleObserver;
 import games.runje.dicy.layouts.SkillChooser;
@@ -101,18 +100,18 @@ public class OptionActivity extends Activity implements SimpleObserver
 
         boolean diagonal = bundle.getBoolean(OptionActivity.DiagonalIntent, false);
 
-        Rules rules = new Rules();
-        rules.setDiagonalActive(diagonal);
-        rules.setMinStraight(bundle.getInt(OptionActivity.StraightIntent, 7));
-        rules.setMinXOfAKind(bundle.getInt(OptionActivity.XOfAKindIntent, 11));
-        rules.initStraightPoints(4);
+        Rules rules = Rules.makeRules(RuleVariant.values()[bundle.getInt(RuleVariantIntent, 0)]);
+        //rules.setDiagonalActive(diagonal);
+        //rules.setMinStraight(bundle.getInt(OptionActivity.StraightIntent, 7));
+        //rules.setMinXOfAKind(bundle.getInt(OptionActivity.XOfAKindIntent, 11));
+        //rules.initStraightPoints(4);
         rules.setLengthFactor(f);
         rules.setGameLength(gameLength);
+        rules.calculateGameEndPointsAndStrikes();
         rules.setTimeLimitInS(bundle.getInt(OptionActivity.TimeLimitInSIntent, 0));
-        int pointLimit = bundle.getInt(PointLimitIntent, -1);
-        rules.setPointLimit(pointLimit);
+        //int pointLimit = bundle.getInt(PointLimitIntent, -1);
+        //rules.setPointLimit(pointLimit);
         rules.setTimeLimit(bundle.getBoolean(OptionActivity.TimeLimitCheckedIntent));
-        rules.setRuleVariant(RuleVariant.values()[bundle.getInt(RuleVariantIntent, 0)]);
         return rules;
     }
 
@@ -489,6 +488,7 @@ public class OptionActivity extends Activity implements SimpleObserver
 
         editTimeLimit.setText(Integer.toString(sharedPreferences.getInt(TimeLimitInSIntent, 0)));
         checkTimeLimit.setChecked(sharedPreferences.getBoolean(TimeLimitCheckedIntent, false));
+        rulesSpinner.setSelection(sharedPreferences.getInt(RuleVariantIntent, 0));
         update();
     }
 
@@ -523,18 +523,20 @@ public class OptionActivity extends Activity implements SimpleObserver
         v.setEnabled(false);
 
         final Rules rules = getRulesFromBundle(b);
+        saveToSharedPreferences();
+        ActivityUtilities.setGameResumeable(OptionActivity.this, false);
+        intent.putExtras(b);
+        startActivity(intent);
 
-        new CalcPointLimit(rules, new Runnable()
+        /*new CalcPointLimit(rules, new Runnable()
         {
             @Override
             public void run()
             {
                 b.putInt(PointLimitIntent, rules.getPointLimit());
 
-                intent.putExtras(b);
-                saveToSharedPreferences();
-                ActivityUtilities.setGameResumeable(OptionActivity.this, false);
-                startActivity(intent);
+
+
                 v.postDelayed(new Runnable()
                 {
                     @Override
@@ -544,7 +546,7 @@ public class OptionActivity extends Activity implements SimpleObserver
                     }
                 }, 2000);
             }
-        }).execute();
+        }).execute();*/
 
 
     }

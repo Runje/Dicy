@@ -151,8 +151,8 @@ public abstract class AbstractGamemaster
                 game.addPointElements(elements, board, true);
                 if (points == 0)
                 {
-                    game.endSwitch();
-                    startRecreateBoard();
+                    game.endSwitch(rules.getAllowedStrikes());
+                    checkRecreateBoard();
                 }
                 else
                 {
@@ -216,6 +216,13 @@ public abstract class AbstractGamemaster
 
     protected void transitionToNormal()
     {
+        if (BoardChecker.getPossiblePointMoves(board, rules).size() == 0)
+        {
+            Logger.logInfo(LogKey, "Recreating Board");
+            startRecreateBoardAnimation();
+            return;
+        }
+
         saveGame(GameState.Normal);
         getGame().setStrikePossible(true);
         controls.setPointLimit(rules.getPointLimit());
@@ -236,7 +243,7 @@ public abstract class AbstractGamemaster
 
     }
 
-    private void startRecreateBoard()
+    private void checkRecreateBoard()
     {
         if (BoardChecker.getPossiblePointMoves(board, rules).size() == 0)
         {
@@ -354,7 +361,7 @@ public abstract class AbstractGamemaster
             return;
         }
 
-        game.moveEnds();
+        game.moveEnds(rules.getAllowedStrikes());
         controls.setEnabledControls(true);
         controls.update();
         if (game.willGameBeOver())

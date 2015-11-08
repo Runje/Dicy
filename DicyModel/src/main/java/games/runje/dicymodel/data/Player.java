@@ -64,10 +64,10 @@ public class Player
         this.points = points;
     }
 
-    public void addStrike()
+    public void addStrike(int allowedStrikes)
     {
         this.strikes++;
-        if (strikes == 3)
+        if (strikes > allowedStrikes)
         {
             points = 0;
             strikes = 0;

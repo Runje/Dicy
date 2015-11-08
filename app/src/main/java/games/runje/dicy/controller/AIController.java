@@ -164,7 +164,7 @@ public class AIController
         int errorPoints = calcError(strategy.getError());
         Logger.logDebug(LogKey, "ErrorPoints = " + errorPoints);
 
-        if (move.getPoints() + errorPoints >= game.getPointsLimit())
+        if (move.getPoints() + errorPoints >= rules.getPointLimit())
         {
             makeMove(move);
         } else
@@ -390,6 +390,7 @@ public class AIController
         //Logger.logDebug(LogKey, "Checking, turn: " + game.hasTurn(player) + ", controls enabled: " + handler.areControlsEnabled());
 
         LocalGame l = (LocalGame) game;
+        Rules rules = l.getRules();
 
         boolean someOneIsWinning = false;
         int i = l.getLastLeadingPlayer();
@@ -400,7 +401,7 @@ public class AIController
 
             if (winner.getId() != player.getId())
             {
-                if (winner.getPoints() >= l.getGameEndPoints() && (l.getMovePoints() + player.getPoints() <= winner.getPoints()))
+                if (winner.getPoints() >= rules.getGameEndPoints() && (l.getMovePoints() + player.getPoints() <= winner.getPoints()))
                 {
                     someOneIsWinning = true;
                 }
@@ -408,7 +409,7 @@ public class AIController
         }
 
 
-        boolean nextMoveSurePoints = getPointsOfNextMove() >= l.getPointsLimit();
+        boolean nextMoveSurePoints = getPointsOfNextMove() >= rules.getPointLimit();
 
         boolean skillExecuted = false;
         if (!nextMoveSurePoints)

@@ -16,12 +16,12 @@ public abstract class Game
     /**
      * @return if the game is over.
      */
-    abstract public boolean moveEnds();
+    abstract public boolean moveEnds(int allowedStrikes);
 
 
     public abstract void addPointElements(ArrayList<PointElement> elements, Board board, boolean load);
 
-    public abstract void endSwitch();
+    public abstract void endSwitch(int allowedStrikes);
 
     public abstract boolean hasTurn(Player player);
 
@@ -32,8 +32,6 @@ public abstract class Game
     public abstract boolean isFinishedOrCancelled();
 
     public abstract void cancel();
-
-    public abstract int getPointsLimit();
 
     public boolean isStrikePossible()
     {

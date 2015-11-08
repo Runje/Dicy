@@ -41,11 +41,11 @@ public class MessageConverter
     public static final int ruleVariantLength = 15;
     public static final int playerNameLength = 20;
     public static final int gameLengthLength = 6;
-    public static final int rulesLength = 4 * 4 + 1 + 1 + 4 + gameLengthLength + ruleVariantLength;
+    public static final int rulesLength = 4 * 4 + 1 + 1 + 4 + gameLengthLength + ruleVariantLength + 4 + 8;
     public static final int skillLength = coordsLength + 1 + 3 * 4 + skillNameLength;
     public static final int strategyLength = 100;
     public static final int playerLength = playerNameLength + idLength + 4 + strategyLength + 4 + 2 + 3 * skillLength;
-    public static final int gameLength = 4 * 4 + 4 * playerLength + 3 * 4 + 4 + gameLengthLength + rulesLength;
+    public static final int gameLength = 2 * 4 + 4 * playerLength + 3 * 4 + 4 + rulesLength;
     public static final int moveLength = 2 * coordsLength;
     public static final int gameStateLength = 14;
     public static final int savedGameLength = boardLength + gameLength + rulesLength + gameStateLength + moveLength + 4;
@@ -152,8 +152,6 @@ public class MessageConverter
     public static byte[] gameToByte(LocalGame game)
     {
         ByteBuffer buffer = ByteBuffer.allocate(gameLength);
-        buffer.putInt(game.getPointsLimit());
-        buffer.putInt(game.getGameEndPoints());
         buffer.putInt(game.getLastLeadingPlayer());
         List<Player> players = game.getPlayers();
         buffer.putInt(players.size());
@@ -168,15 +166,12 @@ public class MessageConverter
         buffer.putInt(game.getSwitchPoints());
         buffer.putInt(game.getTurn());
         buffer.putInt(game.getPlayerIsPlayingSince());
-        buffer.put(stringToByte(game.getGameLength().toString(), gameLengthLength));
         buffer.put(rulesToByte(game.getRules()));
         return buffer.array();
     }
 
     public static LocalGame byteToGame(ByteBuffer buffer)
     {
-        int pointsLimit = buffer.getInt();
-        int gameEndPoints = buffer.getInt();
         int lastLeadingPlayer = buffer.getInt();
         int numberPlayer = buffer.getInt();
         List<Player> players = new ArrayList<>();
@@ -191,10 +186,8 @@ public class MessageConverter
         int switchPoints = buffer.getInt();
         int turn = buffer.getInt();
         int time = buffer.getInt();
-        GameLength gameLength = GameLength.valueOf(byteToString(buffer, gameLengthLength));
         Rules rules = byteToRules(buffer);
-        LocalGame game = new LocalGame(pointsLimit, gameLength, players, lastLeadingPlayer, rules);
-        game.setGameEndPoints(gameEndPoints);
+        LocalGame game = new LocalGame(players, lastLeadingPlayer, rules);
         game.setMovePoints(movePoints);
         game.setSwitchPoints(switchPoints);
         game.setTurn(turn);
@@ -323,6 +316,8 @@ public class MessageConverter
         GameLength gameLength = GameLength.valueOf(byteToString(buffer, gameLengthLength));
         RuleVariant ruleVariant = RuleVariant.getEnum(byteToString(buffer, ruleVariantLength));
 
+        int allowedStrikes = buffer.getInt();
+        double skillFactor = buffer.getDouble();
         Rules rules = new Rules();
         rules.setPointLimit(pointLimit);
         rules.setGameEndPoints(gameEndPoints);
@@ -333,6 +328,8 @@ public class MessageConverter
         rules.setTimeLimitInS(timeLimit);
         rules.setGameLength(gameLength);
         rules.setRuleVariant(ruleVariant);
+        rules.setAllowedStrikes(allowedStrikes);
+        rules.setSkillLoadFactor(skillFactor);
         return rules;
     }
 
@@ -348,6 +345,8 @@ public class MessageConverter
         buffer.putInt(rules.getTimeLimitInS());
         buffer.put(stringToByte(rules.getGameLength().toString(), gameLengthLength));
         buffer.put(stringToByte(rules.getRuleVariant().toString(), ruleVariantLength));
+        buffer.putInt(rules.getAllowedStrikes());
+        buffer.putDouble(rules.getSkillLoadFactor());
         return buffer.array();
     }
 

@@ -58,7 +58,7 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
         SQLiteDatabase db = getWritableDatabase();
         MovePointsTable table = new MovePointsTable();
 
-        List<PointStatistic> points = table.getAll(db);
+        List<PointStatistic> points = table.getPoints(db, ruleVariant);
 
         if (points.size() >= 10)
         {
@@ -91,7 +91,7 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
     {
         SQLiteDatabase db = getWritableDatabase();
         SwitchPointsTable table = new SwitchPointsTable();
-        List<PointStatistic> points = table.getAll(db);
+        List<PointStatistic> points = table.getPoints(db, ruleVariant);
 
         if (points.size() >= 10)
         {

@@ -38,12 +38,9 @@ public class StatisticsActivity extends FragmentActivity
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.statistics_page_viewer);
 
-
         adapter = new StatisticsFragmentPagerAdapter(getSupportFragmentManager());
         pager = (ViewPager) findViewById(R.id.statistics_pager);
         pager.setAdapter(adapter);
-
-
     }
 
 

@@ -18,7 +18,6 @@ import games.runje.dicymodel.data.PointElement;
 public class LocalGame extends Game
 {
     public static String LogKey = "LocalGame";
-    int gameEndPoints;
     private int lastLeadingPlayer;
     private List<Player> players;
     /**
@@ -27,23 +26,16 @@ public class LocalGame extends Game
     private int turn;
     private int movePoints;
     private int switchPoints;
-    private int pointsLimit;
     private String winner;
     private boolean cancelled = false;
-    private int lengthFactor;
     private int winIndex = -1;
     private int playerIsPlayingSince;
     private StatisticHandler statisticsHandler;
-    private GameLength gameLength;
     private Rules rules;
 
-    public LocalGame(int pointLimit, GameLength length, List<Player> playerList, int startingPlayer, Rules rules)
+    public LocalGame(List<Player> playerList, int startingPlayer, Rules rules)
     {
-        pointsLimit = pointLimit;
         this.rules = rules;
-        this.gameLength = length;
-        this.lengthFactor = GameLength.LengthToFactor(length);
-        gameEndPoints = pointLimit * lengthFactor;
 
         this.players = playerList;
 
@@ -60,21 +52,6 @@ public class LocalGame extends Game
     public void setPlayerIsPlayingSince(int playerIsPlayingSince)
     {
         this.playerIsPlayingSince = playerIsPlayingSince;
-    }
-
-    public void setLengthFactor(int lengthFactor)
-    {
-        this.lengthFactor = lengthFactor;
-    }
-
-    public int getGameEndPoints()
-    {
-        return gameEndPoints;
-    }
-
-    public void setGameEndPoints(int gameEndPoints)
-    {
-        this.gameEndPoints = gameEndPoints;
     }
 
     @Override
@@ -94,16 +71,13 @@ public class LocalGame extends Game
     public String toString()
     {
         return "LocalGame{" +
-                "gameEndPoints=" + gameEndPoints +
                 ", lastLeadingPlayer=" + lastLeadingPlayer +
                 ", players=" + Arrays.toString(players.toArray()) +
                 ", turn=" + turn +
                 ", movePoints=" + movePoints +
                 ", switchPoints=" + switchPoints +
-                ", pointsLimit=" + pointsLimit +
                 ", winner='" + winner + '\'' +
                 ", cancelled=" + cancelled +
-                ", lengthFactor=" + lengthFactor +
                 ", winIndex=" + winIndex +
                 '}';
     }
@@ -132,10 +106,10 @@ public class LocalGame extends Game
     }
 
     @Override
-    public void endSwitch()
+    public void endSwitch(int allowedStrikes)
     {
         //Logger.logDebug(LogKey, "End switch");
-        if (switchPoints >= pointsLimit || !isStrikePossible())
+        if (switchPoints >= rules.getPointLimit() || !isStrikePossible())
         {
             movePoints += switchPoints;
             resetTimer();
@@ -146,9 +120,8 @@ public class LocalGame extends Game
         }
         else
         {
-
             movePoints = 0;
-            moveEnds();
+            moveEnds(allowedStrikes);
         }
 
         switchPoints = 0;
@@ -252,7 +225,7 @@ public class LocalGame extends Game
     }
 
     @Override
-    public boolean moveEnds()
+    public boolean moveEnds(int allowedStrikes)
     {
         players.get(turn).addPoints(movePoints);
         if (movePoints > 0)
@@ -265,7 +238,7 @@ public class LocalGame extends Game
             }
         } else
         {
-            players.get(turn).addStrike();
+            players.get(turn).addStrike(allowedStrikes);
             getPlayingPlayer().setLastMoveWasStrike(true);
         }
 
@@ -290,12 +263,11 @@ public class LocalGame extends Game
             }
         }
 
-        if (maxPoints >= gameEndPoints && index == turn)
+        if (maxPoints >= rules.getGameEndPoints() && index == turn)
         {
             lastLeadingPlayer = index;
             Logger.logInfo(LogKey, "New Suddendeath Leader: " + getPlayingPlayer().getName());
-        }
-        else if (maxPoints < gameEndPoints)
+        } else if (maxPoints < rules.getGameEndPoints())
         {
             Logger.logDebug(LogKey, "Maxpoints: " + maxPoints + ", index " + index);
             lastLeadingPlayer = -1;
@@ -311,7 +283,7 @@ public class LocalGame extends Game
         // TODO: What if two player with same points?
 
 
-        if (getPlayingPlayer().getPoints() >= gameEndPoints)
+        if (getPlayingPlayer().getPoints() >= rules.getGameEndPoints())
         {
             enoughPoints = true;
             winner = getPlayingPlayer().getName();
@@ -330,7 +302,7 @@ public class LocalGame extends Game
         // TODO: What if two player with same points?
 
 
-        if (getNotPlayingPlayer().getPoints() >= gameEndPoints && (getPlayingPlayer().getPoints() + getMovePoints() < getNotPlayingPlayer().getPoints()))
+        if (getNotPlayingPlayer().getPoints() >= rules.getGameEndPoints() && (getPlayingPlayer().getPoints() + getMovePoints() < getNotPlayingPlayer().getPoints()))
         {
             enoughPoints = true;
         }
@@ -347,26 +319,13 @@ public class LocalGame extends Game
         // TODO: What if two player with same points?
 
 
-        if (getNotPlayingPlayer().getPoints() >= gameEndPoints)
+        if (getNotPlayingPlayer().getPoints() >= rules.getGameEndPoints())
         {
             enoughPoints = true;
         }
 
         //Logger.logDebug(LogKey, "Last Player: " + lastPlayerTurn + ", MaxPoints; " + maxPoints);
         return lastLeadingPlayerTurn && enoughPoints;
-    }
-
-
-
-    public int getPointsLimit()
-    {
-        return pointsLimit;
-    }
-
-    public void setPointsLimit(int pointsLimit)
-    {
-        this.pointsLimit = pointsLimit;
-        this.gameEndPoints = lengthFactor * pointsLimit;
     }
 
     public String getWinner()
@@ -414,16 +373,6 @@ public class LocalGame extends Game
     public void increasePlayingTime()
     {
         playerIsPlayingSince++;
-    }
-
-    public GameLength getGameLength()
-    {
-        return gameLength;
-    }
-
-    public void setGameLength(GameLength gameLength)
-    {
-        this.gameLength = gameLength;
     }
 
     public Rules getRules()

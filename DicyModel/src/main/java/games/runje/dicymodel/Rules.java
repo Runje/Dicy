@@ -13,13 +13,14 @@ public class Rules
      * The maximum totalLength of one row/column.
      */
     public final static int maxLengthOfRow = 10;
+    public static final int MAX_LOAD_DEFAULT = 8;
     private final int rows;
     private final int columns;
     RuleVariant ruleVariant;
+
     private int lengthFactor;
     private int timeLimitInS;
     private boolean timeLimit;
-    private boolean pointLimitSetManually;
     /**
      * Points can be achieved diagonally.
      */
@@ -44,9 +45,13 @@ public class Rules
      * The minimum following dices for a straight.
      */
     private int minStraight;
+
+    private int allowedStrikes;
     private int pointLimit;
     private int gameEndPoints;
+    private double skillLoadFactor;
     private GameLength gameLength;
+
     /**
      * Creates standard Rules:
      * 6 Dices.
@@ -60,16 +65,16 @@ public class Rules
         this.numberOfDices = 6;
         this.minStraight = this.numberOfDices + 1;
         this.minXOfAKind = 3;
-
+        this.skillLoadFactor = 1;
         this.columns = 5;
         this.rows = 5;
 
+        this.allowedStrikes = 2;
         this.lengthFactor = 5;
         this.initStraightPoints(2);
         this.initXOfAKindPoints(this.minXOfAKind, maxLengthOfRow, 1, 2);
-        // TODO: Calculate
-        this.pointLimit = -1;
-        this.pointLimitSetManually = false;
+
+        this.pointLimit = 45;
         this.gameLength = GameLength.Normal;
     }
 
@@ -83,36 +88,42 @@ public class Rules
                 rules.setMinStraight(rules.numberOfDices + 1);
                 rules.setMinXOfAKind(3);
                 rules.setPointLimit(45);
+                rules.setSkillLoadFactor(1);
                 break;
             case Basel:
                 rules.setDiagonalActive(true);
                 rules.setMinStraight(rules.numberOfDices + 1);
                 rules.setMinXOfAKind(3);
                 rules.setPointLimit(90);
+                rules.setSkillLoadFactor(2);
                 break;
             case Las_Vegas:
                 rules.setDiagonalActive(true);
                 rules.setMinStraight(3);
                 rules.setMinXOfAKind(3);
                 rules.setPointLimit(270);
+                rules.setSkillLoadFactor(5);
                 break;
             case Macao:
                 rules.setDiagonalActive(true);
                 rules.setMinStraight(3);
                 rules.setMinXOfAKind(Math.max(rules.rows, rules.columns) + 1);
                 rules.setPointLimit(70);
+                rules.setSkillLoadFactor(1.5);
                 break;
             case Atlantic_City:
                 rules.setDiagonalActive(false);
                 rules.setMinStraight(3);
                 rules.setMinXOfAKind(3);
                 rules.setPointLimit(70);
+                rules.setSkillLoadFactor(1.5);
                 break;
             case Monte_Carlo:
                 rules.setDiagonalActive(false);
                 rules.setMinStraight(3);
                 rules.setMinXOfAKind(Math.max(rules.rows, rules.columns) + 1);
                 rules.setPointLimit(40);
+                rules.setSkillLoadFactor(1);
                 break;
         }
 
@@ -120,9 +131,38 @@ public class Rules
         return rules;
     }
 
+    public double getSkillLoadFactor()
+    {
+        return skillLoadFactor;
+    }
+
+    public void setSkillLoadFactor(double skillLoadFactor)
+    {
+        this.skillLoadFactor = skillLoadFactor;
+    }
+
+    public boolean isDiagonal()
+    {
+        return diagonal;
+    }
+
+    public void setDiagonal(boolean diagonal)
+    {
+        this.diagonal = diagonal;
+    }
+
+    public int getAllowedStrikes()
+    {
+        return allowedStrikes;
+    }
+
+    public void setAllowedStrikes(int allowedStrikes)
+    {
+        this.allowedStrikes = allowedStrikes;
+    }
+
     public RuleVariant getRuleVariant()
     {
-
         return ruleVariant;
     }
 
@@ -158,7 +198,6 @@ public class Rules
                 "rows=" + rows +
                 ", columns=" + columns +
                 ", lengthFactor=" + lengthFactor +
-                ", pointLimitSetManually=" + pointLimitSetManually +
                 ", diagonal=" + diagonal +
                 ", numberOfDices=" + numberOfDices +
                 ", minXOfAKind=" + minXOfAKind +
@@ -186,7 +225,6 @@ public class Rules
     public void setLengthFactor(int lengthFactor)
     {
         this.lengthFactor = lengthFactor;
-        this.gameEndPoints = lengthFactor * pointLimit;
     }
 
     public int getColumns()
@@ -197,16 +235,6 @@ public class Rules
     public int getRows()
     {
         return rows;
-    }
-
-    public boolean isPointLimitSetManually()
-    {
-        return pointLimitSetManually;
-    }
-
-    public void setPointLimitSetManually(boolean pointLimitSetManually)
-    {
-        this.pointLimitSetManually = pointLimitSetManually;
     }
 
     /**
@@ -357,7 +385,6 @@ public class Rules
     public void setPointLimit(int pointLimit)
     {
         this.pointLimit = pointLimit;
-        this.gameEndPoints = lengthFactor * pointLimit;
     }
 
     public void setStraightPoints(int[][] straightPoints)
@@ -378,5 +405,22 @@ public class Rules
     public void setGameLength(GameLength gameLength)
     {
         this.gameLength = gameLength;
+    }
+
+    public void calculateGameEndPointsAndStrikes()
+    {
+        this.gameEndPoints = lengthFactor * pointLimit;
+        switch (gameLength)
+        {
+            case Short:
+                allowedStrikes = 0;
+                break;
+            case Normal:
+                allowedStrikes = 1;
+                break;
+            case Long:
+                allowedStrikes = 2;
+                break;
+        }
     }
 }

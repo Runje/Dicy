@@ -31,8 +31,6 @@ public class StartActivity extends Activity
 
         View resumeButton = findViewById(R.id.button_resume);
         resumeButton.setEnabled(resumeGame);
-
-
     }
 
     @Override

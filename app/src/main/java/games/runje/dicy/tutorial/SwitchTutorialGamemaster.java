@@ -45,8 +45,6 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
         getRules().setMinStraight(3);
         getRules().setPointLimit(0);
         getRules().setGameEndPoints(1000);
-        game.setPointsLimit(0);
-        game.setGameEndPoints(1000);
         DicyProgress progress = (DicyProgress) activity.findViewById(R.id.dicy_progress);
         progress.setMaxProgress(0);
         progress.postInvalidate();
@@ -191,7 +189,6 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
                 progress.setMaxProgress(newLimit);
                 progress.postInvalidate();
                 rules.setPointLimit(newLimit);
-                game.setPointsLimit(newLimit);
                 showTextOverOtherPlayer(R.string.step3_tutorial);
                 highlightNext();
                 highlightBracketPoints();
@@ -209,7 +206,6 @@ public class SwitchTutorialGamemaster extends AnimatedGamemaster
                     progress2.setMaxProgress(newLimit2);
                     progress2.postInvalidate();
                     rules.setPointLimit(newLimit2);
-                    game.setPointsLimit(newLimit2);
                     for (Skill skill : game.getPlayers().get(0).getSkills())
                     {
                         skill.setCurrentLoad(skill.getMaxLoad());

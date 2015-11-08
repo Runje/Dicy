@@ -72,7 +72,7 @@ public class TutorialActivity extends Activity
         // TODO: Make tutorial AI
         players.add(new Player("Opponent", new Strategy(0, 0, 0, 0, 0, 0), 1, skills2));
 
-        game = new LocalGame(rules.getPointLimit(), rules.getGameLength(), players, 0, rules);
+        game = new LocalGame(players, 0, rules);
         rules.setMinStraight(3);
         board = Board.createBoardNoPoints(rules);
 

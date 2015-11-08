@@ -169,6 +169,7 @@ public class PlayerTable
         createPlayer("Emil", new Strategy(0.1, 1, 0.1, 0.1, 0.1, 0.9), db);
         createPlayer("Victor", new Strategy(1, 0, 1, 1, 1, 0), db);
         createPlayer("Franz", new Strategy(0.2, 0.2, 0.2, 0.2, 0.2, 0.2), db);
+        createPlayer("Max", new Strategy(0.5, 0.2, 0.5, 0.5, 0.5, 0.2), db);
     }
 
     public static void upgrade(SQLiteDatabase db, int oldVersion, int newVersion)

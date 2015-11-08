@@ -50,10 +50,10 @@ public class GameInfo
         this.activity = activity;
         this.handler = handler;
         TextView limit = (TextView) activity.findViewById(R.id.goal_text);
-        limit.setText("" + game.getGameEndPoints());
+        limit.setText("" + game.getRules().getGameEndPoints());
 
         movePointsText = (TextView) activity.findViewById(R.id.switchPointsText);
-        movePointsText.setText("0\\" + game.getPointsLimit());
+        movePointsText.setText("0\\" + game.getRules().getPointLimit());
 
         nextButton = (ImageView) activity.findViewById(R.id.image_next);
         nextButton.setOnClickListener(new View.OnClickListener()
@@ -69,7 +69,7 @@ public class GameInfo
         initPointListButton();
 
         progress = (DicyProgress) activity.findViewById(R.id.dicy_progress);
-        progress.setMaxProgress(game.getPointsLimit());
+        progress.setMaxProgress(game.getRules().getPointLimit());
 
         progress.setOnLongClickListener(new View.OnLongClickListener()
         {
@@ -91,7 +91,6 @@ public class GameInfo
                         {
                             int newLimit = Integer.parseInt(editText.getText().toString());
                             progress.setMaxProgress(newLimit);
-                            game.setPointsLimit(newLimit);
                             game.getRules().setPointLimit(newLimit);
                             progress.invalidate();
                         } catch (Exception e)
@@ -230,14 +229,14 @@ public class GameInfo
     public void update()
     {
 
-        int pointsLimit = game.getPointsLimit();
+        int pointsLimit = game.getRules().getPointLimit();
         String sLimit = Integer.toString(pointsLimit);
 
         this.movePointsText.setText("" + Integer.toString(game.getSwitchPoints()) + "\\" + sLimit);
 
         progress.setProgress(game.getSwitchPoints());
 
-        if (game.getSwitchPoints() >= game.getPointsLimit())
+        if (game.getSwitchPoints() >= game.getRules().getPointLimit())
         {
             movePointsText.setTextColor(Color.parseColor(PlayerLayout.HtmlBlue));
         }

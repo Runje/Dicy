@@ -119,9 +119,9 @@ public class LocalGameActivity extends Activity
             savedGame = null;
             Logger.logInfo(LogKey, "New Game");
             rules = OptionActivity.getRulesFromBundle(getIntent().getExtras());
-            List<Player> players = getPlayersFromIntent();
+            List<Player> players = getPlayersFromIntent(rules.getSkillLoadFactor());
 
-            game = new LocalGame(rules.getPointLimit(), rules.getGameLength(), players, new Random().nextInt(2), rules);
+            game = new LocalGame(players, new Random().nextInt(2), rules);
             board = Board.createBoardNoPoints(rules);
         }
 
@@ -201,7 +201,7 @@ public class LocalGameActivity extends Activity
         Logger.logInfo(LogKey, "On Destroy");
     }
 
-    private List<Player> getPlayersFromIntent()
+    private List<Player> getPlayersFromIntent(double loadFactor)
     {
         Bundle intent = getIntent().getExtras();
         String[] players = intent.getStringArray(OptionActivity.Player1Intent);
@@ -235,12 +235,12 @@ public class LocalGameActivity extends Activity
 
         PlayerStatistic player = manager.getPlayer(players[0]);
 
-        List<Skill> skills = skillChooser1.getSkills();
+        List<Skill> skills = skillChooser1.getSkills((int) (loadFactor * Rules.MAX_LOAD_DEFAULT));
         playerList.add(playerStatisticsToPlayer(player, skills));
 
         PlayerStatistic player2 = manager.getPlayer(players[1]);
 
-        List<Skill> skills2 = skillChooser2.getSkills();
+        List<Skill> skills2 = skillChooser2.getSkills((int) (loadFactor * Rules.MAX_LOAD_DEFAULT));
         playerList.add(playerStatisticsToPlayer(player2, skills2));
 
         return playerList;

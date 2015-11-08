@@ -183,12 +183,12 @@ public class SkillChooser
         skillValues[i] = value;
     }
 
-    public List<Skill> getSkills()
+    public List<Skill> getSkills(int maxLoad)
     {
         List<Skill> result = new ArrayList<>();
         for (int i = 0; i < skills.length; i++)
         {
-            result.add(Skill.createSkill(skills[i], skillValues[i], 8));
+            result.add(Skill.createSkill(skills[i], skillValues[i], maxLoad));
         }
 
         return result;
