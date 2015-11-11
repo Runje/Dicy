@@ -60,7 +60,7 @@ public class PointsAnimation implements Animation.AnimationListener
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0,
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
-        animation.setDuration(1000);
+        animation.setDuration((long) (1000 * gmAnimated.getDuration().getFactor()));
         animation.setAnimationListener(this);
 
         board.getAnimatedElement(new Coords(0, 0)).startAnimation(animation);

@@ -41,8 +41,8 @@ public class GameInfo
     private boolean enabled;
     private String LogKey = "GameInfo";
     private Date gamePausedAt;
-    private long pauseTime;
     private boolean paused;
+    private boolean nextEnabled;
 
     public GameInfo(final Activity activity, final ControlHandler handler, final LocalGame game)
     {
@@ -61,7 +61,13 @@ public class GameInfo
             @Override
             public void onClick(View view)
             {
-                handler.nextFromUser();
+                if (nextEnabled)
+                {
+                    handler.nextFromUser();
+                } else
+                {
+                    handler.fastForward();
+                }
             }
         });
         //nextButton.setColorFilter(R.color.dicy_yellow);
@@ -255,7 +261,7 @@ public class GameInfo
     {
         this.enabled = enabled;
         // only allow next if its not the first move
-        this.nextButton.setEnabled(enabled && game.getMovePoints() > 0);
+        this.nextEnabled = enabled && game.getMovePoints() > 0;
     }
 
     public void setPointLimit(int i)

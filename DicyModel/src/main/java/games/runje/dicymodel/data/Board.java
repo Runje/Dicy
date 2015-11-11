@@ -13,11 +13,11 @@ import games.runje.dicymodel.boardChecker.BoardChecker;
 
 public class Board
 {
+    public static String LogKey = "Board";
     /**
      * Board as Matrix contains BoardElements.
      */
     protected ArrayList<ArrayList<BoardElement>> board;
-
     /**
      * Number of rows.
      */
@@ -27,7 +27,6 @@ public class Board
      */
     protected int columns;
     protected Gravity gravity;
-    public static String LogKey = "Board";
 
     /**
      * Initializes an empty Board.
@@ -611,5 +610,10 @@ public class Board
                 getElement(i,j).setValue(b.get(i).get(j).getValue());
             }
         }
+    }
+
+    public boolean allElementsExists()
+    {
+        return true;
     }
 }

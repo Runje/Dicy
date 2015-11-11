@@ -39,7 +39,7 @@ public class SwitchAnimation implements Animation.AnimationListener
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, dx,
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, dy);
-        animation.setDuration(500);
+        animation.setDuration((long) (500 * gmAnimated.getDuration().getFactor()));
 
         if (withListener)
         {

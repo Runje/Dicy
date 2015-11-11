@@ -256,6 +256,22 @@ public class AnimatedBoard extends Board
         animationHandler.start();
     }
 
+    public boolean allElementsExists()
+    {
+        // TODO: test
+        for (ArrayList<AnimatedBoardElement> row : this.animatedBoard)
+        {
+            for (AnimatedBoardElement element : row)
+            {
+                if (element.getParent() == null)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Gets the maximum fall totalLength for each column/row depending on the gravity.

@@ -45,6 +45,8 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     public static final String LogKey = "GamemasterAnimated";
     protected Activity activity;
     AnimatedBoard animatedBoard;
+    private boolean fastAI;
+    private Duration duration = Duration.Normal;
 
     public AnimatedGamemaster(LocalGame game, Rules rules, Activity activity)
     {
@@ -55,7 +57,6 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     {
         super(rules, game, board);
         this.activity = activity;
-
         init();
     }
 
@@ -76,8 +77,6 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
 
     private void init()
     {
-
-
         for (Player player : game.getPlayers())
         {
             List<Skill> animatedSkills = new ArrayList<>();
@@ -196,6 +195,22 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
         }
     }
 
+    public Duration getDuration()
+    {
+        if (hasTurn())
+        {
+            return duration;
+        } else
+        {
+            if (fastAI)
+            {
+                return Duration.Instantly;
+            }
+
+            return duration;
+        }
+    }
+
     @Override
     protected void startPointAnimation(ArrayList<PointElement> elements)
     {
@@ -234,6 +249,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
             }
         });
 
+        animationHandler.setDuration(getDuration());
         animatedBoard.moveElementsFromGravity(animationHandler);
     }
 
@@ -249,6 +265,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
             }
         });
 
+        animationHandler.setDuration(getDuration());
         animatedBoard.recreateElements(recreateElements, animationHandler);
     }
 
@@ -264,6 +281,34 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     public void switchElementsFromUser(Coords first, Coords second)
     {
         switchElements(first, second);
+    }
+
+    @Override
+    protected void transitionToNormal()
+    {
+        super.transitionToNormal();
+        fastAI = false;
+    }
+
+    @Override
+    public void fastForward()
+    {
+        //fastAI = true;
+        switch (duration)
+        {
+            case Normal:
+                duration = Duration.Fast;
+                break;
+            case Fast:
+                duration = Duration.Faster;
+                break;
+            case Faster:
+                duration = Duration.Instantly;
+                break;
+            case Instantly:
+                duration = Duration.Normal;
+                break;
+        }
     }
 
     public void nextFromUser()
@@ -305,7 +350,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
             }
         });
 
-
+        animationHandler.setDuration(getDuration());
         for (int i = 0; i < board.getNumberOfRows(); i++)
         {
             for (int j = 0; j < board.getNumberOfColumns(); j++)
@@ -353,7 +398,6 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
 
     public void executeSkillFromUser2(Skill s, boolean online)
     {
-
         super.executeSkillFromUser(s);
         if (activeSkill.getName().equals(Skill.Shuffle) && !online)
         {

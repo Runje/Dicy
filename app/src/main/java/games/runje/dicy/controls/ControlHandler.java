@@ -27,4 +27,6 @@ public interface ControlHandler
     void gameOver();
 
     void timeOut();
+
+    void fastForward();
 }

@@ -11,11 +11,11 @@ import games.runje.dicymodel.data.Coords;
  */
 public class FallingAnimation implements DicyAnimation
 {
+    public static String LogKey = "FallingAnimation";
     private final AnimatedBoardElement element;
     private final Coords to;
     private AnimationHandler animationHandler;
     private AnimatedBoard board;
-    public static String LogKey = "FallingAnimation";
 
     public FallingAnimation(AnimatedBoardElement element, Coords to, AnimatedBoard board, AnimationHandler animationHandler)
     {
@@ -23,7 +23,6 @@ public class FallingAnimation implements DicyAnimation
         this.to = to;
         this.board = board;
         this.animationHandler = animationHandler;
-
     }
 
 
@@ -35,7 +34,7 @@ public class FallingAnimation implements DicyAnimation
         TranslateAnimation animation = new TranslateAnimation(
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, dx,
                 Animation.ABSOLUTE, 0, Animation.ABSOLUTE, dy);
-        animation.setDuration(1000);
+        animation.setDuration((long) (1000 * animationHandler.getDuration().getFactor()));
         animation.setAnimationListener(this);
         element.startAnimation(animation);
         AnimatedLogger.logDebug(LogKey, "dx: " + dx + ", dy: " + dy + ", from: " + element);

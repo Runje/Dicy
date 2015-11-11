@@ -238,6 +238,7 @@ public abstract class AbstractGamemaster
         }
 
         timeoutPossible = true;
+        board.updateBoard(board.getBoard());
         // enable
         this.controls.setEnabledControls(true);
 
