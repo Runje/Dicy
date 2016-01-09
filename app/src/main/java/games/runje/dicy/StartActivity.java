@@ -4,9 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
+
+import games.runje.dicy.statistics.NamesDB;
 import games.runje.dicy.util.ActivityUtilities;
+import games.runje.dicymodel.Utilities;
 
 public class StartActivity extends Activity
 {
@@ -31,6 +38,15 @@ public class StartActivity extends Activity
 
         View resumeButton = findViewById(R.id.button_resume);
         resumeButton.setEnabled(resumeGame);
+        try
+        {
+            NamesDB.createDatabaseIfNotExists(this);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
@@ -55,9 +71,9 @@ public class StartActivity extends Activity
 
     public void clickOnlineGame(View v)
     {
-        Intent intent = new Intent(this, OnlineGameActivity.class);
+        Intent intent = new Intent(this,TourneyActivity.class);
         startActivity(intent);
-        //Toast.makeText(this, "Playing online is not implemented yet", Toast.LENGTH_LONG).show();
+
     }
 
     public void clickPlay(View v)

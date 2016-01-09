@@ -46,7 +46,7 @@ public class AnimatedGamemaster extends AbstractGamemaster implements BoardListe
     protected Activity activity;
     AnimatedBoard animatedBoard;
     private boolean fastAI;
-    private Duration duration = Duration.Normal;
+    private Duration duration = Duration.Fast;
 
     public AnimatedGamemaster(LocalGame game, Rules rules, Activity activity)
     {

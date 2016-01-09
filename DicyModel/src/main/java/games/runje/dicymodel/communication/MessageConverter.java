@@ -43,7 +43,7 @@ public class MessageConverter
     public static final int gameLengthLength = 6;
     public static final int rulesLength = 4 * 4 + 1 + 1 + 4 + gameLengthLength + ruleVariantLength + 4 + 8;
     public static final int skillLength = coordsLength + 1 + 3 * 4 + skillNameLength;
-    public static final int strategyLength = 100;
+    public static final int strategyLength = 200;
     public static final int playerLength = playerNameLength + idLength + 4 + strategyLength + 4 + 2 + 3 * skillLength;
     public static final int gameLength = 2 * 4 + 4 * playerLength + 3 * 4 + 4 + rulesLength;
     public static final int moveLength = 2 * coordsLength;

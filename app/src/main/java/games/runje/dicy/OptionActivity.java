@@ -33,9 +33,13 @@ import games.runje.dicy.util.ActivityUtilities;
 import games.runje.dicymodel.Logger;
 import games.runje.dicymodel.Rules;
 import games.runje.dicymodel.ai.Strategy;
+import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.GameLength;
+import games.runje.dicymodel.game.GameMode;
 import games.runje.dicymodel.game.RuleVariant;
 import games.runje.dicymodel.skills.Skill;
+
+import static games.runje.dicy.util.ActivityUtilities.playerStatisticsToPlayer;
 
 
 /**
@@ -68,7 +72,7 @@ public class OptionActivity extends Activity implements SimpleObserver
     public static final String TimeLimitCheckedIntent = "TimeLimitChecked";
     public static final String RuleVariantIntent = "RuleVariant";
     public static String LogKey = "Options";
-    private static String PointLimitIntent = "PointLimit";
+    public static final String GameModeIntent = "GameModeIntent";
     private Spinner lengthSpinner;
     private Spinner player1Spinner;
     private Spinner player2Spinner;
@@ -100,17 +104,11 @@ public class OptionActivity extends Activity implements SimpleObserver
 
         boolean diagonal = bundle.getBoolean(OptionActivity.DiagonalIntent, false);
 
-        Rules rules = Rules.makeRules(RuleVariant.values()[bundle.getInt(RuleVariantIntent, 0)]);
-        //rules.setDiagonalActive(diagonal);
-        //rules.setMinStraight(bundle.getInt(OptionActivity.StraightIntent, 7));
-        //rules.setMinXOfAKind(bundle.getInt(OptionActivity.XOfAKindIntent, 11));
-        //rules.initStraightPoints(4);
+        Rules rules = Rules.makeRules(RuleVariant.getEnum(bundle.getString(RuleVariantIntent)));
         rules.setLengthFactor(f);
         rules.setGameLength(gameLength);
         rules.calculateGameEndPointsAndStrikes();
         rules.setTimeLimitInS(bundle.getInt(OptionActivity.TimeLimitInSIntent, 0));
-        //int pointLimit = bundle.getInt(PointLimitIntent, -1);
-        //rules.setPointLimit(pointLimit);
         rules.setTimeLimit(bundle.getBoolean(OptionActivity.TimeLimitCheckedIntent));
         return rules;
     }
@@ -313,7 +311,6 @@ public class OptionActivity extends Activity implements SimpleObserver
     {
         lengthSpinner = (Spinner) findViewById(R.id.length_dropdown);
         List<String> l = new ArrayList<>();
-        // TODO: make strings static variables
         l.add(GameLength.Short.toString());
         l.add(GameLength.Normal.toString());
         l.add(GameLength.Long.toString());
@@ -348,37 +345,6 @@ public class OptionActivity extends Activity implements SimpleObserver
 
             }
         });
-    }
-
-    private void saveToBundle(Bundle intent)
-    {
-        String[] players = {((PlayerStatistic) player1Spinner.getSelectedItem()).getName(), ((PlayerStatistic) player2Spinner.getSelectedItem()).getName(), "", ""};
-
-        intent.putStringArray(Player1Intent, players);
-        intent.putString(LengthIntent, (String) lengthSpinner.getSelectedItem());
-        intent.putBoolean(DiagonalIntent, diagonal.isChecked());
-        // TODO: make boolean
-        intent.putInt(StraightIntent, straight.isChecked() ? 3 : 100);
-        intent.putInt(XOfAKindIntent, xOfAKind.isChecked() ? 3 : 100);
-        intent.putString(Player1Skill1Intent, skillChooser1.getName(0));
-        intent.putString(Player1Skill2Intent, skillChooser1.getName(1));
-        intent.putString(Player1Skill3Intent, skillChooser1.getName(2));
-        intent.putString(Player2Skill1Intent, skillChooser2.getName(0));
-        Logger.logInfo(LogKey, skillChooser2.getName(0));
-        intent.putString(Player2Skill2Intent, skillChooser2.getName(1));
-        intent.putString(Player2Skill3Intent, skillChooser2.getName(2));
-
-        intent.putInt(Player1Skill1ValueIntent, skillChooser1.getValue(0));
-        intent.putInt(Player1Skill2ValueIntent, skillChooser1.getValue(1));
-        intent.putInt(Player1Skill3ValueIntent, skillChooser1.getValue(2));
-        intent.putInt(Player2Skill1ValueIntent, skillChooser2.getValue(0));
-        intent.putInt(Player2Skill2ValueIntent, skillChooser2.getValue(1));
-        intent.putInt(Player2Skill3ValueIntent, skillChooser2.getValue(2));
-
-        intent.putInt(TimeLimitInSIntent, Integer.parseInt(editTimeLimit.getText().toString()));
-        intent.putBoolean(TimeLimitCheckedIntent, checkTimeLimit.isChecked());
-
-        intent.putInt(RuleVariantIntent, rulesSpinner.getSelectedItemPosition());
     }
 
     private void saveToSharedPreferences()
@@ -507,48 +473,38 @@ public class OptionActivity extends Activity implements SimpleObserver
 
     public void clickPlay(final View v)
     {
-
-        final Intent intent = new Intent(OptionActivity.this, LocalGameActivity.class);
-        final Bundle b = new Bundle();
-        saveToBundle(b);
-
-
-        if (!straight.isChecked() && !xOfAKind.isChecked())
-        {
-            Toast.makeText(OptionActivity.this, "No Points possible", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // TODO: show Loading screen
         v.setEnabled(false);
+        List<Player> players = getPlayers();
+        Rules rules = getRules();
+        ActivityUtilities.startGame(this, players, rules, GameMode.Friendly);
+    }
 
-        final Rules rules = getRulesFromBundle(b);
-        saveToSharedPreferences();
-        ActivityUtilities.setGameResumeable(OptionActivity.this, false);
-        intent.putExtras(b);
-        startActivity(intent);
+    private Rules getRules()
+    {
+        Rules rules = Rules.makeRules(RuleVariant.values()[rulesSpinner.getSelectedItemPosition()]);
+        rules.setTimeLimit(checkTimeLimit.isChecked());
+        rules.setTimeLimitInS(Integer.parseInt(editTimeLimit.getText().toString()));
+        rules.setGameLength(GameLength.valueOf((String) lengthSpinner.getSelectedItem()));
+        return rules;
+    }
 
-        /*new CalcPointLimit(rules, new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                b.putInt(PointLimitIntent, rules.getPointLimit());
+    private List<Player> getPlayers()
+    {
+        String[] players = {((PlayerStatistic) player1Spinner.getSelectedItem()).getName(), ((PlayerStatistic) player2Spinner.getSelectedItem()).getName(), "", ""};
+        List<Player> playerList = new ArrayList<>();
+        StatisticManager manager = new SQLiteHandler(this);
 
+        PlayerStatistic player = manager.getPlayer(players[0]);
 
+        List<Skill> skills = skillChooser1.getSkills((int) (Rules.MAX_LOAD_DEFAULT));
+        playerList.add(playerStatisticsToPlayer(player, skills));
 
-                v.postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        v.setEnabled(true);
-                    }
-                }, 2000);
-            }
-        }).execute();*/
+        PlayerStatistic player2 = manager.getPlayer(players[1]);
 
+        List<Skill> skills2 = skillChooser2.getSkills((int) (Rules.MAX_LOAD_DEFAULT));
+        playerList.add(playerStatisticsToPlayer(player2, skills2));
 
+        return playerList;
     }
 
 

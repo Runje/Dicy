@@ -16,6 +16,12 @@
             android:theme="@style/FullscreenTheme">
         </activity>
         <activity
+            android:name=".TourneyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/FullscreenTheme">
+        </activity>
+        <activity
             android:name=".StartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:icon="@drawable/dice3d"

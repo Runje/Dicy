@@ -257,6 +257,8 @@ public class SQLiteHandler extends SQLiteOpenHelper implements StatisticManager
         Logger.logInfo(LogKey, "On Create DB");
         PlayerTable.create(db);
         GameTable.create(db);
+        new SwitchPointsTable().create(db);
+        new MovePointsTable().create(db);
     }
 
     @Override

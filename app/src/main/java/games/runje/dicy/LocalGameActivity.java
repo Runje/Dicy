@@ -33,6 +33,8 @@ import games.runje.dicymodel.data.Player;
 import games.runje.dicymodel.game.LocalGame;
 import games.runje.dicymodel.skills.Skill;
 
+import static games.runje.dicy.util.ActivityUtilities.playerStatisticsToPlayer;
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -47,10 +49,7 @@ public class LocalGameActivity extends Activity
     private AnimatedGamemaster gmAnimated;
 
 
-    static Player playerStatisticsToPlayer(PlayerStatistic statistic, List<Skill> skills)
-    {
-        return new Player(statistic.getName(), Strategy.getStrategy(statistic.getStrategy()), statistic.getId(), skills);
-    }
+
 
     static void showQuitDialog(final Activity activity, final LocalGame game)
     {

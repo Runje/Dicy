@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+             android:background="@drawable/dicy_rectangle">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/tourney_game"
+            android:id="@+id/game1"/>
+
+        <include
+            layout="@layout/tourney_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/game2"/>
+
+        <include
+            layout="@layout/tourney_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/game3"/>
+
+        <include
+            layout="@layout/tourney_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/game4"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/tourney"
+        android:id="@+id/textView5"
+        android:layout_gravity="center_horizontal|top"
+        android:textColor="@color/dicy_yellow"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        style="@style/chipbutton"
+        android:id="@+id/button8"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="right|bottom"
+        android:onClick="clickPlay"
+        android:text="Play"/>
+</FrameLayout>
